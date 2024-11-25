@@ -6,69 +6,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import { IconButton } from "@mui/material";
+import { CircularProgress, IconButton } from "@mui/material";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { FaCaretUp, FaCaretDown } from "react-icons/fa";
-
-interface Part {
-    _id: string;
-    name: string;
-    manufacturer: {
-        name: string;
-    };
-    partPackage: {
-        name: string;
-        type: "SMD" | "THT";
-    };
-    price: number;
-    count: number;
-    category: {
-        name: string;
-    };
-}
+import useParts from "../hooks/useParts";
 
 const PartTable = () => {
-    const parts: Part[] = [
-        {
-            _id: "1",
-            name: "Resistor - 47 Ohm",
-            manufacturer: { name: "Unknown" },
-            partPackage: { name: "1206", type: "SMD" },
-            price: 0.02,
-            count: 23,
-            category: { name: "Resistors" },
-        },
-
-        {
-            _id: "2",
-            name: "Resistor - 10 kOhm",
-            manufacturer: { name: "Unknown" },
-            partPackage: { name: "1206", type: "SMD" },
-            price: 0.03,
-            count: 17,
-            category: { name: "Resistors" },
-        },
-
-        {
-            _id: "3",
-            name: "Capacitor - 22 pF",
-            manufacturer: { name: "Unknown" },
-            partPackage: { name: "1206", type: "SMD" },
-            price: 0.01,
-            count: 62,
-            category: { name: "Capacitors" },
-        },
-
-        {
-            _id: "4",
-            name: "Capacitor - 10 uF",
-            manufacturer: { name: "Unknown" },
-            partPackage: { name: "Through hole", type: "THT" },
-            price: 0.02,
-            count: 159,
-            category: { name: "Resistors" },
-        },
-    ];
+    const { parts, isLoading } = useParts();
 
     return (
         <TableContainer component={Paper}>
@@ -88,6 +32,13 @@ const PartTable = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
+                    {isLoading && (
+                        <TableRow>
+                            <TableCell colSpan={8} align="center">
+                                <CircularProgress size="3rem" />
+                            </TableCell>
+                        </TableRow>
+                    )}
                     {parts.map((part) => (
                         <TableRow
                             key={part._id}
@@ -101,13 +52,13 @@ const PartTable = () => {
                                 {part.name}
                             </TableCell>
                             <TableCell align="right">
-                                {part.manufacturer.name}
+                                {part.manufacturer?.name || "Unknown"}
                             </TableCell>
                             <TableCell align="right">
-                                {part.partPackage.name}
+                                {part.partPackage?.name || "Unknown"}
                             </TableCell>
                             <TableCell align="right">
-                                {part.partPackage.type}
+                                {part.partPackage?.type || "Unknown"}
                             </TableCell>
                             <TableCell align="right">
                                 ${part.price.toFixed(2)}
