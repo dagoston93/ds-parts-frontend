@@ -1,14 +1,11 @@
-import 'bootstrap/dist/css/bootstrap.css'
+import PartTable from "./components/PartTable";
 
 function App() {
-
-  return (
-    <>
-      <p>
-        Frontend.
-      </p>
-    </>
-  )
+    return (
+        <>
+            <PartTable />
+        </>
+    );
 }
 
-export default App
+export default App;
