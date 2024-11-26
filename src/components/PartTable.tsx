@@ -10,93 +10,140 @@ import { CircularProgress, IconButton } from "@mui/material";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 import useParts from "../hooks/useParts";
+import { useState } from "react";
+import ConfirmDeleteForm from "./ConfirmDeleteForm";
+import partService, { Part } from "../services/partService";
 
 const PartTable = () => {
-    const { parts, isLoading } = useParts();
+    const { parts, isLoading, setParts } = useParts();
+    const [isDeleteFormOpen, setDeleteFormOpen] = useState(false);
+    const [partToDelete, setPartToDelete] = useState<Part | null>();
+
+    const handleDeletePartButtonClick = (part: Part) => {
+        setPartToDelete(part);
+        setDeleteFormOpen(true);
+    };
+
+    const handleDeletePartFormClose = (confirmed: boolean) => {
+        if (confirmed && partToDelete) {
+            const originalParts = [...parts];
+            setParts(parts.filter((p) => p._id !== partToDelete._id));
+
+            partService
+                .delete(partToDelete._id)
+                .then(() => console.log("Part deleted: ", partToDelete.name))
+                .catch((err) => {
+                    console.log(err);
+                    setParts(originalParts);
+                });
+        }
+
+        setPartToDelete(null);
+        setDeleteFormOpen(false);
+    };
 
     return (
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Part</TableCell>
-                        <TableCell align="right">Manufacturer</TableCell>
-                        <TableCell align="right">Package</TableCell>
-                        <TableCell align="right">Package type</TableCell>
-                        <TableCell align="right">Price</TableCell>
-                        <TableCell align="right" sx={{ paddingRight: 0 }}>
-                            Count
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {isLoading && (
+        <>
+            <ConfirmDeleteForm
+                handleClose={handleDeletePartFormClose}
+                isOpen={isDeleteFormOpen}
+                partName={partToDelete?.name || ""}
+            />
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <TableHead>
                         <TableRow>
-                            <TableCell colSpan={8} align="center">
-                                <CircularProgress size="3rem" />
-                            </TableCell>
-                        </TableRow>
-                    )}
-                    {parts.map((part) => (
-                        <TableRow
-                            key={part._id}
-                            sx={{
-                                "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                },
-                            }}
-                        >
-                            <TableCell component="th" scope="row">
-                                {part.name}
-                            </TableCell>
-                            <TableCell align="right">
-                                {part.manufacturer?.name || "Unknown"}
-                            </TableCell>
-                            <TableCell align="right">
-                                {part.partPackage?.name || "Unknown"}
-                            </TableCell>
-                            <TableCell align="right">
-                                {part.partPackage?.type || "Unknown"}
-                            </TableCell>
-                            <TableCell align="right">
-                                ${part.price.toFixed(2)}
-                            </TableCell>
+                            <TableCell>Part</TableCell>
+                            <TableCell align="right">Manufacturer</TableCell>
+                            <TableCell align="right">Package</TableCell>
+                            <TableCell align="right">Package type</TableCell>
+                            <TableCell align="right">Price</TableCell>
                             <TableCell align="right" sx={{ paddingRight: 0 }}>
-                                {part.count}
+                                Count
                             </TableCell>
-                            <TableCell align="left" sx={{ paddingLeft: 0 }}>
-                                <Stack spacing={0}>
-                                    <IconButton
-                                        aria-label="increase count"
-                                        color="primary"
-                                        sx={{ paddingBottom: 0 }}
-                                    >
-                                        <FaCaretUp />
-                                    </IconButton>
-                                    <IconButton
-                                        aria-label="decrease count"
-                                        color="primary"
-                                        sx={{ paddingTop: 0 }}
-                                    >
-                                        <FaCaretDown />
-                                    </IconButton>
-                                </Stack>
-                            </TableCell>
-                            <TableCell align="right">
-                                <IconButton aria-label="edit" color="primary">
-                                    <MdEdit />
-                                </IconButton>
-                                <IconButton aria-label="delete" color="error">
-                                    <MdDelete />
-                                </IconButton>
-                            </TableCell>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                    </TableHead>
+                    <TableBody>
+                        {isLoading && (
+                            <TableRow>
+                                <TableCell colSpan={8} align="center">
+                                    <CircularProgress size="3rem" />
+                                </TableCell>
+                            </TableRow>
+                        )}
+                        {parts.map((part) => (
+                            <TableRow
+                                key={part._id}
+                                sx={{
+                                    "&:last-child td, &:last-child th": {
+                                        border: 0,
+                                    },
+                                }}
+                            >
+                                <TableCell component="th" scope="row">
+                                    {part.name}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {part.manufacturer?.name || "Unknown"}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {part.partPackage?.name || "Unknown"}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {part.partPackage?.type || "Unknown"}
+                                </TableCell>
+                                <TableCell align="right">
+                                    ${part.price.toFixed(2)}
+                                </TableCell>
+                                <TableCell
+                                    align="right"
+                                    sx={{ paddingRight: 0 }}
+                                >
+                                    {part.count}
+                                </TableCell>
+                                <TableCell align="left" sx={{ paddingLeft: 0 }}>
+                                    <Stack spacing={0}>
+                                        <IconButton
+                                            aria-label="increase count"
+                                            color="primary"
+                                            sx={{ paddingBottom: 0 }}
+                                        >
+                                            <FaCaretUp />
+                                        </IconButton>
+                                        <IconButton
+                                            aria-label="decrease count"
+                                            color="primary"
+                                            sx={{ paddingTop: 0 }}
+                                        >
+                                            <FaCaretDown />
+                                        </IconButton>
+                                    </Stack>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <IconButton
+                                        aria-label="edit"
+                                        color="primary"
+                                    >
+                                        <MdEdit />
+                                    </IconButton>
+                                    <IconButton
+                                        aria-label="delete"
+                                        color="error"
+                                        onClick={() =>
+                                            handleDeletePartButtonClick(part)
+                                        }
+                                    >
+                                        <MdDelete />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </>
     );
 };
 

@@ -15,6 +15,10 @@ class HttpService<T extends { _id: string }> {
 
         return { request, cancel: () => controller.abort() };
     }
+
+    delete(id: string) {
+        return apiClient.delete(`${this.endpoint}/${id}`);
+    }
 }
 
 export default HttpService;
