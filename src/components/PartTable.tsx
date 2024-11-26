@@ -13,13 +13,13 @@ import useParts from "../hooks/useParts";
 import { useState } from "react";
 import ConfirmDeleteForm from "./ConfirmDeleteForm";
 import partService, { Part } from "../services/partService";
-import { useSnackbar } from "notistack";
+import useNotifications from "../hooks/useNotifications";
 
 const PartTable = () => {
-    const { parts, isLoading, setParts } = useParts();
+    const { showSuccess, showError } = useNotifications();
+    const { parts, isLoading, setParts } = useParts(showError);
     const [isDeleteFormOpen, setDeleteFormOpen] = useState(false);
     const [partToDelete, setPartToDelete] = useState<Part | null>();
-    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const handleDeletePartButtonClick = (part: Part) => {
         setPartToDelete(part);
@@ -34,23 +34,11 @@ const PartTable = () => {
             partService
                 .delete(partToDelete._id)
                 .then(() => {
-                    enqueueSnackbar(`Part deleted: ${partToDelete.name}`, {
-                        variant: "success",
-                        action: (id) => (
-                            <IconButton
-                                aria-label="close"
-                                color="inherit"
-                                size="small"
-                                onClick={() => closeSnackbar(id)}
-                            >
-                                <MdClose />
-                            </IconButton>
-                        ),
-                    });
+                    showSuccess(`Part deleted: ${partToDelete.name}`);
                     console.log();
                 })
                 .catch((err) => {
-                    enqueueSnackbar(err.message, { variant: "error" });
+                    showError(err.message);
                     setParts(originalParts);
                 });
         }

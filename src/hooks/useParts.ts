@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import partService, { Part } from "../services/partService";
 import { CanceledError } from "axios";
 
-function useParts() {
+function useParts(errorHandler: (message: string) => void) {
     const [parts, setParts] = useState<Part[]>([]);
-    const [error, setError] = useState("");
     const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -20,14 +19,14 @@ function useParts() {
                 if (err instanceof CanceledError) {
                     return;
                 }
-                setError(err.message);
+                errorHandler(err.message);
                 setLoading(false);
             });
 
         return () => cancel();
     }, []);
 
-    return { parts, error, isLoading, setParts, setError };
+    return { parts, isLoading, setParts };
 }
 
 export default useParts;
