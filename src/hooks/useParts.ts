@@ -6,5 +6,6 @@ export default (errorHandler: (message: string) => void) => {
         partService,
         errorHandler
     );
+
     return { parts: entities, isLoading, setParts: setEntities };
 };
