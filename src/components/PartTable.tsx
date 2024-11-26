@@ -6,19 +6,21 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import { CircularProgress, IconButton } from "@mui/material";
-import { MdDelete, MdEdit, MdClose } from "react-icons/md";
+import { Button, CircularProgress, IconButton } from "@mui/material";
+import { MdDelete, MdEdit, MdAdd } from "react-icons/md";
 import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 import useParts from "../hooks/useParts";
 import { useState } from "react";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import partService, { Part } from "../services/partService";
 import useNotifications from "../hooks/useNotifications";
+import CreatePartDialog from "./CreatePartDialog";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
     const { parts, isLoading, setParts } = useParts(showError);
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [isCreatePartDialogOpen, setCreatePartDialogOpen] = useState(false);
     const [partToDelete, setPartToDelete] = useState<Part | null>();
 
     const handleDeletePartButtonClick = (part: Part) => {
@@ -49,6 +51,17 @@ const PartTable = () => {
 
     return (
         <>
+            <Button
+                variant="contained"
+                startIcon={<MdAdd />}
+                onClick={() => setCreatePartDialogOpen(true)}
+            >
+                Create part
+            </Button>
+            <CreatePartDialog
+                handleClose={() => setCreatePartDialogOpen(false)}
+                isOpen={isCreatePartDialogOpen}
+            />
             <ConfirmDeleteDialog
                 handleClose={handleDeletePartFormClose}
                 isOpen={isDeleteDialogOpen}
