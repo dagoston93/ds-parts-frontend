@@ -11,19 +11,19 @@ import { MdDelete, MdEdit, MdClose } from "react-icons/md";
 import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 import useParts from "../hooks/useParts";
 import { useState } from "react";
-import ConfirmDeleteForm from "./ConfirmDeleteForm";
+import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import partService, { Part } from "../services/partService";
 import useNotifications from "../hooks/useNotifications";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
     const { parts, isLoading, setParts } = useParts(showError);
-    const [isDeleteFormOpen, setDeleteFormOpen] = useState(false);
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [partToDelete, setPartToDelete] = useState<Part | null>();
 
     const handleDeletePartButtonClick = (part: Part) => {
         setPartToDelete(part);
-        setDeleteFormOpen(true);
+        setDeleteDialogOpen(true);
     };
 
     const handleDeletePartFormClose = (confirmed: boolean) => {
@@ -44,14 +44,14 @@ const PartTable = () => {
         }
 
         setPartToDelete(null);
-        setDeleteFormOpen(false);
+        setDeleteDialogOpen(false);
     };
 
     return (
         <>
-            <ConfirmDeleteForm
+            <ConfirmDeleteDialog
                 handleClose={handleDeletePartFormClose}
-                isOpen={isDeleteFormOpen}
+                isOpen={isDeleteDialogOpen}
                 partName={partToDelete?.name || ""}
             />
             <TableContainer component={Paper}>

@@ -11,7 +11,7 @@ interface Props {
     handleClose: (confirmed: boolean) => void;
 }
 
-const ConfirmDeleteForm = ({ isOpen, partName, handleClose }: Props) => {
+const ConfirmDeleteDialog = ({ isOpen, partName, handleClose }: Props) => {
     return (
         <Dialog
             open={isOpen}
@@ -30,12 +30,16 @@ const ConfirmDeleteForm = ({ isOpen, partName, handleClose }: Props) => {
             <DialogActions>
                 <Button
                     onClick={() => handleClose(false)}
-                    color="primary"
+                    variant="outlined"
                     autoFocus
                 >
                     Cancel
                 </Button>
-                <Button onClick={() => handleClose(true)} color="error">
+                <Button
+                    onClick={() => handleClose(true)}
+                    variant="contained"
+                    color="error"
+                >
                     Delete
                 </Button>
             </DialogActions>
@@ -43,4 +47,4 @@ const ConfirmDeleteForm = ({ isOpen, partName, handleClose }: Props) => {
     );
 };
 
-export default ConfirmDeleteForm;
+export default ConfirmDeleteDialog;
