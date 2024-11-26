@@ -7,17 +7,19 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { CircularProgress, IconButton } from "@mui/material";
-import { MdDelete, MdEdit } from "react-icons/md";
+import { MdDelete, MdEdit, MdClose } from "react-icons/md";
 import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 import useParts from "../hooks/useParts";
 import { useState } from "react";
 import ConfirmDeleteForm from "./ConfirmDeleteForm";
 import partService, { Part } from "../services/partService";
+import { useSnackbar } from "notistack";
 
 const PartTable = () => {
     const { parts, isLoading, setParts } = useParts();
     const [isDeleteFormOpen, setDeleteFormOpen] = useState(false);
     const [partToDelete, setPartToDelete] = useState<Part | null>();
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
 
     const handleDeletePartButtonClick = (part: Part) => {
         setPartToDelete(part);
@@ -31,9 +33,24 @@ const PartTable = () => {
 
             partService
                 .delete(partToDelete._id)
-                .then(() => console.log("Part deleted: ", partToDelete.name))
+                .then(() => {
+                    enqueueSnackbar(`Part deleted: ${partToDelete.name}`, {
+                        variant: "success",
+                        action: (id) => (
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => closeSnackbar(id)}
+                            >
+                                <MdClose />
+                            </IconButton>
+                        ),
+                    });
+                    console.log();
+                })
                 .catch((err) => {
-                    console.log(err);
+                    enqueueSnackbar(err.message, { variant: "error" });
                     setParts(originalParts);
                 });
         }
