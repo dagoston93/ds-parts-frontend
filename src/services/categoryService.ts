@@ -5,4 +5,4 @@ export interface Category {
     name: string;
 }
 
-export default new HttpService<Category>("/categories");
+export default new HttpService<Category, Category>("/categories");

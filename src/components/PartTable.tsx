@@ -12,7 +12,7 @@ import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 import useParts from "../hooks/useParts";
 import { useState } from "react";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
-import partService, { Part } from "../services/partService";
+import partService, { Part, PartData } from "../services/partService";
 import useNotifications from "../hooks/useNotifications";
 import CreatePartDialog from "./CreatePartDialog";
 
@@ -37,7 +37,6 @@ const PartTable = () => {
                 .delete(partToDelete._id)
                 .then(() => {
                     showSuccess(`Part deleted: ${partToDelete.name}`);
-                    console.log();
                 })
                 .catch((err) => {
                     showError(err.message);
@@ -47,6 +46,22 @@ const PartTable = () => {
 
         setPartToDelete(null);
         setDeleteDialogOpen(false);
+    };
+
+    const handleCreatePartDialogClose = (data: PartData | null) => {
+        setCreatePartDialogOpen(false);
+
+        if (data) {
+            partService
+                .create(data)
+                .then((newPart) => {
+                    showSuccess(`Part created: ${data.name}.`);
+                    setParts([...parts, newPart.data]);
+                })
+                .catch((err) => {
+                    showError(err.message);
+                });
+        }
     };
 
     return (
@@ -59,7 +74,7 @@ const PartTable = () => {
                 Create part
             </Button>
             <CreatePartDialog
-                handleClose={() => setCreatePartDialogOpen(false)}
+                handleClose={handleCreatePartDialogClose}
                 isOpen={isCreatePartDialogOpen}
             />
             <ConfirmDeleteDialog

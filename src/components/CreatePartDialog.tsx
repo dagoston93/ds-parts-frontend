@@ -9,16 +9,24 @@ import { MdClose } from "react-icons/md";
 import useManufacturers from "../hooks/useManufacturers";
 import useCategories from "../hooks/useCategories";
 import usePackages from "../hooks/usePackages";
+import { useForm } from "react-hook-form";
+import { PartData } from "../services/partService";
 
 interface Props {
     isOpen: boolean;
-    handleClose: () => void;
+    handleClose: (data: PartData | null) => void;
 }
 
 const CreatePartDialog = ({ isOpen, handleClose }: Props) => {
     const { manufacturers } = useManufacturers(() => {});
     const { categories } = useCategories(() => {});
     const { packages } = usePackages(() => {});
+    const { handleSubmit, register } = useForm<PartData>();
+
+    const onSubmit = (data: PartData) => {
+        console.log(data);
+        handleClose(data);
+    };
 
     return (
         <>
@@ -26,22 +34,13 @@ const CreatePartDialog = ({ isOpen, handleClose }: Props) => {
                 open={isOpen}
                 PaperProps={{
                     component: "form",
-                    onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-                        event.preventDefault();
-                        const formData = new FormData(event.currentTarget);
-                        const formJson = Object.fromEntries(
-                            (formData as any).entries()
-                        );
-                        const email = formJson.email;
-                        console.log(email);
-                        handleClose();
-                    },
+                    onSubmit: handleSubmit(onSubmit),
                 }}
             >
                 <DialogTitle>Create part</DialogTitle>
                 <IconButton
                     aria-label="close"
-                    onClick={handleClose}
+                    onClick={() => handleClose(null)}
                     sx={(theme) => ({
                         position: "absolute",
                         right: 8,
@@ -53,6 +52,7 @@ const CreatePartDialog = ({ isOpen, handleClose }: Props) => {
                 </IconButton>
                 <DialogContent>
                     <TextField
+                        {...register("category")}
                         id="category"
                         select
                         label="Category"
@@ -60,12 +60,13 @@ const CreatePartDialog = ({ isOpen, handleClose }: Props) => {
                         defaultValue=""
                     >
                         {categories.map((category) => (
-                            <MenuItem key={category._id} value={category.name}>
+                            <MenuItem key={category._id} value={category._id}>
                                 {category.name}
                             </MenuItem>
                         ))}
                     </TextField>
                     <TextField
+                        {...register("name")}
                         autoFocus
                         required
                         margin="normal"
@@ -77,6 +78,7 @@ const CreatePartDialog = ({ isOpen, handleClose }: Props) => {
                         variant="outlined"
                     />
                     <TextField
+                        {...register("manufacturer")}
                         margin="normal"
                         id="manufacturer"
                         select
@@ -87,37 +89,43 @@ const CreatePartDialog = ({ isOpen, handleClose }: Props) => {
                         {manufacturers.map((manufacturer) => (
                             <MenuItem
                                 key={manufacturer._id}
-                                value={manufacturer.name}
+                                value={manufacturer._id}
                             >
                                 {manufacturer.name}
                             </MenuItem>
                         ))}
                     </TextField>
                     <TextField
+                        {...register("partPackage")}
                         margin="normal"
-                        id="package"
+                        id="partPackage"
                         select
                         label="Package"
                         fullWidth
                         defaultValue=""
                     >
                         {packages.map((p) => (
-                            <MenuItem key={p._id} value={p.name}>
+                            <MenuItem key={p._id} value={p._id}>
                                 {p.name}
                             </MenuItem>
                         ))}
                     </TextField>
                     <TextField
+                        {...register("price", { valueAsNumber: true })}
                         autoFocus
                         required
                         margin="normal"
-                        id="name"
-                        name="name"
+                        id="price"
+                        name="price"
                         label="Price"
                         type="number"
                         fullWidth
                         variant="outlined"
                         slotProps={{
+                            htmlInput: {
+                                step: 0.01,
+                                min: 0.01,
+                            },
                             input: {
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -128,19 +136,29 @@ const CreatePartDialog = ({ isOpen, handleClose }: Props) => {
                         }}
                     />
                     <TextField
+                        {...register("count", { valueAsNumber: true })}
                         autoFocus
                         required
                         margin="normal"
-                        id="name"
-                        name="name"
+                        id="count"
+                        name="count"
                         label="Count"
                         type="number"
                         fullWidth
                         variant="outlined"
+                        slotProps={{
+                            htmlInput: {
+                                step: 1,
+                                min: 0,
+                            },
+                        }}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} variant="outlined">
+                    <Button
+                        onClick={() => handleClose(null)}
+                        variant="outlined"
+                    >
                         Cancel
                     </Button>
                     <Button type="submit" variant="contained">

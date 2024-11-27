@@ -6,4 +6,4 @@ export interface Package {
     type: "SMD" | "THT";
 }
 
-export default new HttpService<Package>("/packages");
+export default new HttpService<Package, Package>("/packages");

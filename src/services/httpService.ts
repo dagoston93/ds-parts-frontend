@@ -1,6 +1,6 @@
 import apiClient from "./apiClient";
 
-class HttpService<T extends { _id: string }> {
+class HttpService<T extends { _id: string }, U> {
     endpoint: string;
 
     constructor(endpoint: string) {
@@ -14,6 +14,10 @@ class HttpService<T extends { _id: string }> {
         });
 
         return { request, cancel: () => controller.abort() };
+    }
+
+    create(entity: U) {
+        return apiClient.post(this.endpoint, entity);
     }
 
     delete(id: string) {

@@ -5,4 +5,4 @@ export interface Manufacturer {
     name: string;
 }
 
-export default new HttpService<Manufacturer>("/manufacturers");
+export default new HttpService<Manufacturer, Manufacturer>("/manufacturers");

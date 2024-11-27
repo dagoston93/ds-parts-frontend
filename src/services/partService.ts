@@ -17,4 +17,13 @@ export interface Part {
     };
 }
 
-export default new HttpService<Part>("/parts");
+export interface PartData {
+    name: string;
+    manufacturer: string;
+    partPackage: string;
+    price: number;
+    count: number;
+    category: string;
+}
+
+export default new HttpService<Part, PartData>("/parts");
