@@ -66,6 +66,7 @@ const PartTable = () => {
                     setDialogLoading(false);
                 });
         }
+        setCreatePartDialogOpen(false);
     };
 
     return (
