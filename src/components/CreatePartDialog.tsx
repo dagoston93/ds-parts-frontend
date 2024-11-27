@@ -5,7 +5,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { IconButton, InputAdornment, MenuItem } from "@mui/material";
-import { MdClose } from "react-icons/md";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { MdAdd, MdClose } from "react-icons/md";
 import useManufacturers from "../hooks/useManufacturers";
 import useCategories from "../hooks/useCategories";
 import usePackages from "../hooks/usePackages";
@@ -15,9 +16,10 @@ import { PartData } from "../services/partService";
 interface Props {
     isOpen: boolean;
     handleClose: (data: PartData | null) => void;
+    isLoading: boolean;
 }
 
-const CreatePartDialog = ({ isOpen, handleClose }: Props) => {
+const CreatePartDialog = ({ isOpen, handleClose, isLoading }: Props) => {
     const { manufacturers } = useManufacturers(() => {});
     const { categories } = useCategories(() => {});
     const { packages } = usePackages(() => {});
@@ -158,12 +160,18 @@ const CreatePartDialog = ({ isOpen, handleClose }: Props) => {
                     <Button
                         onClick={() => handleClose(null)}
                         variant="outlined"
+                        disabled={isLoading}
                     >
                         Cancel
                     </Button>
-                    <Button type="submit" variant="contained">
+                    <LoadingButton
+                        type="submit"
+                        variant="contained"
+                        startIcon={<MdAdd />}
+                        loading={isLoading}
+                    >
                         Create
-                    </Button>
+                    </LoadingButton>
                 </DialogActions>
             </Dialog>
         </>

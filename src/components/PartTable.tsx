@@ -22,6 +22,7 @@ const PartTable = () => {
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isCreatePartDialogOpen, setCreatePartDialogOpen] = useState(false);
     const [partToDelete, setPartToDelete] = useState<Part | null>();
+    const [isDialogLoading, setDialogLoading] = useState(false);
 
     const handleDeletePartButtonClick = (part: Part) => {
         setPartToDelete(part);
@@ -49,17 +50,20 @@ const PartTable = () => {
     };
 
     const handleCreatePartDialogClose = (data: PartData | null) => {
-        setCreatePartDialogOpen(false);
-
         if (data) {
+            setDialogLoading(true);
             partService
                 .create(data)
                 .then((newPart) => {
                     showSuccess(`Part created: ${data.name}.`);
                     setParts([...parts, newPart.data]);
+                    setCreatePartDialogOpen(false);
+                    setDialogLoading(false);
                 })
                 .catch((err) => {
                     showError(err.message);
+                    setCreatePartDialogOpen(false);
+                    setDialogLoading(false);
                 });
         }
     };
@@ -76,6 +80,7 @@ const PartTable = () => {
             <CreatePartDialog
                 handleClose={handleCreatePartDialogClose}
                 isOpen={isCreatePartDialogOpen}
+                isLoading={isDialogLoading}
             />
             <ConfirmDeleteDialog
                 handleClose={handleDeletePartFormClose}
