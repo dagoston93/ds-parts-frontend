@@ -12,7 +12,11 @@ import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 import useParts from "../hooks/useParts";
 import { useState } from "react";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
-import partService, { Part, PartData } from "../services/partService";
+import partService, {
+    Part,
+    PartData,
+    partToPartData,
+} from "../services/partService";
 import useNotifications from "../hooks/useNotifications";
 import CreatePartDialog from "./CreatePartDialog";
 
@@ -23,6 +27,8 @@ const PartTable = () => {
     const [isCreatePartDialogOpen, setCreatePartDialogOpen] = useState(false);
     const [partToDelete, setPartToDelete] = useState<Part | null>();
     const [isDialogLoading, setDialogLoading] = useState(false);
+    const [partToEdit, setPartToEdit] = useState<Part | null>(null);
+    const [partDataToEdit, setPartDataToEdit] = useState<PartData | null>(null);
 
     const handleDeletePartButtonClick = (part: Part) => {
         setPartToDelete(part);
@@ -49,14 +55,41 @@ const PartTable = () => {
         setDeleteDialogOpen(false);
     };
 
+    const handleCreatePartButtonClick = () => {
+        setPartToEdit(null);
+        setPartDataToEdit(null);
+        setCreatePartDialogOpen(true);
+    };
+
+    const handleEditPartButtonClick = (part: Part) => {
+        setPartToEdit(part);
+        setPartDataToEdit(partToPartData(part));
+        setCreatePartDialogOpen(true);
+    };
+
     const handleCreatePartDialogClose = (data: PartData | null) => {
         if (data) {
             setDialogLoading(true);
-            partService
-                .create(data)
+
+            let isEditing = !!partToEdit;
+            let promise = isEditing
+                ? partService.update(data, partToEdit!._id)
+                : partService.create(data);
+
+            promise
                 .then((newPart) => {
-                    showSuccess(`Part created: ${data.name}.`);
-                    setParts([...parts, newPart.data]);
+                    showSuccess(
+                        `Part ${isEditing ? "updated" : "created"}: ${
+                            data.name
+                        }.`
+                    );
+                    let newParts = isEditing
+                        ? parts.map((p) =>
+                              p._id === partToEdit!._id ? newPart.data : p
+                          )
+                        : [...parts, newPart.data];
+
+                    setParts(newParts);
                     setCreatePartDialogOpen(false);
                     setDialogLoading(false);
                 })
@@ -74,7 +107,7 @@ const PartTable = () => {
             <Button
                 variant="contained"
                 startIcon={<MdAdd />}
-                onClick={() => setCreatePartDialogOpen(true)}
+                onClick={handleCreatePartButtonClick}
             >
                 Create part
             </Button>
@@ -82,6 +115,7 @@ const PartTable = () => {
                 handleClose={handleCreatePartDialogClose}
                 isOpen={isCreatePartDialogOpen}
                 isLoading={isDialogLoading}
+                initialData={partDataToEdit}
             />
             <ConfirmDeleteDialog
                 handleClose={handleDeletePartFormClose}
@@ -164,6 +198,9 @@ const PartTable = () => {
                                     <IconButton
                                         aria-label="edit"
                                         color="primary"
+                                        onClick={() =>
+                                            handleEditPartButtonClick(part)
+                                        }
                                     >
                                         <MdEdit />
                                     </IconButton>

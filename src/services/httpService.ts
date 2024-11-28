@@ -20,6 +20,10 @@ class HttpService<T extends { _id: string }, U> {
         return apiClient.post(this.endpoint, entity);
     }
 
+    update(entity: U, id: string) {
+        return apiClient.put(`${this.endpoint}/${id}`, entity);
+    }
+
     delete(id: string) {
         return apiClient.delete(`${this.endpoint}/${id}`);
     }
