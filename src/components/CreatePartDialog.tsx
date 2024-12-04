@@ -14,6 +14,37 @@ import { useForm } from "react-hook-form";
 import { PartData } from "../services/partService";
 import { useEffect } from "react";
 
+import Joi from "joi";
+import { joiResolver } from "@hookform/resolvers/joi";
+
+const partSchema = Joi.object({
+    name: Joi.string().min(2).max(255).required().messages({
+        "string.base": "Name must be a text.",
+        "string.empty": "Name is required.",
+        "string.min": "Name must be at least 2 characters.",
+        "string.max": "Name cannot exceed 255 characters.",
+    }),
+    category: Joi.string().required().messages({
+        "string.empty": "Category is required.",
+    }),
+    manufacturer: Joi.string().required().messages({
+        "string.empty": "Manufacturer is required.",
+    }),
+    partPackage: Joi.string().required().messages({
+        "string.empty": "Package is required.",
+    }),
+    price: Joi.number().greater(0).required().messages({
+        "number.base": "Price must be a number.",
+        "number.greater": "Price must be greater than 0.",
+        "any.required": "Price is required.",
+    }),
+    count: Joi.number().integer().min(0).required().messages({
+        "number.base": "Count must be a number.",
+        "number.min": "Count 0 or more.",
+        "any.required": "Count is required.",
+    }),
+});
+
 interface Props {
     isOpen: boolean;
     handleClose: (data: PartData | null) => void;
@@ -30,7 +61,11 @@ const CreatePartDialog = ({
     const { manufacturers } = useManufacturers(() => {});
     const { categories } = useCategories(() => {});
     const { packages } = usePackages(() => {});
-    const { handleSubmit, register, reset } = useForm<PartData>();
+    const { handleSubmit, register, reset, formState } = useForm<PartData>({
+        resolver: joiResolver(partSchema),
+        mode: "onChange",
+    });
+    const { errors, isValid, touchedFields } = formState;
 
     const resetForm = () => {
         reset({
@@ -85,6 +120,10 @@ const CreatePartDialog = ({
                     label="Category"
                     fullWidth
                     defaultValue={initialData?.category || ""}
+                    error={!!errors.category && touchedFields.category}
+                    helperText={
+                        touchedFields.category ? errors.category?.message : ""
+                    }
                 >
                     {categories.map((category) => (
                         <MenuItem key={category._id} value={category._id}>
@@ -104,6 +143,8 @@ const CreatePartDialog = ({
                     fullWidth
                     variant="outlined"
                     defaultValue={initialData?.name || ""}
+                    error={!!errors.name && touchedFields.name}
+                    helperText={touchedFields.name ? errors.name?.message : ""}
                 />
                 <TextField
                     {...register("manufacturer")}
@@ -113,6 +154,12 @@ const CreatePartDialog = ({
                     label="Manufacturer"
                     fullWidth
                     defaultValue={initialData?.manufacturer || ""}
+                    error={!!errors.manufacturer && touchedFields.manufacturer}
+                    helperText={
+                        touchedFields.manufacturer
+                            ? errors.manufacturer?.message
+                            : ""
+                    }
                 >
                     {manufacturers.map((manufacturer) => (
                         <MenuItem
@@ -131,6 +178,12 @@ const CreatePartDialog = ({
                     label="Package"
                     fullWidth
                     defaultValue={initialData?.partPackage || ""}
+                    error={!!errors.partPackage && touchedFields.partPackage}
+                    helperText={
+                        touchedFields.partPackage
+                            ? errors.partPackage?.message
+                            : ""
+                    }
                 >
                     {packages.map((p) => (
                         <MenuItem key={p._id} value={p._id}>
@@ -163,6 +216,10 @@ const CreatePartDialog = ({
                             ),
                         },
                     }}
+                    error={!!errors.price && touchedFields.price}
+                    helperText={
+                        touchedFields.price ? errors.price?.message : ""
+                    }
                 />
                 <TextField
                     {...register("count", { valueAsNumber: true })}
@@ -182,6 +239,10 @@ const CreatePartDialog = ({
                             min: 0,
                         },
                     }}
+                    error={!!errors.count && touchedFields.count}
+                    helperText={
+                        touchedFields.count ? errors.count?.message : ""
+                    }
                 />
             </DialogContent>
             <DialogActions>
@@ -197,6 +258,7 @@ const CreatePartDialog = ({
                     variant="contained"
                     startIcon={<MdAdd />}
                     loading={isLoading}
+                    disabled={!isValid}
                 >
                     {initialData ? "Save" : "Create"}
                 </LoadingButton>
