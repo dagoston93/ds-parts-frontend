@@ -24,8 +24,8 @@ export interface PartData {
     name: string;
     manufacturer: string;
     partPackage: string;
-    price: number;
-    count: number;
+    price: number | null;
+    count: number | null;
     category: string;
 }
 

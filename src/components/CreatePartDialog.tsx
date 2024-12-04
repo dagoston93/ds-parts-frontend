@@ -32,16 +32,27 @@ const CreatePartDialog = ({
     const { packages } = usePackages(() => {});
     const { handleSubmit, register, reset } = useForm<PartData>();
 
+    const resetForm = () => {
+        reset({
+            category: "",
+            name: "",
+            manufacturer: "",
+            partPackage: "",
+            price: null,
+            count: null,
+        });
+    };
+
     useEffect(() => {
         if (initialData) {
             reset(initialData);
         } else {
-            reset();
+            resetForm();
         }
     }, [initialData, reset]);
 
     const onSubmit = (data: PartData) => {
-        reset();
+        resetForm();
         handleClose(data);
     };
 
