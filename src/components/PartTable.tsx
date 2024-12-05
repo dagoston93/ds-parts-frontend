@@ -1,23 +1,26 @@
+import { Button, CircularProgress, IconButton } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-import { Button, CircularProgress, IconButton } from "@mui/material";
-import { MdDelete, MdEdit, MdAdd } from "react-icons/md";
-import { FaCaretUp, FaCaretDown } from "react-icons/fa";
-import useParts from "../hooks/useParts";
+
+import { AxiosResponse } from "axios";
 import { useState } from "react";
-import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
+
+import useNotifications from "../hooks/useNotifications";
+import useParts from "../hooks/useParts";
 import partService, {
     Part,
     PartData,
     partToPartData,
 } from "../services/partService";
-import useNotifications from "../hooks/useNotifications";
+import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import CreatePartDialog from "./CreatePartDialog";
 
 const PartTable = () => {
@@ -25,25 +28,24 @@ const PartTable = () => {
     const { parts, isLoading, setParts } = useParts(showError);
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isCreatePartDialogOpen, setCreatePartDialogOpen] = useState(false);
-    const [partToDelete, setPartToDelete] = useState<Part | null>();
+    const [selectedPart, setSelectedPart] = useState<Part | null>(null);
     const [isDialogLoading, setDialogLoading] = useState(false);
-    const [partToEdit, setPartToEdit] = useState<Part | null>(null);
-    const [partDataToEdit, setPartDataToEdit] = useState<PartData | null>(null);
+    const [partFormData, setPartFormData] = useState<PartData | null>(null);
 
     const handleDeletePartButtonClick = (part: Part) => {
-        setPartToDelete(part);
+        setSelectedPart(part);
         setDeleteDialogOpen(true);
     };
 
-    const handleDeletePartFormClose = (confirmed: boolean) => {
-        if (confirmed && partToDelete) {
+    const handleDeletePartDialogClose = (confirmed: boolean) => {
+        if (confirmed && selectedPart) {
             const originalParts = [...parts];
-            setParts(parts.filter((p) => p._id !== partToDelete._id));
+            setParts(parts.filter((p) => p._id !== selectedPart._id));
 
             partService
-                .delete(partToDelete._id)
+                .delete(selectedPart._id)
                 .then(() => {
-                    showSuccess(`Part deleted: ${partToDelete.name}`);
+                    showSuccess(`Part deleted: ${selectedPart.name}`);
                 })
                 .catch((err) => {
                     showError(err.message);
@@ -51,55 +53,59 @@ const PartTable = () => {
                 });
         }
 
-        setPartToDelete(null);
+        setSelectedPart(null);
         setDeleteDialogOpen(false);
     };
 
     const handleCreatePartButtonClick = () => {
-        setPartToEdit(null);
-        setPartDataToEdit(null);
+        setPartFormData(null);
         setCreatePartDialogOpen(true);
     };
 
     const handleEditPartButtonClick = (part: Part) => {
-        setPartToEdit(part);
-        setPartDataToEdit(partToPartData(part));
+        setSelectedPart(part);
+        setPartFormData(partToPartData(part));
         setCreatePartDialogOpen(true);
+    };
+
+    const closeCreatePartDialog = () => {
+        setCreatePartDialogOpen(false);
+        setDialogLoading(false);
+        setSelectedPart(null);
+    };
+
+    const getOperationName = (isEditing: boolean) =>
+        isEditing ? "updated" : "created";
+
+    const getNewParts = (isEditing: boolean, newPart: AxiosResponse) => {
+        return isEditing
+            ? parts.map((p) => (p._id === selectedPart!._id ? newPart.data : p))
+            : [...parts, newPart.data];
     };
 
     const handleCreatePartDialogClose = (data: PartData | null) => {
         if (data) {
             setDialogLoading(true);
 
-            let isEditing = !!partToEdit;
+            let isEditing = !!selectedPart;
             let promise = isEditing
-                ? partService.update(data, partToEdit!._id)
+                ? partService.update(data, selectedPart!._id)
                 : partService.create(data);
 
             promise
                 .then((newPart) => {
                     showSuccess(
-                        `Part ${isEditing ? "updated" : "created"}: ${
-                            data.name
-                        }.`
+                        `Part ${getOperationName(isEditing)}: ${data.name}.`
                     );
-                    let newParts = isEditing
-                        ? parts.map((p) =>
-                              p._id === partToEdit!._id ? newPart.data : p
-                          )
-                        : [...parts, newPart.data];
-
-                    setParts(newParts);
-                    setCreatePartDialogOpen(false);
-                    setDialogLoading(false);
+                    setParts(getNewParts(isEditing, newPart));
+                    closeCreatePartDialog();
                 })
                 .catch((err) => {
                     showError(err.message);
-                    setCreatePartDialogOpen(false);
-                    setDialogLoading(false);
+                    closeCreatePartDialog();
                 });
         } else {
-            setCreatePartDialogOpen(false);
+            closeCreatePartDialog();
         }
     };
 
@@ -116,15 +122,15 @@ const PartTable = () => {
                 handleClose={handleCreatePartDialogClose}
                 isOpen={isCreatePartDialogOpen}
                 isLoading={isDialogLoading}
-                initialData={partDataToEdit}
+                initialData={partFormData}
             />
             <ConfirmDeleteDialog
-                handleClose={handleDeletePartFormClose}
+                handleClose={handleDeletePartDialogClose}
                 isOpen={isDeleteDialogOpen}
-                partName={partToDelete?.name || ""}
+                partName={selectedPart?.name || ""}
             />
             <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <Table sx={{ minWidth: 650 }}>
                     <TableHead>
                         <TableRow>
                             <TableCell>Part</TableCell>
@@ -132,10 +138,9 @@ const PartTable = () => {
                             <TableCell align="right">Package</TableCell>
                             <TableCell align="right">Package type</TableCell>
                             <TableCell align="right">Price</TableCell>
-                            <TableCell align="right" sx={{ paddingRight: 0 }}>
+                            <TableCell align="center" colSpan={2}>
                                 Count
                             </TableCell>
-                            <TableCell></TableCell>
                             <TableCell></TableCell>
                         </TableRow>
                     </TableHead>
@@ -148,17 +153,8 @@ const PartTable = () => {
                             </TableRow>
                         )}
                         {parts.map((part) => (
-                            <TableRow
-                                key={part._id}
-                                sx={{
-                                    "&:last-child td, &:last-child th": {
-                                        border: 0,
-                                    },
-                                }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    {part.name}
-                                </TableCell>
+                            <TableRow key={part._id}>
+                                <TableCell align="left">{part.name}</TableCell>
                                 <TableCell align="right">
                                     {part.manufacturer?.name || "Unknown"}
                                 </TableCell>
@@ -178,16 +174,14 @@ const PartTable = () => {
                                     {part.count}
                                 </TableCell>
                                 <TableCell align="left" sx={{ paddingLeft: 0 }}>
-                                    <Stack spacing={0}>
+                                    <Stack spacing={-1}>
                                         <IconButton
-                                            aria-label="increase count"
                                             color="primary"
                                             sx={{ paddingBottom: 0 }}
                                         >
                                             <FaCaretUp />
                                         </IconButton>
                                         <IconButton
-                                            aria-label="decrease count"
                                             color="primary"
                                             sx={{ paddingTop: 0 }}
                                         >
@@ -197,7 +191,6 @@ const PartTable = () => {
                                 </TableCell>
                                 <TableCell align="right">
                                     <IconButton
-                                        aria-label="edit"
                                         color="primary"
                                         onClick={() =>
                                             handleEditPartButtonClick(part)
@@ -206,7 +199,6 @@ const PartTable = () => {
                                         <MdEdit />
                                     </IconButton>
                                     <IconButton
-                                        aria-label="delete"
                                         color="error"
                                         onClick={() =>
                                             handleDeletePartButtonClick(part)
