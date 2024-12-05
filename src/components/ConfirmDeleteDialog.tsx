@@ -7,24 +7,25 @@ import DialogTitle from "@mui/material/DialogTitle";
 
 interface Props {
     isOpen: boolean;
-    partName: string;
+    entityType: string;
+    entityName: string;
     handleClose: (confirmed: boolean) => void;
 }
 
-const ConfirmDeleteDialog = ({ isOpen, partName, handleClose }: Props) => {
+const ConfirmDeleteDialog = ({
+    isOpen,
+    entityType,
+    entityName,
+    handleClose,
+}: Props) => {
     return (
-        <Dialog
-            open={isOpen}
-            onClose={() => handleClose(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title">Delete part?</DialogTitle>
+        <Dialog open={isOpen} onClose={() => handleClose(false)}>
+            <DialogTitle>Delete {entityType}?</DialogTitle>
             <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                    Are you sure you want to delete the following part?
+                <DialogContentText>
+                    Are you sure you want to delete the following {entityType}?
                     <br />
-                    <b>{partName}</b>
+                    <b>{entityName}</b>
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
