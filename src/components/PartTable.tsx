@@ -21,7 +21,7 @@ import partService, {
     partToPartData,
 } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
-import CreatePartDialog from "./CreatePartDialog";
+import { CreatePartDialog } from "./CreatePartDialog";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -83,7 +83,10 @@ const PartTable = () => {
             : [...parts, newPart.data];
     };
 
-    const handleCreatePartDialogClose = (data: PartData | null) => {
+    const handleCreatePartDialogClose = (
+        data: PartData | null,
+        callback?: () => void
+    ) => {
         if (data) {
             setDialogLoading(true);
 
@@ -99,13 +102,16 @@ const PartTable = () => {
                     );
                     setParts(getNewParts(isEditing, newPart));
                     closeCreatePartDialog();
+                    callback?.();
                 })
                 .catch((err) => {
                     showError(err.message);
                     closeCreatePartDialog();
+                    callback?.();
                 });
         } else {
             closeCreatePartDialog();
+            callback?.();
         }
     };
 

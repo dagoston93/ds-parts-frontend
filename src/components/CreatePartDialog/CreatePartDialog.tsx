@@ -1,53 +1,27 @@
+import LoadingButton from "@mui/lab/LoadingButton";
+import { IconButton, InputAdornment, MenuItem } from "@mui/material";
 import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { IconButton, InputAdornment, MenuItem } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
-import { MdAdd, MdClose } from "react-icons/md";
-import useManufacturers from "../hooks/useManufacturers";
-import useCategories from "../hooks/useCategories";
-import usePackages from "../hooks/usePackages";
-import { useForm } from "react-hook-form";
-import { PartData } from "../services/partService";
-import { useEffect } from "react";
+import TextField from "@mui/material/TextField";
 
-import Joi from "joi";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { MdAdd, MdClose } from "react-icons/md";
 import { joiResolver } from "@hookform/resolvers/joi";
 
-const partSchema = Joi.object({
-    name: Joi.string().min(2).max(255).required().messages({
-        "string.base": "Name must be a text.",
-        "string.empty": "Name is required.",
-        "string.min": "Name must be at least 2 characters.",
-        "string.max": "Name cannot exceed 255 characters.",
-    }),
-    category: Joi.string().required().messages({
-        "string.empty": "Category is required.",
-    }),
-    manufacturer: Joi.string().required().messages({
-        "string.empty": "Manufacturer is required.",
-    }),
-    partPackage: Joi.string().required().messages({
-        "string.empty": "Package is required.",
-    }),
-    price: Joi.number().greater(0).required().messages({
-        "number.base": "Price must be a number.",
-        "number.greater": "Price must be greater than 0.",
-        "any.required": "Price is required.",
-    }),
-    count: Joi.number().integer().min(0).required().messages({
-        "number.base": "Count must be a number.",
-        "number.min": "Count 0 or more.",
-        "any.required": "Count is required.",
-    }),
-});
+import useCategories from "../../hooks/useCategories";
+import useManufacturers from "../../hooks/useManufacturers";
+import usePackages from "../../hooks/usePackages";
+import { PartData } from "../../services/partService";
+
+import validationSchema from "./validationSchema";
 
 interface Props {
     isOpen: boolean;
-    handleClose: (data: PartData | null) => void;
+    handleClose: (data: PartData | null, callback?: () => void) => void;
     isLoading: boolean;
     initialData?: PartData | null;
 }
@@ -62,7 +36,7 @@ const CreatePartDialog = ({
     const { categories } = useCategories(() => {});
     const { packages } = usePackages(() => {});
     const { handleSubmit, register, reset, formState } = useForm<PartData>({
-        resolver: joiResolver(partSchema),
+        resolver: joiResolver(validationSchema),
         mode: "onChange",
     });
     const { errors, isValid, touchedFields } = formState;
@@ -78,8 +52,10 @@ const CreatePartDialog = ({
         });
     };
 
+    const isEditing = !!initialData;
+
     useEffect(() => {
-        if (initialData) {
+        if (isEditing) {
             reset(initialData);
         } else {
             resetForm();
@@ -87,8 +63,7 @@ const CreatePartDialog = ({
     }, [initialData, reset]);
 
     const onSubmit = (data: PartData) => {
-        resetForm();
-        handleClose(data);
+        handleClose(data, resetForm);
     };
 
     return (
@@ -99,10 +74,9 @@ const CreatePartDialog = ({
                 onSubmit: handleSubmit(onSubmit),
             }}
         >
-            <DialogTitle>{initialData ? "Edit " : "Create "}part</DialogTitle>
+            <DialogTitle>{isEditing ? "Edit " : "Create "}part</DialogTitle>
             <IconButton
-                aria-label="close"
-                onClick={() => handleClose(null)}
+                onClick={() => handleClose(null, resetForm)}
                 sx={(theme) => ({
                     position: "absolute",
                     right: 8,
@@ -116,9 +90,12 @@ const CreatePartDialog = ({
                 <TextField
                     {...register("category")}
                     id="category"
-                    select
+                    name="category"
                     label="Category"
+                    required
                     fullWidth
+                    select
+                    margin="normal"
                     defaultValue={initialData?.category || ""}
                     error={!!errors.category && touchedFields.category}
                     helperText={
@@ -133,26 +110,27 @@ const CreatePartDialog = ({
                 </TextField>
                 <TextField
                     {...register("name")}
-                    autoFocus
-                    required
-                    margin="normal"
                     id="name"
                     name="name"
                     label="Part name"
-                    type="text"
+                    required
                     fullWidth
+                    type="text"
                     variant="outlined"
+                    margin="normal"
                     defaultValue={initialData?.name || ""}
                     error={!!errors.name && touchedFields.name}
                     helperText={touchedFields.name ? errors.name?.message : ""}
                 />
                 <TextField
                     {...register("manufacturer")}
-                    margin="normal"
                     id="manufacturer"
-                    select
+                    name="manufacturer"
                     label="Manufacturer"
+                    required
                     fullWidth
+                    select
+                    margin="normal"
                     defaultValue={initialData?.manufacturer || ""}
                     error={!!errors.manufacturer && touchedFields.manufacturer}
                     helperText={
@@ -172,11 +150,13 @@ const CreatePartDialog = ({
                 </TextField>
                 <TextField
                     {...register("partPackage")}
-                    margin="normal"
                     id="partPackage"
-                    select
+                    name="partPackage"
                     label="Package"
+                    required
                     fullWidth
+                    select
+                    margin="normal"
                     defaultValue={initialData?.partPackage || ""}
                     error={!!errors.partPackage && touchedFields.partPackage}
                     helperText={
@@ -193,16 +173,19 @@ const CreatePartDialog = ({
                 </TextField>
                 <TextField
                     {...register("price", { valueAsNumber: true })}
-                    autoFocus
-                    required
-                    margin="normal"
                     id="price"
                     name="price"
                     label="Price"
-                    type="number"
+                    required
                     fullWidth
+                    type="number"
                     variant="outlined"
+                    margin="normal"
                     defaultValue={initialData?.price || ""}
+                    error={!!errors.price && touchedFields.price}
+                    helperText={
+                        touchedFields.price ? errors.price?.message : ""
+                    }
                     slotProps={{
                         htmlInput: {
                             step: 0.01,
@@ -216,38 +199,33 @@ const CreatePartDialog = ({
                             ),
                         },
                     }}
-                    error={!!errors.price && touchedFields.price}
-                    helperText={
-                        touchedFields.price ? errors.price?.message : ""
-                    }
                 />
                 <TextField
                     {...register("count", { valueAsNumber: true })}
-                    autoFocus
-                    required
-                    margin="normal"
                     id="count"
                     name="count"
                     label="Count"
-                    type="number"
+                    required
                     fullWidth
+                    type="number"
                     variant="outlined"
+                    margin="normal"
                     defaultValue={initialData?.count || ""}
+                    error={!!errors.count && touchedFields.count}
+                    helperText={
+                        touchedFields.count ? errors.count?.message : ""
+                    }
                     slotProps={{
                         htmlInput: {
                             step: 1,
                             min: 0,
                         },
                     }}
-                    error={!!errors.count && touchedFields.count}
-                    helperText={
-                        touchedFields.count ? errors.count?.message : ""
-                    }
                 />
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={() => handleClose(null)}
+                    onClick={() => handleClose(null, resetForm)}
                     variant="outlined"
                     disabled={isLoading}
                 >
@@ -260,7 +238,7 @@ const CreatePartDialog = ({
                     loading={isLoading}
                     disabled={!isValid}
                 >
-                    {initialData ? "Save" : "Create"}
+                    {isEditing ? "Save" : "Create"}
                 </LoadingButton>
             </DialogActions>
         </Dialog>
