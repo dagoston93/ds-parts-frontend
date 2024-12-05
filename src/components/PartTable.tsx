@@ -17,8 +17,8 @@ import useNotifications from "../hooks/useNotifications";
 import useParts from "../hooks/useParts";
 import partService, {
     Part,
-    PartData,
-    partToPartData,
+    PartFormData,
+    partToPartFormData,
 } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import { CreatePartDialog } from "./CreatePartDialog";
@@ -30,7 +30,7 @@ const PartTable = () => {
     const [isCreatePartDialogOpen, setCreatePartDialogOpen] = useState(false);
     const [selectedPart, setSelectedPart] = useState<Part | null>(null);
     const [isDialogLoading, setDialogLoading] = useState(false);
-    const [partFormData, setPartFormData] = useState<PartData | null>(null);
+    const [partFormData, setPartFormData] = useState<PartFormData | null>(null);
     const [confirmDeleteEntityName, setConfirmDeleteEntityName] = useState("");
     const [confirmDeleteEntityType, setConfirmDeleteEntityType] = useState("");
 
@@ -68,7 +68,7 @@ const PartTable = () => {
 
     const handleEditPartButtonClick = (part: Part) => {
         setSelectedPart(part);
-        setPartFormData(partToPartData(part));
+        setPartFormData(partToPartFormData(part));
         setCreatePartDialogOpen(true);
     };
 
@@ -88,7 +88,7 @@ const PartTable = () => {
     };
 
     const handleCreatePartDialogClose = (
-        data: PartData | null,
+        data: PartFormData | null,
         callback?: () => void
     ) => {
         if (data) {

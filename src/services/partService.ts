@@ -20,7 +20,7 @@ export interface Part {
     };
 }
 
-export interface PartData {
+export interface PartFormData {
     name: string;
     manufacturer: string;
     partPackage: string;
@@ -29,7 +29,7 @@ export interface PartData {
     category: string;
 }
 
-export function partToPartData(part: Part): PartData {
+export function partToPartFormData(part: Part): PartFormData {
     return {
         name: part.name,
         manufacturer: part.manufacturer?._id || "",
@@ -40,4 +40,4 @@ export function partToPartData(part: Part): PartData {
     };
 }
 
-export default new HttpService<Part, PartData>("/parts");
+export default new HttpService<Part, PartFormData>("/parts");

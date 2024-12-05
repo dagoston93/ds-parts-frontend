@@ -15,15 +15,15 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import useCategories from "../../hooks/useCategories";
 import useManufacturers from "../../hooks/useManufacturers";
 import usePackages from "../../hooks/usePackages";
-import { PartData } from "../../services/partService";
+import { PartFormData } from "../../services/partService";
 
 import validationSchema from "./validationSchema";
 
 interface Props {
     isOpen: boolean;
-    handleClose: (data: PartData | null, callback?: () => void) => void;
+    handleClose: (data: PartFormData | null, callback?: () => void) => void;
     isLoading: boolean;
-    initialData?: PartData | null;
+    initialData?: PartFormData | null;
 }
 
 const CreatePartDialog = ({
@@ -35,7 +35,7 @@ const CreatePartDialog = ({
     const { manufacturers } = useManufacturers(() => {});
     const { categories } = useCategories(() => {});
     const { packages } = usePackages(() => {});
-    const { handleSubmit, register, reset, formState } = useForm<PartData>({
+    const { handleSubmit, register, reset, formState } = useForm<PartFormData>({
         resolver: joiResolver(validationSchema),
         mode: "onChange",
     });
@@ -62,7 +62,7 @@ const CreatePartDialog = ({
         }
     }, [initialData, reset]);
 
-    const onSubmit = (data: PartData) => {
+    const onSubmit = (data: PartFormData) => {
         handleClose(data, resetForm);
     };
 
