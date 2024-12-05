@@ -13,7 +13,6 @@ function useNotifications() {
             variant: variant,
             action: (id) => (
                 <IconButton
-                    aria-label="close"
                     color="inherit"
                     size="small"
                     onClick={() => closeSnackbar(id)}
