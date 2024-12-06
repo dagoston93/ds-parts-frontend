@@ -119,6 +119,32 @@ const PartTable = () => {
         }
     };
 
+    const incrementPartCount = (part: Part) => {
+        partService
+            .incrementCount(part._id)
+            .then((newPart) => {
+                setParts(
+                    parts.map((p) => (p._id === part._id ? newPart.data : p))
+                );
+            })
+            .catch((err) => {
+                showError(err.message);
+            });
+    };
+
+    const decrementPartCount = (part: Part) => {
+        partService
+            .decrementCount(part._id)
+            .then((newPart) => {
+                setParts(
+                    parts.map((p) => (p._id === part._id ? newPart.data : p))
+                );
+            })
+            .catch((err) => {
+                showError(err.message);
+            });
+    };
+
     return (
         <>
             <Button
@@ -189,12 +215,18 @@ const PartTable = () => {
                                         <IconButton
                                             color="primary"
                                             sx={{ paddingBottom: 0 }}
+                                            onClick={() => {
+                                                incrementPartCount(part);
+                                            }}
                                         >
                                             <FaCaretUp />
                                         </IconButton>
                                         <IconButton
                                             color="primary"
                                             sx={{ paddingTop: 0 }}
+                                            onClick={() => {
+                                                decrementPartCount(part);
+                                            }}
                                         >
                                             <FaCaretDown />
                                         </IconButton>

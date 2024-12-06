@@ -1,3 +1,4 @@
+import apiClient from "./apiClient";
 import HttpService from "./httpService";
 
 export interface Part {
@@ -40,4 +41,18 @@ export function partToPartFormData(part: Part): PartFormData {
     };
 }
 
-export default new HttpService<Part, PartFormData>("/parts");
+class PartService extends HttpService<Part, PartFormData> {
+    constructor() {
+        super("/parts");
+    }
+
+    incrementCount(id: string) {
+        return apiClient.post(`${this.endpoint}/${id}/increment-count`);
+    }
+
+    decrementCount(id: string) {
+        return apiClient.post(`${this.endpoint}/${id}/decrement-count`);
+    }
+}
+
+export default new PartService();
