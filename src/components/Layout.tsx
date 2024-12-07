@@ -5,7 +5,7 @@ import { PageContainer } from "@toolpad/core/PageContainer";
 const Layout = () => {
     return (
         <DashboardLayout>
-            <PageContainer>
+            <PageContainer breadcrumbs={[]}>
                 <Outlet />
             </PageContainer>
         </DashboardLayout>
