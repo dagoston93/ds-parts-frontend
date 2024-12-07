@@ -1,15 +1,32 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import PartTable from "./components/PartTable";
 import ManufacturerTable from "./components/ManufacturerTable";
+import App from "./components/App";
+import Layout from "./components/Layout";
 
 const router = createBrowserRouter([
     {
-        path: "/",
-        element: <PartTable />,
-    },
-    {
-        path: "/manufacturers",
-        element: <ManufacturerTable />,
+        element: <App />,
+        children: [
+            {
+                path: "/",
+                element: <Layout />,
+                children: [
+                    {
+                        index: true,
+                        element: <Navigate to="/parts" replace />,
+                    },
+                    {
+                        path: "/parts",
+                        element: <PartTable />,
+                    },
+                    {
+                        path: "/manufacturers",
+                        element: <ManufacturerTable />,
+                    },
+                ],
+            },
+        ],
     },
 ]);
 
