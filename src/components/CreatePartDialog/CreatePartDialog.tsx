@@ -32,9 +32,9 @@ const CreatePartDialog = ({
     isLoading,
     initialData,
 }: Props) => {
-    const { manufacturers } = useManufacturers(() => {});
-    const { categories } = useCategories(() => {});
-    const { packages } = usePackages(() => {});
+    const { data: manufacturers } = useManufacturers(() => {});
+    const { data: categories } = useCategories(() => {});
+    const { data: packages } = usePackages(() => {});
     const { handleSubmit, register, reset, formState } = useForm<PartFormData>({
         resolver: joiResolver(validationSchema),
         mode: "onChange",
@@ -102,7 +102,7 @@ const CreatePartDialog = ({
                         touchedFields.category ? errors.category?.message : ""
                     }
                 >
-                    {categories.map((category) => (
+                    {categories?.map((category) => (
                         <MenuItem key={category._id} value={category._id}>
                             {category.name}
                         </MenuItem>
@@ -139,7 +139,7 @@ const CreatePartDialog = ({
                             : ""
                     }
                 >
-                    {manufacturers.map((manufacturer) => (
+                    {manufacturers?.map((manufacturer) => (
                         <MenuItem
                             key={manufacturer._id}
                             value={manufacturer._id}
@@ -165,7 +165,7 @@ const CreatePartDialog = ({
                             : ""
                     }
                 >
-                    {packages.map((p) => (
+                    {packages?.map((p) => (
                         <MenuItem key={p._id} value={p._id}>
                             {p.name}
                         </MenuItem>

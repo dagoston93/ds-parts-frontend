@@ -46,13 +46,17 @@ class PartService extends HttpService<Part, PartFormData> {
         super("/parts");
     }
 
-    incrementCount(id: string) {
-        return apiClient.post(`${this.endpoint}/${id}/increment-count`);
-    }
+    incrementCount = (id: string) => {
+        return apiClient
+            .post(`${this.endpoint}/${id}/increment-count`)
+            .then((res) => res.data);
+    };
 
-    decrementCount(id: string) {
-        return apiClient.post(`${this.endpoint}/${id}/decrement-count`);
-    }
+    decrementCount = (id: string) => {
+        return apiClient
+            .post(`${this.endpoint}/${id}/decrement-count`)
+            .then((res) => res.data);
+    };
 }
 
 export default new PartService();

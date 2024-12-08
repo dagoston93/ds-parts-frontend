@@ -15,17 +15,27 @@ import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 
 import useNotifications from "../hooks/useNotifications";
 import useParts from "../hooks/useParts";
-import partService, {
+import {
     Part,
     PartFormData,
     partToPartFormData,
 } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import { CreatePartDialog } from "./CreatePartDialog";
+import useAddPart from "../hooks/useAddPart";
+import useDeletePart from "../hooks/useDeletePart";
+import useUpdatePart from "../hooks/useUpdatePart";
+import useIncrementPartCount from "../hooks/useIncrementPartCount";
+import useDecrementPartCount from "../hooks/useDecrementPartCount";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
-    const { parts, isLoading, setParts } = useParts(showError);
+    const { data: parts, isLoading } = useParts(showError);
+    const addPart = useAddPart(showSuccess, showError);
+    const deletePart = useDeletePart(showSuccess, showError);
+    const updatePart = useUpdatePart(showSuccess, showError);
+    const incrementPartCount = useIncrementPartCount(showError);
+    const decrementPartCount = useDecrementPartCount(showError);
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isCreatePartDialogOpen, setCreatePartDialogOpen] = useState(false);
     const [selectedPart, setSelectedPart] = useState<Part | null>(null);
@@ -43,18 +53,7 @@ const PartTable = () => {
 
     const handleDeletePartDialogClose = (confirmed: boolean) => {
         if (confirmed && selectedPart) {
-            const originalParts = [...parts];
-            setParts(parts.filter((p) => p._id !== selectedPart._id));
-
-            partService
-                .delete(selectedPart._id)
-                .then(() => {
-                    showSuccess(`Part deleted: ${selectedPart.name}`);
-                })
-                .catch((err) => {
-                    showError(err.message);
-                    setParts(originalParts);
-                });
+            deletePart.mutate(selectedPart._id);
         }
 
         setSelectedPart(null);
@@ -83,8 +82,10 @@ const PartTable = () => {
 
     const getNewParts = (isEditing: boolean, newPart: AxiosResponse) => {
         return isEditing
-            ? parts.map((p) => (p._id === selectedPart!._id ? newPart.data : p))
-            : [...parts, newPart.data];
+            ? (parts || []).map((p) =>
+                  p._id === selectedPart!._id ? newPart.data : p
+              )
+            : [...(parts || []), newPart.data];
     };
 
     const handleCreatePartDialogClose = (
@@ -95,54 +96,31 @@ const PartTable = () => {
             setDialogLoading(true);
 
             let isEditing = !!selectedPart;
-            let promise = isEditing
-                ? partService.update(data, selectedPart!._id)
-                : partService.create(data);
 
-            promise
-                .then((newPart) => {
-                    showSuccess(
-                        `Part ${getOperationName(isEditing)}: ${data.name}.`
-                    );
-                    setParts(getNewParts(isEditing, newPart));
-                    closeCreatePartDialog();
-                    callback?.();
-                })
-                .catch((err) => {
-                    showError(err.message);
-                    closeCreatePartDialog();
-                    callback?.();
+            if (!isEditing) {
+                addPart.mutate(data);
+                closeCreatePartDialog();
+                callback?.();
+            } else {
+                updatePart.mutate({
+                    partFormData: data,
+                    id: selectedPart!._id,
                 });
+                closeCreatePartDialog();
+                callback?.();
+            }
         } else {
             closeCreatePartDialog();
             callback?.();
         }
     };
 
-    const incrementPartCount = (part: Part) => {
-        partService
-            .incrementCount(part._id)
-            .then((newPart) => {
-                setParts(
-                    parts.map((p) => (p._id === part._id ? newPart.data : p))
-                );
-            })
-            .catch((err) => {
-                showError(err.message);
-            });
+    const handleIncrementPartCountButtonClick = (part: Part) => {
+        incrementPartCount.mutate(part._id);
     };
 
-    const decrementPartCount = (part: Part) => {
-        partService
-            .decrementCount(part._id)
-            .then((newPart) => {
-                setParts(
-                    parts.map((p) => (p._id === part._id ? newPart.data : p))
-                );
-            })
-            .catch((err) => {
-                showError(err.message);
-            });
+    const handleDecrementPartCountButtonClick = (part: Part) => {
+        decrementPartCount.mutate(part._id);
     };
 
     return (
@@ -189,7 +167,7 @@ const PartTable = () => {
                                 </TableCell>
                             </TableRow>
                         )}
-                        {parts.map((part) => (
+                        {parts?.map((part) => (
                             <TableRow key={part._id}>
                                 <TableCell align="left">{part.name}</TableCell>
                                 <TableCell align="right">
@@ -216,7 +194,9 @@ const PartTable = () => {
                                             color="primary"
                                             sx={{ paddingBottom: 0 }}
                                             onClick={() => {
-                                                incrementPartCount(part);
+                                                handleIncrementPartCountButtonClick(
+                                                    part
+                                                );
                                             }}
                                         >
                                             <FaCaretUp />
@@ -225,7 +205,9 @@ const PartTable = () => {
                                             color="primary"
                                             sx={{ paddingTop: 0 }}
                                             onClick={() => {
-                                                decrementPartCount(part);
+                                                handleDecrementPartCountButtonClick(
+                                                    part
+                                                );
                                             }}
                                         >
                                             <FaCaretDown />

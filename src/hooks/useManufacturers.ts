@@ -1,17 +1,20 @@
 import manufacturerService, {
     Manufacturer,
 } from "../services/manufacturerService";
-import useEntity from "./useEntity";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 
-export default (errorHandler: (message: string) => void) => {
-    const { entities, isLoading, setEntities } = useEntity<Manufacturer>(
-        manufacturerService,
-        errorHandler
-    );
+export default (onError: (message: string) => void) => {
+    const queryResult = useQuery<Manufacturer[], Error>({
+        queryKey: ["manufacturers"],
+        queryFn: manufacturerService.getAll,
+    });
 
-    return {
-        manufacturers: entities,
-        isLoading,
-        setManufacturers: setEntities,
-    };
+    useEffect(() => {
+        if (queryResult.isError) {
+            onError(queryResult.error.message);
+        }
+    }, [queryResult.isError, queryResult.error, onError]);
+
+    return queryResult;
 };

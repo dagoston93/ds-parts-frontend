@@ -7,26 +7,25 @@ class HttpService<T extends { _id: string }, U> {
         this.endpoint = endpoint;
     }
 
-    getAll() {
-        const controller = new AbortController();
-        const request = apiClient.get<T[]>(this.endpoint, {
-            signal: controller.signal,
-        });
+    getAll = () => {
+        return apiClient.get<T[]>(this.endpoint).then((res) => res.data);
+    };
 
-        return { request, cancel: () => controller.abort() };
-    }
+    create = (entity: U) => {
+        return apiClient.post<T>(this.endpoint, entity).then((res) => res.data);
+    };
 
-    create(entity: U) {
-        return apiClient.post(this.endpoint, entity);
-    }
+    update = (entity: U, id: string) => {
+        return apiClient
+            .put(`${this.endpoint}/${id}`, entity)
+            .then((res) => res.data);
+    };
 
-    update(entity: U, id: string) {
-        return apiClient.put(`${this.endpoint}/${id}`, entity);
-    }
-
-    delete(id: string) {
-        return apiClient.delete(`${this.endpoint}/${id}`);
-    }
+    delete = (id: string) => {
+        return apiClient
+            .delete(`${this.endpoint}/${id}`)
+            .then((res) => res.data);
+    };
 }
 
 export default HttpService;

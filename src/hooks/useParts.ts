@@ -1,11 +1,18 @@
+import { useQuery } from "@tanstack/react-query";
 import partService, { Part } from "../services/partService";
-import useEntity from "./useEntity";
+import { useEffect } from "react";
 
-export default (errorHandler: (message: string) => void) => {
-    const { entities, isLoading, setEntities } = useEntity<Part>(
-        partService,
-        errorHandler
-    );
+export default (onError: (message: string) => void) => {
+    const queryResult = useQuery<Part[], Error>({
+        queryKey: ["parts"],
+        queryFn: partService.getAll,
+    });
 
-    return { parts: entities, isLoading, setParts: setEntities };
+    useEffect(() => {
+        if (queryResult.isError) {
+            onError(queryResult.error.message);
+        }
+    }, [queryResult.isError, queryResult.error, onError]);
+
+    return queryResult;
 };

@@ -1,15 +1,18 @@
+import { useQuery } from "@tanstack/react-query";
 import categoryService, { Category } from "../services/categoryService";
-import useEntity from "./useEntity";
+import { useEffect } from "react";
 
-export default (errorHandler: (message: string) => void) => {
-    const { entities, isLoading, setEntities } = useEntity<Category>(
-        categoryService,
-        errorHandler
-    );
+export default (onError: (message: string) => void) => {
+    const queryResult = useQuery<Category[], Error>({
+        queryKey: ["categories"],
+        queryFn: categoryService.getAll,
+    });
 
-    return {
-        categories: entities,
-        isLoading,
-        setCategories: setEntities,
-    };
+    useEffect(() => {
+        if (queryResult.isError) {
+            onError(queryResult.error.message);
+        }
+    }, [queryResult.isError, queryResult.error, onError]);
+
+    return queryResult;
 };
