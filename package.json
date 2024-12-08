@@ -16,6 +16,7 @@
     "@mui/icons-material": "^6.1.10",
     "@mui/lab": "^6.0.0-beta.17",
     "@mui/material": "^6.1.8",
+    "@tanstack/react-query": "^5.62.3",
     "@toolpad/core": "^0.10.0",
     "axios": "^1.7.7",
     "joi": "^17.13.3",
