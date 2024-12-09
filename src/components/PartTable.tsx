@@ -14,11 +14,7 @@ import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 
 import useNotifications from "../hooks/useNotifications";
 import useParts from "../hooks/useParts";
-import {
-    Part,
-    PartFormData,
-    partToPartFormData,
-} from "../services/partService";
+import { Part } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import { CreatePartDialog } from "./CreatePartDialog";
 

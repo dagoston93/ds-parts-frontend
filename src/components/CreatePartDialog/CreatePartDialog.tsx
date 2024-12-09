@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { MdAdd, MdClose, MdSave } from "react-icons/md";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -34,6 +34,14 @@ interface Props {
 
 const CreatePartDialog = ({ isOpen, onClose, initialPart }: Props) => {
     const { showSuccess, showError } = useNotifications();
+
+    const addPart = useAddPart(showSuccess, showError);
+    const updatePart = useUpdatePart(showSuccess, showError);
+
+    const { data: manufacturers } = useManufacturers(() => {});
+    const { data: categories } = useCategories(() => {});
+    const { data: packages } = usePackages(() => {});
+
     const [isLoading, setLoading] = useState(false);
 
     const { handleSubmit, register, reset, formState } = useForm<PartFormData>({
@@ -54,29 +62,26 @@ const CreatePartDialog = ({ isOpen, onClose, initialPart }: Props) => {
     };
 
     const handleClose = () => {
+        setLoading(false);
         resetForm();
         onClose();
     };
 
-    const addPart = useAddPart(showSuccess, showError);
-    const updatePart = useUpdatePart(showSuccess, showError);
-    const { data: manufacturers } = useManufacturers(() => {});
-    const { data: categories } = useCategories(() => {});
-    const { data: packages } = usePackages(() => {});
-
     const isEditing = !!initialPart;
-    let initialData = null;
+    const initialData =
+        isEditing && initialPart ? partToPartFormData(initialPart) : null;
 
-    if (isEditing) {
-        initialData = partToPartFormData(initialPart);
-        reset(initialData);
-    }
+    useEffect(() => {
+        if (isEditing && initialData) {
+            reset(initialData);
+        }
+    }, [initialPart, reset]);
 
     const onSubmit = (data: PartFormData) => {
         setLoading(true);
         if (!isEditing) {
             addPart.mutate(data, {
-                onSettled: () => {},
+                onSettled: handleClose,
             });
         } else {
             updatePart.mutate(
@@ -85,7 +90,7 @@ const CreatePartDialog = ({ isOpen, onClose, initialPart }: Props) => {
                     id: initialPart!._id,
                 },
                 {
-                    onSettled: () => {},
+                    onSettled: handleClose,
                 }
             );
         }
@@ -121,7 +126,7 @@ const CreatePartDialog = ({ isOpen, onClose, initialPart }: Props) => {
                     fullWidth
                     select
                     margin="normal"
-                    defaultValue={initialData?.category || ""}
+                    defaultValue={initialData?.category ?? ""}
                     error={!!errors.category && touchedFields.category}
                     helperText={
                         touchedFields.category ? errors.category?.message : ""
