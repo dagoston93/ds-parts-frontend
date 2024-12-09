@@ -77,17 +77,6 @@ const PartTable = () => {
         setSelectedPart(null);
     };
 
-    const getOperationName = (isEditing: boolean) =>
-        isEditing ? "updated" : "created";
-
-    const getNewParts = (isEditing: boolean, newPart: AxiosResponse) => {
-        return isEditing
-            ? (parts || []).map((p) =>
-                  p._id === selectedPart!._id ? newPart.data : p
-              )
-            : [...(parts || []), newPart.data];
-    };
-
     const handleCreatePartDialogClose = (
         data: PartFormData | null,
         callback?: () => void
