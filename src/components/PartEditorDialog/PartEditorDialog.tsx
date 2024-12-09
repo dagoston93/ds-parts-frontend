@@ -32,7 +32,7 @@ interface Props {
     initialPart?: Part | null;
 }
 
-const CreatePartDialog = ({ isOpen, onClose, initialPart }: Props) => {
+const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
     const { showSuccess, showError } = useNotifications();
 
     const addPart = useAddPart(showSuccess, showError);
@@ -275,4 +275,4 @@ const CreatePartDialog = ({ isOpen, onClose, initialPart }: Props) => {
     );
 };
 
-export default CreatePartDialog;
+export default PartEditorDialog;

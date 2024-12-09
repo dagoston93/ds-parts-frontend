@@ -16,7 +16,7 @@ import useNotifications from "../hooks/useNotifications";
 import useParts from "../hooks/useParts";
 import { Part } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
-import { CreatePartDialog } from "./CreatePartDialog";
+import { PartEditorDialog } from "./PartEditorDialog";
 
 import useDeletePart from "../hooks/useDeletePart";
 import useIncrementPartCount from "../hooks/useIncrementPartCount";
@@ -62,7 +62,7 @@ const PartTable = () => {
         partEditorDialogState.openDialog(part);
     };
 
-    const handleCreatePartDialogClose = () => {
+    const handlePartEditorDialogClose = () => {
         partEditorDialogState.closeDialog();
     };
 
@@ -83,8 +83,8 @@ const PartTable = () => {
             >
                 Create part
             </Button>
-            <CreatePartDialog
-                onClose={handleCreatePartDialogClose}
+            <PartEditorDialog
+                onClose={handlePartEditorDialogClose}
                 isOpen={partEditorDialogState.isDialogOpen}
                 initialPart={partEditorDialogState.selectedEntity}
             />
