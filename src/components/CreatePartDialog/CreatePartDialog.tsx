@@ -7,34 +7,35 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 
-import { useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { MdAdd, MdClose } from "react-icons/md";
+import { MdAdd, MdClose, MdSave } from "react-icons/md";
 import { joiResolver } from "@hookform/resolvers/joi";
 
 import useCategories from "../../hooks/useCategories";
 import useManufacturers from "../../hooks/useManufacturers";
 import usePackages from "../../hooks/usePackages";
-import { PartFormData } from "../../services/partService";
+import {
+    Part,
+    PartFormData,
+    partToPartFormData,
+} from "../../services/partService";
 
 import validationSchema from "./validationSchema";
+import useAddPart from "../../hooks/useAddPart";
+import useUpdatePart from "../../hooks/useUpdatePart";
+import useNotifications from "../../hooks/useNotifications";
 
 interface Props {
     isOpen: boolean;
-    handleClose: (data: PartFormData | null, callback?: () => void) => void;
-    isLoading: boolean;
-    initialData?: PartFormData | null;
+    onClose: () => void;
+    initialPart?: Part | null;
 }
 
-const CreatePartDialog = ({
-    isOpen,
-    handleClose,
-    isLoading,
-    initialData,
-}: Props) => {
-    const { data: manufacturers } = useManufacturers(() => {});
-    const { data: categories } = useCategories(() => {});
-    const { data: packages } = usePackages(() => {});
+const CreatePartDialog = ({ isOpen, onClose, initialPart }: Props) => {
+    const { showSuccess, showError } = useNotifications();
+    const [isLoading, setLoading] = useState(false);
+
     const { handleSubmit, register, reset, formState } = useForm<PartFormData>({
         resolver: joiResolver(validationSchema),
         mode: "onChange",
@@ -52,18 +53,42 @@ const CreatePartDialog = ({
         });
     };
 
-    const isEditing = !!initialData;
+    const handleClose = () => {
+        resetForm();
+        onClose();
+    };
 
-    useEffect(() => {
-        if (isEditing) {
-            reset(initialData);
-        } else {
-            resetForm();
-        }
-    }, [initialData, reset]);
+    const addPart = useAddPart(showSuccess, showError);
+    const updatePart = useUpdatePart(showSuccess, showError);
+    const { data: manufacturers } = useManufacturers(() => {});
+    const { data: categories } = useCategories(() => {});
+    const { data: packages } = usePackages(() => {});
+
+    const isEditing = !!initialPart;
+    let initialData = null;
+
+    if (isEditing) {
+        initialData = partToPartFormData(initialPart);
+        reset(initialData);
+    }
 
     const onSubmit = (data: PartFormData) => {
-        handleClose(data, resetForm);
+        setLoading(true);
+        if (!isEditing) {
+            addPart.mutate(data, {
+                onSettled: () => {},
+            });
+        } else {
+            updatePart.mutate(
+                {
+                    partFormData: data,
+                    id: initialPart!._id,
+                },
+                {
+                    onSettled: () => {},
+                }
+            );
+        }
     };
 
     return (
@@ -76,7 +101,7 @@ const CreatePartDialog = ({
         >
             <DialogTitle>{isEditing ? "Edit " : "Create "}part</DialogTitle>
             <IconButton
-                onClick={() => handleClose(null, resetForm)}
+                onClick={() => handleClose()}
                 sx={(theme) => ({
                     position: "absolute",
                     right: 8,
@@ -225,7 +250,7 @@ const CreatePartDialog = ({
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={() => handleClose(null, resetForm)}
+                    onClick={() => handleClose()}
                     variant="outlined"
                     disabled={isLoading}
                 >
@@ -234,7 +259,7 @@ const CreatePartDialog = ({
                 <LoadingButton
                     type="submit"
                     variant="contained"
-                    startIcon={<MdAdd />}
+                    startIcon={isEditing ? <MdSave /> : <MdAdd />}
                     loading={isLoading}
                     disabled={!isValid}
                 >

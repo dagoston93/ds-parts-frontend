@@ -8,7 +8,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import { AxiosResponse } from "axios";
 import { useState } from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
@@ -22,25 +21,22 @@ import {
 } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import { CreatePartDialog } from "./CreatePartDialog";
-import useAddPart from "../hooks/useAddPart";
+
 import useDeletePart from "../hooks/useDeletePart";
-import useUpdatePart from "../hooks/useUpdatePart";
 import useIncrementPartCount from "../hooks/useIncrementPartCount";
 import useDecrementPartCount from "../hooks/useDecrementPartCount";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
     const { data: parts, isLoading } = useParts(showError);
-    const addPart = useAddPart(showSuccess, showError);
+
     const deletePart = useDeletePart(showSuccess, showError);
-    const updatePart = useUpdatePart(showSuccess, showError);
+
     const incrementPartCount = useIncrementPartCount(showError);
     const decrementPartCount = useDecrementPartCount(showError);
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isCreatePartDialogOpen, setCreatePartDialogOpen] = useState(false);
     const [selectedPart, setSelectedPart] = useState<Part | null>(null);
-    const [isDialogLoading, setDialogLoading] = useState(false);
-    const [partFormData, setPartFormData] = useState<PartFormData | null>(null);
     const [confirmDeleteEntityName, setConfirmDeleteEntityName] = useState("");
     const [confirmDeleteEntityType, setConfirmDeleteEntityType] = useState("");
 
@@ -61,47 +57,18 @@ const PartTable = () => {
     };
 
     const handleCreatePartButtonClick = () => {
-        setPartFormData(null);
+        setSelectedPart(null);
         setCreatePartDialogOpen(true);
     };
 
     const handleEditPartButtonClick = (part: Part) => {
         setSelectedPart(part);
-        setPartFormData(partToPartFormData(part));
         setCreatePartDialogOpen(true);
     };
 
-    const closeCreatePartDialog = () => {
-        setCreatePartDialogOpen(false);
-        setDialogLoading(false);
+    const handleCreatePartDialogClose = () => {
         setSelectedPart(null);
-    };
-
-    const handleCreatePartDialogClose = (
-        data: PartFormData | null,
-        callback?: () => void
-    ) => {
-        if (data) {
-            setDialogLoading(true);
-
-            let isEditing = !!selectedPart;
-
-            if (!isEditing) {
-                addPart.mutate(data);
-                closeCreatePartDialog();
-                callback?.();
-            } else {
-                updatePart.mutate({
-                    partFormData: data,
-                    id: selectedPart!._id,
-                });
-                closeCreatePartDialog();
-                callback?.();
-            }
-        } else {
-            closeCreatePartDialog();
-            callback?.();
-        }
+        setCreatePartDialogOpen(false);
     };
 
     const handleIncrementPartCountButtonClick = (part: Part) => {
@@ -122,10 +89,9 @@ const PartTable = () => {
                 Create part
             </Button>
             <CreatePartDialog
-                handleClose={handleCreatePartDialogClose}
+                onClose={handleCreatePartDialogClose}
                 isOpen={isCreatePartDialogOpen}
-                isLoading={isDialogLoading}
-                initialData={partFormData}
+                initialPart={selectedPart}
             />
             <ConfirmDeleteDialog
                 handleClose={handleDeletePartDialogClose}
