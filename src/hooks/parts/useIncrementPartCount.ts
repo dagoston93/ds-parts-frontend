@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import partService, { Part } from "../services/partService";
+import partService, { Part } from "../../services/partService";
 
-const useDecrementPartCount = (onError: (message: string) => void) => {
+const useIncrementPartCount = (onError: (message: string) => void) => {
     const queryClient = useQueryClient();
 
     return useMutation<Part, Error, string>({
-        mutationFn: partService.decrementCount,
+        mutationFn: partService.incrementCount,
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: ["parts"],
@@ -17,4 +17,4 @@ const useDecrementPartCount = (onError: (message: string) => void) => {
     });
 };
 
-export default useDecrementPartCount;
+export default useIncrementPartCount;

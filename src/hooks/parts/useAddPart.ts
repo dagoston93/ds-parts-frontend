@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import partService, { Part, PartFormData } from "../services/partService";
+import partService, { Part, PartFormData } from "../../services/partService";
 
 const useAddPart = (
     onSuccess: (message: string) => void,

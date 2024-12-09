@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import partService, { Part } from "../services/partService";
+import partService, { Part } from "../../services/partService";
 import { useEffect } from "react";
 
 export default (onError: (message: string) => void) => {

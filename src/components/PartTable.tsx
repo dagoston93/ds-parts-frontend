@@ -8,20 +8,21 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import { useState } from "react";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 
-import useNotifications from "../hooks/useNotifications";
-import useParts from "../hooks/useParts";
 import { Part } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
 import { PartEditorDialog } from "./PartEditorDialog";
 
-import useDeletePart from "../hooks/useDeletePart";
-import useIncrementPartCount from "../hooks/useIncrementPartCount";
-import useDecrementPartCount from "../hooks/useDecrementPartCount";
+import { useState } from "react";
 import useEditorDialogState from "../hooks/useEditorDialogState";
+import useNotifications from "../hooks/useNotifications";
+
+import useParts from "../hooks/parts/useParts";
+import useDeletePart from "../hooks/parts/useDeletePart";
+import useIncrementPartCount from "../hooks/parts/useIncrementPartCount";
+import useDecrementPartCount from "../hooks/parts/useDecrementPartCount";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();

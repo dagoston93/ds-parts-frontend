@@ -22,8 +22,8 @@ import {
 } from "../../services/partService";
 
 import validationSchema from "./validationSchema";
-import useAddPart from "../../hooks/useAddPart";
-import useUpdatePart from "../../hooks/useUpdatePart";
+import useAddPart from "../../hooks/parts/useAddPart";
+import useUpdatePart from "../../hooks/parts/useUpdatePart";
 import useNotifications from "../../hooks/useNotifications";
 
 interface Props {
