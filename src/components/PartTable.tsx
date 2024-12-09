@@ -21,6 +21,7 @@ import { CreatePartDialog } from "./CreatePartDialog";
 import useDeletePart from "../hooks/useDeletePart";
 import useIncrementPartCount from "../hooks/useIncrementPartCount";
 import useDecrementPartCount from "../hooks/useDecrementPartCount";
+import useEditorDialogState from "../hooks/useEditorDialogState";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -31,40 +32,38 @@ const PartTable = () => {
     const incrementPartCount = useIncrementPartCount(showError);
     const decrementPartCount = useDecrementPartCount(showError);
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    const [isCreatePartDialogOpen, setCreatePartDialogOpen] = useState(false);
-    const [selectedPart, setSelectedPart] = useState<Part | null>(null);
+    const [partToDelete, setPartToDelete] = useState<Part | null>(null);
     const [confirmDeleteEntityName, setConfirmDeleteEntityName] = useState("");
     const [confirmDeleteEntityType, setConfirmDeleteEntityType] = useState("");
 
+    const partEditorDialogState = useEditorDialogState<Part>(null);
+
     const handleDeletePartButtonClick = (part: Part) => {
-        setSelectedPart(part);
+        setPartToDelete(part);
         setConfirmDeleteEntityName(part.name);
         setConfirmDeleteEntityType("part");
         setDeleteDialogOpen(true);
     };
 
     const handleDeletePartDialogClose = (confirmed: boolean) => {
-        if (confirmed && selectedPart) {
-            deletePart.mutate(selectedPart._id);
+        if (confirmed && partToDelete) {
+            deletePart.mutate(partToDelete._id);
         }
 
-        setSelectedPart(null);
+        setPartToDelete(null);
         setDeleteDialogOpen(false);
     };
 
     const handleCreatePartButtonClick = () => {
-        setSelectedPart(null);
-        setCreatePartDialogOpen(true);
+        partEditorDialogState.openDialog();
     };
 
     const handleEditPartButtonClick = (part: Part) => {
-        setSelectedPart(part);
-        setCreatePartDialogOpen(true);
+        partEditorDialogState.openDialog(part);
     };
 
     const handleCreatePartDialogClose = () => {
-        setSelectedPart(null);
-        setCreatePartDialogOpen(false);
+        partEditorDialogState.closeDialog();
     };
 
     const handleIncrementPartCountButtonClick = (part: Part) => {
@@ -86,8 +85,8 @@ const PartTable = () => {
             </Button>
             <CreatePartDialog
                 onClose={handleCreatePartDialogClose}
-                isOpen={isCreatePartDialogOpen}
-                initialPart={selectedPart}
+                isOpen={partEditorDialogState.isDialogOpen}
+                initialPart={partEditorDialogState.selectedEntity}
             />
             <ConfirmDeleteDialog
                 handleClose={handleDeletePartDialogClose}
