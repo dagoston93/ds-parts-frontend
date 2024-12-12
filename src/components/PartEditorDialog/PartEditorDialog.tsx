@@ -1,4 +1,3 @@
-import LoadingButton from "@mui/lab/LoadingButton";
 import { InputAdornment } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -9,7 +8,6 @@ import TextField from "@mui/material/TextField";
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { MdAdd, MdSave } from "react-icons/md";
 import { joiResolver } from "@hookform/resolvers/joi";
 
 import useCategories from "../../hooks/useCategories";
@@ -27,6 +25,7 @@ import useUpdatePart from "../../hooks/parts/useUpdatePart";
 import useNotifications from "../../hooks/useNotifications";
 import DropdownInput from "../EditorDialog/DropdownInput";
 import CloseButton from "../EditorDialog/CloseButton";
+import SubmitDialogButton from "../EditorDialog/SubmitDialogButton";
 
 interface Props {
     isOpen: boolean;
@@ -213,15 +212,11 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
                 >
                     Cancel
                 </Button>
-                <LoadingButton
-                    type="submit"
-                    variant="contained"
-                    startIcon={isEditing ? <MdSave /> : <MdAdd />}
-                    loading={isLoading}
+                <SubmitDialogButton
+                    isEditing={isEditing}
+                    isLoading={isLoading}
                     disabled={!isValid}
-                >
-                    {isEditing ? "Save" : "Create"}
-                </LoadingButton>
+                />
             </DialogActions>
         </Dialog>
     );
