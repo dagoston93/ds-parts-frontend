@@ -1,5 +1,5 @@
 import LoadingButton from "@mui/lab/LoadingButton";
-import { IconButton, InputAdornment, MenuItem } from "@mui/material";
+import { InputAdornment } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -9,7 +9,7 @@ import TextField from "@mui/material/TextField";
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { MdAdd, MdClose, MdSave } from "react-icons/md";
+import { MdAdd, MdSave } from "react-icons/md";
 import { joiResolver } from "@hookform/resolvers/joi";
 
 import useCategories from "../../hooks/useCategories";
@@ -26,6 +26,7 @@ import useAddPart from "../../hooks/parts/useAddPart";
 import useUpdatePart from "../../hooks/parts/useUpdatePart";
 import useNotifications from "../../hooks/useNotifications";
 import DropdownInput from "../EditorDialog/DropdownInput";
+import CloseButton from "../EditorDialog/CloseButton";
 
 interface Props {
     isOpen: boolean;
@@ -106,17 +107,7 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
             }}
         >
             <DialogTitle>{isEditing ? "Edit " : "Create "}part</DialogTitle>
-            <IconButton
-                onClick={() => handleClose()}
-                sx={(theme) => ({
-                    position: "absolute",
-                    right: 8,
-                    top: 8,
-                    color: theme.palette.grey[500],
-                })}
-            >
-                <MdClose />
-            </IconButton>
+            <CloseButton onClick={handleClose} />
             <DialogContent>
                 <DropdownInput
                     {...register("category")}
