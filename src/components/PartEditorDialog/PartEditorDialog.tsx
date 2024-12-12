@@ -25,6 +25,7 @@ import validationSchema from "./validationSchema";
 import useAddPart from "../../hooks/parts/useAddPart";
 import useUpdatePart from "../../hooks/parts/useUpdatePart";
 import useNotifications from "../../hooks/useNotifications";
+import DropdownInput from "../EditorDialog/DropdownInput";
 
 interface Props {
     isOpen: boolean;
@@ -117,27 +118,16 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
                 <MdClose />
             </IconButton>
             <DialogContent>
-                <TextField
+                <DropdownInput
                     {...register("category")}
                     id="category"
-                    name="category"
                     label="Category"
-                    required
-                    fullWidth
-                    select
-                    margin="normal"
-                    defaultValue={initialData?.category ?? ""}
-                    error={!!errors.category && touchedFields.category}
-                    helperText={
-                        touchedFields.category ? errors.category?.message : ""
-                    }
-                >
-                    {categories?.map((category) => (
-                        <MenuItem key={category._id} value={category._id}>
-                            {category.name}
-                        </MenuItem>
-                    ))}
-                </TextField>
+                    options={categories}
+                    defaultValue={initialData?.category}
+                    error={!!errors.category}
+                    touched={!!touchedFields.category}
+                    helperText={errors.category?.message}
+                />
                 <TextField
                     {...register("name")}
                     id="name"
@@ -152,55 +142,26 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
                     error={!!errors.name && touchedFields.name}
                     helperText={touchedFields.name ? errors.name?.message : ""}
                 />
-                <TextField
+                <DropdownInput
                     {...register("manufacturer")}
                     id="manufacturer"
-                    name="manufacturer"
                     label="Manufacturer"
-                    required
-                    fullWidth
-                    select
-                    margin="normal"
-                    defaultValue={initialData?.manufacturer || ""}
-                    error={!!errors.manufacturer && touchedFields.manufacturer}
-                    helperText={
-                        touchedFields.manufacturer
-                            ? errors.manufacturer?.message
-                            : ""
-                    }
-                >
-                    {manufacturers?.map((manufacturer) => (
-                        <MenuItem
-                            key={manufacturer._id}
-                            value={manufacturer._id}
-                        >
-                            {manufacturer.name}
-                        </MenuItem>
-                    ))}
-                </TextField>
-                <TextField
+                    options={manufacturers}
+                    defaultValue={initialData?.manufacturer}
+                    error={!!errors.manufacturer}
+                    touched={!!touchedFields.manufacturer}
+                    helperText={errors.manufacturer?.message}
+                />
+                <DropdownInput
                     {...register("partPackage")}
                     id="partPackage"
-                    name="partPackage"
                     label="Package"
-                    required
-                    fullWidth
-                    select
-                    margin="normal"
-                    defaultValue={initialData?.partPackage || ""}
-                    error={!!errors.partPackage && touchedFields.partPackage}
-                    helperText={
-                        touchedFields.partPackage
-                            ? errors.partPackage?.message
-                            : ""
-                    }
-                >
-                    {packages?.map((p) => (
-                        <MenuItem key={p._id} value={p._id}>
-                            {p.name}
-                        </MenuItem>
-                    ))}
-                </TextField>
+                    options={packages}
+                    defaultValue={initialData?.partPackage}
+                    error={!!errors.partPackage}
+                    touched={!!touchedFields.partPackage}
+                    helperText={errors.partPackage?.message}
+                />
                 <TextField
                     {...register("price", { valueAsNumber: true })}
                     id="price"
