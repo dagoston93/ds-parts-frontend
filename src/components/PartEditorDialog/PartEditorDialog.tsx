@@ -3,7 +3,6 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 
 import { useEffect, useState } from "react";
@@ -26,6 +25,7 @@ import useNotifications from "../../hooks/useNotifications";
 import DropdownInput from "../EditorDialog/DropdownInput";
 import CloseButton from "../EditorDialog/CloseButton";
 import SubmitDialogButton from "../EditorDialog/SubmitDialogButton";
+import EditorDialogTitle from "../EditorDialog/EditorDialogTitle";
 
 interface Props {
     isOpen: boolean;
@@ -105,7 +105,7 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
                 onSubmit: handleSubmit(onSubmit),
             }}
         >
-            <DialogTitle>{isEditing ? "Edit " : "Create "}part</DialogTitle>
+            <EditorDialogTitle isEditing={isEditing} entityType="part" />
             <CloseButton onClick={handleClose} />
             <DialogContent>
                 <DropdownInput
