@@ -1,7 +1,6 @@
 import { InputAdornment } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
-import TextField from "@mui/material/TextField";
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -25,6 +24,7 @@ import CloseButton from "../EditorDialog/CloseButton";
 import EditorDialogTitle from "../EditorDialog/EditorDialogTitle";
 import EditorDialogActions from "../EditorDialog/EditorDialogActions";
 import TextInput from "../EditorDialog/TextInput";
+import NumericInput from "../EditorDialog/NumericInput";
 
 interface Props {
     isOpen: boolean;
@@ -146,56 +146,30 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
                     touched={!!touchedFields.partPackage}
                     helperText={errors.partPackage?.message}
                 />
-                <TextField
-                    {...register("price", { valueAsNumber: true })}
+                <NumericInput
+                    register={register}
                     id="price"
-                    name="price"
                     label="Price"
-                    required
-                    fullWidth
-                    type="number"
-                    variant="outlined"
-                    margin="normal"
-                    defaultValue={initialData?.price || ""}
-                    error={!!errors.price && touchedFields.price}
-                    helperText={
-                        touchedFields.price ? errors.price?.message : ""
+                    defaultValue={initialData?.price}
+                    error={!!errors.price}
+                    touched={!!touchedFields.price}
+                    helperText={errors.price?.message}
+                    min={0.01}
+                    step={0.01}
+                    startAdornment={
+                        <InputAdornment position="start">$</InputAdornment>
                     }
-                    slotProps={{
-                        htmlInput: {
-                            step: 0.01,
-                            min: 0.01,
-                        },
-                        input: {
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    $
-                                </InputAdornment>
-                            ),
-                        },
-                    }}
                 />
-                <TextField
-                    {...register("count", { valueAsNumber: true })}
+                <NumericInput
+                    register={register}
                     id="count"
-                    name="count"
                     label="Count"
-                    required
-                    fullWidth
-                    type="number"
-                    variant="outlined"
-                    margin="normal"
-                    defaultValue={initialData?.count || ""}
-                    error={!!errors.count && touchedFields.count}
-                    helperText={
-                        touchedFields.count ? errors.count?.message : ""
-                    }
-                    slotProps={{
-                        htmlInput: {
-                            step: 1,
-                            min: 0,
-                        },
-                    }}
+                    defaultValue={initialData?.count}
+                    error={!!errors.count}
+                    touched={!!touchedFields.count}
+                    helperText={errors.count?.message}
+                    min={0}
+                    step={1}
                 />
             </DialogContent>
             <EditorDialogActions
