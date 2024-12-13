@@ -1,7 +1,5 @@
 import { InputAdornment } from "@mui/material";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import TextField from "@mui/material/TextField";
 
@@ -24,8 +22,8 @@ import useUpdatePart from "../../hooks/parts/useUpdatePart";
 import useNotifications from "../../hooks/useNotifications";
 import DropdownInput from "../EditorDialog/DropdownInput";
 import CloseButton from "../EditorDialog/CloseButton";
-import SubmitDialogButton from "../EditorDialog/SubmitDialogButton";
 import EditorDialogTitle from "../EditorDialog/EditorDialogTitle";
+import EditorDialogActions from "../EditorDialog/EditorDialogActions";
 
 interface Props {
     isOpen: boolean;
@@ -204,20 +202,12 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
                     }}
                 />
             </DialogContent>
-            <DialogActions>
-                <Button
-                    onClick={() => handleClose()}
-                    variant="outlined"
-                    disabled={isLoading}
-                >
-                    Cancel
-                </Button>
-                <SubmitDialogButton
-                    isEditing={isEditing}
-                    isLoading={isLoading}
-                    disabled={!isValid}
-                />
-            </DialogActions>
+            <EditorDialogActions
+                isEditing={isEditing}
+                isLoading={isLoading}
+                isValid={isValid}
+                onClose={handleClose}
+            />
         </Dialog>
     );
 };
