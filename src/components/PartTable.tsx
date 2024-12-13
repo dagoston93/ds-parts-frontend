@@ -1,6 +1,5 @@
 import { Button, CircularProgress, IconButton } from "@mui/material";
 import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,7 +7,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
 
 import { Part } from "../services/partService";
@@ -23,6 +21,7 @@ import useParts from "../hooks/parts/useParts";
 import useDeletePart from "../hooks/parts/useDeletePart";
 import useIncrementPartCount from "../hooks/parts/useIncrementPartCount";
 import useDecrementPartCount from "../hooks/parts/useDecrementPartCount";
+import CountStepper from "./EntityTable/CountStepper";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -140,30 +139,18 @@ const PartTable = () => {
                                     {part.count}
                                 </TableCell>
                                 <TableCell align="left" sx={{ paddingLeft: 0 }}>
-                                    <Stack spacing={-1}>
-                                        <IconButton
-                                            color="primary"
-                                            sx={{ paddingBottom: 0 }}
-                                            onClick={() => {
-                                                handleIncrementPartCountButtonClick(
-                                                    part
-                                                );
-                                            }}
-                                        >
-                                            <FaCaretUp />
-                                        </IconButton>
-                                        <IconButton
-                                            color="primary"
-                                            sx={{ paddingTop: 0 }}
-                                            onClick={() => {
-                                                handleDecrementPartCountButtonClick(
-                                                    part
-                                                );
-                                            }}
-                                        >
-                                            <FaCaretDown />
-                                        </IconButton>
-                                    </Stack>
+                                    <CountStepper
+                                        onUpButtonClick={() => {
+                                            handleIncrementPartCountButtonClick(
+                                                part
+                                            );
+                                        }}
+                                        onDownButtonClick={() => {
+                                            handleDecrementPartCountButtonClick(
+                                                part
+                                            );
+                                        }}
+                                    />
                                 </TableCell>
                                 <TableCell align="right">
                                     <IconButton
