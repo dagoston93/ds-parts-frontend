@@ -24,6 +24,7 @@ import DropdownInput from "../EditorDialog/DropdownInput";
 import CloseButton from "../EditorDialog/CloseButton";
 import EditorDialogTitle from "../EditorDialog/EditorDialogTitle";
 import EditorDialogActions from "../EditorDialog/EditorDialogActions";
+import TextInput from "../EditorDialog/TextInput";
 
 interface Props {
     isOpen: boolean;
@@ -116,19 +117,14 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
                     touched={!!touchedFields.category}
                     helperText={errors.category?.message}
                 />
-                <TextField
-                    {...register("name")}
+                <TextInput
+                    register={register}
                     id="name"
-                    name="name"
                     label="Part name"
-                    required
-                    fullWidth
-                    type="text"
-                    variant="outlined"
-                    margin="normal"
-                    defaultValue={initialData?.name || ""}
-                    error={!!errors.name && touchedFields.name}
-                    helperText={touchedFields.name ? errors.name?.message : ""}
+                    defaultValue={initialData?.name}
+                    error={!!errors.name}
+                    touched={!!touchedFields.name}
+                    helperText={errors.name?.message}
                 />
                 <DropdownInput
                     {...register("manufacturer")}
