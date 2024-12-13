@@ -1,9 +1,8 @@
 import { MenuItem, TextField } from "@mui/material";
-import React from "react";
+import { FieldValues } from "react-hook-form";
+import CommonInputProps from "./commonInputProps";
 
-interface Props extends React.ComponentProps<typeof TextField> {
-    id: string;
-    label: string;
+interface Props<T extends FieldValues> extends CommonInputProps<string, T> {
     options:
         | {
               _id: string;
@@ -11,13 +10,10 @@ interface Props extends React.ComponentProps<typeof TextField> {
           }[]
         | null
         | undefined;
-    defaultValue: string | null | undefined;
-    error: boolean;
-    touched: boolean;
-    helperText: string | null | undefined;
 }
 
-const DropdownInput = ({
+const DropdownInput = <T extends FieldValues>({
+    register,
     id,
     label,
     options,
@@ -26,9 +22,10 @@ const DropdownInput = ({
     touched,
     helperText,
     ...props
-}: Props) => {
+}: Props<T>) => {
     return (
         <TextField
+            {...register(id)}
             id={id}
             name={id}
             label={label}

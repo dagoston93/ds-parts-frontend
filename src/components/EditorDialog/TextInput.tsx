@@ -1,17 +1,6 @@
 import { TextField } from "@mui/material";
-import React from "react";
-import { FieldValues, Path, UseFormRegister } from "react-hook-form";
-
-interface Props<T extends FieldValues>
-    extends React.ComponentProps<typeof TextField> {
-    register: UseFormRegister<T>;
-    id: Path<T>;
-    label: string;
-    defaultValue: string | null | undefined;
-    error: boolean;
-    touched: boolean;
-    helperText: string | null | undefined;
-}
+import { FieldValues } from "react-hook-form";
+import CommonInputProps from "./commonInputProps";
 
 const TextInput = <T extends FieldValues>({
     register,
@@ -22,7 +11,7 @@ const TextInput = <T extends FieldValues>({
     touched,
     helperText,
     ...props
-}: Props<T>) => {
+}: CommonInputProps<string, T>) => {
     return (
         <TextField
             {...register(id)}

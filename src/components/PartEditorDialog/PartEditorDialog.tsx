@@ -108,7 +108,7 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
             <CloseButton onClick={handleClose} />
             <DialogContent>
                 <DropdownInput
-                    {...register("category")}
+                    register={register}
                     id="category"
                     label="Category"
                     options={categories}
@@ -127,7 +127,7 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
                     helperText={errors.name?.message}
                 />
                 <DropdownInput
-                    {...register("manufacturer")}
+                    register={register}
                     id="manufacturer"
                     label="Manufacturer"
                     options={manufacturers}
@@ -137,7 +137,7 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
                     helperText={errors.manufacturer?.message}
                 />
                 <DropdownInput
-                    {...register("partPackage")}
+                    register={register}
                     id="partPackage"
                     label="Package"
                     options={packages}

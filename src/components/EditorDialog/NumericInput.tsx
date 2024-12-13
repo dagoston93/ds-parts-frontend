@@ -1,16 +1,9 @@
 import { TextField } from "@mui/material";
 import { ReactNode } from "react";
-import { FieldValues, Path, UseFormRegister } from "react-hook-form";
+import { FieldValues } from "react-hook-form";
+import CommonInputProps from "./commonInputProps";
 
-interface Props<T extends FieldValues>
-    extends React.ComponentProps<typeof TextField> {
-    register: UseFormRegister<T>;
-    id: Path<T>;
-    label: string;
-    defaultValue: number | null | undefined;
-    error: boolean;
-    touched: boolean;
-    helperText: string | null | undefined;
+interface Props<T extends FieldValues> extends CommonInputProps<number, T> {
     min: number;
     step: number;
     startAdornment?: ReactNode;
