@@ -1,4 +1,4 @@
-import { Button, CircularProgress, IconButton } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,7 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import { MdAdd, MdDelete, MdEdit } from "react-icons/md";
+import { MdAdd } from "react-icons/md";
 
 import { Part } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
@@ -22,6 +22,7 @@ import useDeletePart from "../hooks/parts/useDeletePart";
 import useIncrementPartCount from "../hooks/parts/useIncrementPartCount";
 import useDecrementPartCount from "../hooks/parts/useDecrementPartCount";
 import CountStepper from "./EntityTable/CountStepper";
+import EntityActionButtons from "./EntityTable/EntityActionButtons";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -153,22 +154,14 @@ const PartTable = () => {
                                     />
                                 </TableCell>
                                 <TableCell align="right">
-                                    <IconButton
-                                        color="primary"
-                                        onClick={() =>
+                                    <EntityActionButtons
+                                        onEditButtonClick={() =>
                                             handleEditPartButtonClick(part)
                                         }
-                                    >
-                                        <MdEdit />
-                                    </IconButton>
-                                    <IconButton
-                                        color="error"
-                                        onClick={() =>
+                                        onDeleteButtonClick={() =>
                                             handleDeletePartButtonClick(part)
                                         }
-                                    >
-                                        <MdDelete />
-                                    </IconButton>
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))}
