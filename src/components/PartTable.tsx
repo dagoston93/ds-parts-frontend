@@ -1,4 +1,4 @@
-import { Button, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -6,8 +6,6 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-
-import { MdAdd } from "react-icons/md";
 
 import { Part } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
@@ -23,6 +21,7 @@ import useIncrementPartCount from "../hooks/parts/useIncrementPartCount";
 import useDecrementPartCount from "../hooks/parts/useDecrementPartCount";
 import CountStepper from "./EntityTable/CountStepper";
 import EntityActionButtons from "./EntityTable/EntityActionButtons";
+import CreateButton from "./EntityTable/CreateButton";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -77,13 +76,10 @@ const PartTable = () => {
 
     return (
         <>
-            <Button
-                variant="contained"
-                startIcon={<MdAdd />}
+            <CreateButton
+                entityType="part"
                 onClick={handleCreatePartButtonClick}
-            >
-                Create part
-            </Button>
+            />
             <PartEditorDialog
                 onClose={handlePartEditorDialogClose}
                 isOpen={partEditorDialogState.isDialogOpen}
