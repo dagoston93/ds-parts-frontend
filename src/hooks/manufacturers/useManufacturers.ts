@@ -1,6 +1,6 @@
 import manufacturerService, {
     Manufacturer,
-} from "../services/manufacturerService";
+} from "../../services/manufacturerService";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 

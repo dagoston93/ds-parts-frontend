@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 
 import useCategories from "../../hooks/useCategories";
-import useManufacturers from "../../hooks/useManufacturers";
+import useManufacturers from "../../hooks/manufacturers/useManufacturers";
 import usePackages from "../../hooks/usePackages";
 import {
     Part,
