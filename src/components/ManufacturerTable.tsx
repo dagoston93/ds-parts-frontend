@@ -7,52 +7,45 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
-import { Part } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
-import { PartEditorDialog } from "./PartEditorDialog";
 
 import { useState } from "react";
 import useEditorDialogState from "../hooks/useEditorDialogState";
 import useNotifications from "../hooks/useNotifications";
 
-import useParts from "../hooks/parts/useParts";
-import useDeletePart from "../hooks/parts/useDeletePart";
-import useIncrementPartCount from "../hooks/parts/useIncrementPartCount";
-import useDecrementPartCount from "../hooks/parts/useDecrementPartCount";
-import CountStepper from "./EntityTable/CountStepper";
 import EntityActionButtons from "./EntityTable/EntityActionButtons";
 import CreateButton from "./EntityTable/CreateButton";
 import { Manufacturer } from "../services/manufacturerService";
 import useManufacturers from "../hooks/manufacturers/useManufacturers";
+import useDeleteManufacturer from "../hooks/manufacturers/useDeleteManufacturer";
 
 const ManufacturerTable = () => {
     const { showSuccess, showError } = useNotifications();
     const { data: manufacturers, isLoading } = useManufacturers(showError);
 
-    // const deletePart = useDeletePart(showSuccess, showError);
+    const deleteManufacturer = useDeleteManufacturer(showSuccess, showError);
 
-    // const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
-    // const [partToDelete, setPartToDelete] = useState<Part | null>(null);
-    // const [confirmDeleteEntityName, setConfirmDeleteEntityName] = useState("");
-    // const [confirmDeleteEntityType, setConfirmDeleteEntityType] = useState("");
+    const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [manufacturerToDelete, setManufacturerToDelete] =
+        useState<Manufacturer | null>(null);
+    const [confirmDeleteEntityName, setConfirmDeleteEntityName] = useState("");
 
     // const partEditorDialogState = useEditorDialogState<Part>(null);
 
-    // const handleDeletePartButtonClick = (part: Part) => {
-    //     setPartToDelete(part);
-    //     setConfirmDeleteEntityName(part.name);
-    //     setConfirmDeleteEntityType("part");
-    //     setDeleteDialogOpen(true);
-    // };
+    const handleDeleteButtonClick = (manufacturer: Manufacturer) => {
+        setManufacturerToDelete(manufacturer);
+        setConfirmDeleteEntityName(manufacturer.name);
+        setDeleteDialogOpen(true);
+    };
 
-    // const handleDeletePartDialogClose = (confirmed: boolean) => {
-    //     if (confirmed && partToDelete) {
-    //         deletePart.mutate(partToDelete._id);
-    //     }
+    const handleConfirmDeleteDialogClose = (confirmed: boolean) => {
+        if (confirmed && manufacturerToDelete) {
+            deleteManufacturer.mutate(manufacturerToDelete._id);
+        }
 
-    //     setPartToDelete(null);
-    //     setDeleteDialogOpen(false);
-    // };
+        setManufacturerToDelete(null);
+        setDeleteDialogOpen(false);
+    };
 
     // const handleCreatePartButtonClick = () => {
     //     partEditorDialogState.openDialog();
@@ -66,14 +59,6 @@ const ManufacturerTable = () => {
     //     partEditorDialogState.closeDialog();
     // };
 
-    // const handleIncrementPartCountButtonClick = (part: Part) => {
-    //     incrementPartCount.mutate(part._id);
-    // };
-
-    // const handleDecrementPartCountButtonClick = (part: Part) => {
-    //     decrementPartCount.mutate(part._id);
-    // };
-
     return (
         <>
             <CreateButton
@@ -85,12 +70,12 @@ const ManufacturerTable = () => {
                 isOpen={partEditorDialogState.isDialogOpen}
                 initialPart={partEditorDialogState.selectedEntity}
             /> */}
-            {/* <ConfirmDeleteDialog
-                handleClose={handleDeletePartDialogClose}
+            <ConfirmDeleteDialog
+                handleClose={handleConfirmDeleteDialogClose}
                 isOpen={isDeleteDialogOpen}
-                entityType={confirmDeleteEntityType}
+                entityType="manufacturer"
                 entityName={confirmDeleteEntityName}
-            /> */}
+            />
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }}>
                     <TableHead>
@@ -118,9 +103,10 @@ const ManufacturerTable = () => {
                                             () => {}
                                             //handleEditPartButtonClick(part)
                                         }
-                                        onDeleteButtonClick={
-                                            () => {}
-                                            //handleDeletePartButtonClick(part)
+                                        onDeleteButtonClick={() =>
+                                            handleDeleteButtonClick(
+                                                manufacturer
+                                            )
                                         }
                                     />
                                 </TableCell>
