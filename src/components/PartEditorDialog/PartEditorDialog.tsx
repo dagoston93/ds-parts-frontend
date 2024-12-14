@@ -77,23 +77,24 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
         }
     }, [initialPart, reset]);
 
-    const onSubmit = (data: PartFormData) => {
+    const onSubmit = async (data: PartFormData) => {
         setLoading(true);
-        if (!isEditing) {
-            addPart.mutate(data, {
-                onSettled: handleClose,
+
+        const mutation = isEditing
+            ? updatePart.mutateAsync({
+                  partFormData: data,
+                  id: initialPart!._id,
+              })
+            : addPart.mutateAsync(data);
+
+        mutation
+            .then(() => {
+                handleClose();
+            })
+            .catch((err) => {
+                setLoading(false);
+                showError(err.message);
             });
-        } else {
-            updatePart.mutate(
-                {
-                    partFormData: data,
-                    id: initialPart!._id,
-                },
-                {
-                    onSettled: handleClose,
-                }
-            );
-        }
     };
 
     return (
