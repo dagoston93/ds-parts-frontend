@@ -1,13 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import HttpService from "../../services/httpService";
 
-interface UpdateEntityData<U> {
+interface UpdateEntityData<TFormData> {
     id: string;
-    formData: U;
+    formData: TFormData;
 }
 
-const useUpdateEntity = <T extends { _id: string; name: string }, U>(
-    service: HttpService<T, U>,
+const useUpdateEntity = <
+    TEntity extends { _id: string; name: string },
+    TFormData,
+>(
+    service: HttpService<TEntity, TFormData>,
     queryKey: string,
     entityType: string,
     onSuccess: (message: string) => void,
@@ -15,7 +18,7 @@ const useUpdateEntity = <T extends { _id: string; name: string }, U>(
 ) => {
     const queryClient = useQueryClient();
 
-    return useMutation<T, Error, UpdateEntityData<U>>({
+    return useMutation<TEntity, Error, UpdateEntityData<TFormData>>({
         mutationFn: ({ id, formData }) => service.update(formData, id),
         onSuccess: (savedEntity) => {
             queryClient.invalidateQueries({

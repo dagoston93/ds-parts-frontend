@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import HttpService from "../../services/httpService";
 
-const useAddEntity = <T extends { _id: string; name: string }, U>(
-    service: HttpService<T, U>,
+const useAddEntity = <TEntity extends { _id: string; name: string }, TFormData>(
+    service: HttpService<TEntity, TFormData>,
     queryKey: string,
     entityType: string,
     onSuccess: (message: string) => void,
@@ -10,7 +10,7 @@ const useAddEntity = <T extends { _id: string; name: string }, U>(
 ) => {
     const queryClient = useQueryClient();
 
-    return useMutation<T, Error, U>({
+    return useMutation<TEntity, Error, TFormData>({
         mutationFn: service.create,
         onSuccess: (savedEntity) => {
             queryClient.invalidateQueries({

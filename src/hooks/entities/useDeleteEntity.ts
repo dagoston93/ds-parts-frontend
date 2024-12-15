@@ -1,12 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import HttpService from "../../services/httpService";
 
-interface DeleteEntityContext<T> {
-    originalEntities: T[];
+interface DeleteEntityContext<TEntity> {
+    originalEntities: TEntity[];
 }
 
-const useDeleteEntity = <T extends { _id: string; name: string }, U>(
-    service: HttpService<T, U>,
+const useDeleteEntity = <
+    TEntity extends { _id: string; name: string },
+    TFormData,
+>(
+    service: HttpService<TEntity, TFormData>,
     queryKey: string,
     entityType: string,
     onSuccess: (message: string) => void,
@@ -14,13 +17,13 @@ const useDeleteEntity = <T extends { _id: string; name: string }, U>(
 ) => {
     const queryClient = useQueryClient();
 
-    return useMutation<T, Error, string, DeleteEntityContext<T>>({
+    return useMutation<TEntity, Error, string, DeleteEntityContext<TEntity>>({
         mutationFn: service.delete,
         onMutate: (deletedEntityId: string) => {
             const originalEntities =
-                queryClient.getQueryData<T[]>([queryKey]) || [];
+                queryClient.getQueryData<TEntity[]>([queryKey]) || [];
 
-            queryClient.setQueryData<T[]>([queryKey], (entities = []) =>
+            queryClient.setQueryData<TEntity[]>([queryKey], (entities = []) =>
                 entities.filter((p) => p._id !== deletedEntityId)
             );
 
@@ -33,7 +36,7 @@ const useDeleteEntity = <T extends { _id: string; name: string }, U>(
             onError(error.message);
 
             if (context) {
-                queryClient.setQueryData<T[]>(
+                queryClient.setQueryData<TEntity[]>(
                     [queryKey],
                     context.originalEntities
                 );

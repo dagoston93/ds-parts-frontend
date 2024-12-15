@@ -1,6 +1,6 @@
 import apiClient from "./apiClient";
 
-class HttpService<T extends { _id: string }, U> {
+class HttpService<TEntity extends { _id: string }, TFormData> {
     endpoint: string;
 
     constructor(endpoint: string) {
@@ -8,14 +8,16 @@ class HttpService<T extends { _id: string }, U> {
     }
 
     getAll = () => {
-        return apiClient.get<T[]>(this.endpoint).then((res) => res.data);
+        return apiClient.get<TEntity[]>(this.endpoint).then((res) => res.data);
     };
 
-    create = (entity: U) => {
-        return apiClient.post<T>(this.endpoint, entity).then((res) => res.data);
+    create = (entity: TFormData) => {
+        return apiClient
+            .post<TEntity>(this.endpoint, entity)
+            .then((res) => res.data);
     };
 
-    update = (entity: U, id: string) => {
+    update = (entity: TFormData, id: string) => {
         return apiClient
             .put(`${this.endpoint}/${id}`, entity)
             .then((res) => res.data);

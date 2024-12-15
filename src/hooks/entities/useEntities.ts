@@ -2,12 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import HttpService from "../../services/httpService";
 
-const useEntities = <T extends { _id: string }, U>(
-    service: HttpService<T, U>,
+const useEntities = <TEntity extends { _id: string }, TFormData>(
+    service: HttpService<TEntity, TFormData>,
     queryKey: string,
     onError: (message: string) => void
 ) => {
-    const queryResult = useQuery<T[], Error>({
+    const queryResult = useQuery<TEntity[], Error>({
         queryKey: [queryKey],
         queryFn: service.getAll,
     });
