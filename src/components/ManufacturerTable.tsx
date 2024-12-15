@@ -18,6 +18,7 @@ import CreateButton from "./EntityTable/CreateButton";
 import { Manufacturer } from "../services/manufacturerService";
 import useManufacturers from "../hooks/manufacturers/useManufacturers";
 import useDeleteManufacturer from "../hooks/manufacturers/useDeleteManufacturer";
+import { ManufacturerEditorDialog } from "./ManufacturerEditorDialog";
 
 const ManufacturerTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -30,7 +31,7 @@ const ManufacturerTable = () => {
         useState<Manufacturer | null>(null);
     const [confirmDeleteEntityName, setConfirmDeleteEntityName] = useState("");
 
-    // const partEditorDialogState = useEditorDialogState<Part>(null);
+    const editorDialogState = useEditorDialogState<Manufacturer>(null);
 
     const handleDeleteButtonClick = (manufacturer: Manufacturer) => {
         setManufacturerToDelete(manufacturer);
@@ -47,29 +48,29 @@ const ManufacturerTable = () => {
         setDeleteDialogOpen(false);
     };
 
-    // const handleCreatePartButtonClick = () => {
-    //     partEditorDialogState.openDialog();
-    // };
+    const handleCreateButtonClick = () => {
+        editorDialogState.openDialog();
+    };
 
-    // const handleEditPartButtonClick = (part: Part) => {
-    //     partEditorDialogState.openDialog(part);
-    // };
+    const handleEditButtonClick = (manufacturer: Manufacturer) => {
+        editorDialogState.openDialog(manufacturer);
+    };
 
-    // const handlePartEditorDialogClose = () => {
-    //     partEditorDialogState.closeDialog();
-    // };
+    const handleEditorDialogClose = () => {
+        editorDialogState.closeDialog();
+    };
 
     return (
         <>
             <CreateButton
                 entityType="manufacturer"
-                onClick={/*handleCreatePartButtonClick*/ () => {}}
+                onClick={handleCreateButtonClick}
             />
-            {/* <PartEditorDialog
-                onClose={handlePartEditorDialogClose}
-                isOpen={partEditorDialogState.isDialogOpen}
-                initialPart={partEditorDialogState.selectedEntity}
-            /> */}
+            <ManufacturerEditorDialog
+                onClose={handleEditorDialogClose}
+                isOpen={editorDialogState.isDialogOpen}
+                initialManufacturer={editorDialogState.selectedEntity}
+            />
             <ConfirmDeleteDialog
                 handleClose={handleConfirmDeleteDialogClose}
                 isOpen={isDeleteDialogOpen}
@@ -87,7 +88,7 @@ const ManufacturerTable = () => {
                     <TableBody>
                         {isLoading && (
                             <TableRow>
-                                <TableCell colSpan={8} align="center">
+                                <TableCell colSpan={2} align="center">
                                     <CircularProgress size="3rem" />
                                 </TableCell>
                             </TableRow>
@@ -99,9 +100,8 @@ const ManufacturerTable = () => {
                                 </TableCell>
                                 <TableCell align="right">
                                     <EntityActionButtons
-                                        onEditButtonClick={
-                                            () => {}
-                                            //handleEditPartButtonClick(part)
+                                        onEditButtonClick={() =>
+                                            handleEditButtonClick(manufacturer)
                                         }
                                         onDeleteButtonClick={() =>
                                             handleDeleteButtonClick(

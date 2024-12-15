@@ -5,4 +5,18 @@ export interface Manufacturer {
     name: string;
 }
 
-export default new HttpService<Manufacturer, Manufacturer>("/manufacturers");
+export interface ManufacturerFormData {
+    name: string;
+}
+
+export function manufacturerToManufacturerFormData(
+    manufacturer: Manufacturer
+): ManufacturerFormData {
+    return {
+        name: manufacturer.name,
+    };
+}
+
+export default new HttpService<Manufacturer, ManufacturerFormData>(
+    "/manufacturers"
+);
