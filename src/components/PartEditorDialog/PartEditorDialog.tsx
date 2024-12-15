@@ -82,7 +82,7 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
 
         const mutation = isEditing
             ? updatePart.mutateAsync({
-                  partFormData: data,
+                  formData: data,
                   id: initialPart!._id,
               })
             : addPart.mutateAsync(data);

@@ -1,24 +1,14 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import partService, { Part, PartFormData } from "../../services/partService";
+import useAddEntity from "../entities/useAddEntitiy";
 
-const useAddPart = (
+export default (
     onSuccess: (message: string) => void,
     onError: (message: string) => void
-) => {
-    const queryClient = useQueryClient();
-
-    return useMutation<Part, Error, PartFormData>({
-        mutationFn: partService.create,
-        onSuccess: (savedPart) => {
-            queryClient.invalidateQueries({
-                queryKey: ["parts"],
-            });
-            onSuccess(`Part added: ${savedPart.name}.`);
-        },
-        onError: (error) => {
-            onError(error.message);
-        },
-    });
-};
-
-export default useAddPart;
+) =>
+    useAddEntity<Part, PartFormData>(
+        partService,
+        "parts",
+        "Part",
+        onSuccess,
+        onError
+    );

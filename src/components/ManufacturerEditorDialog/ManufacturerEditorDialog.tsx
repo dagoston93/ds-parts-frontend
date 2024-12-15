@@ -73,7 +73,7 @@ const ManufacturerEditorDialog = ({
 
         const mutation = isEditing
             ? updateManufacturer.mutateAsync({
-                  manufacturerFormData: data,
+                  formData: data,
                   id: initialManufacturer!._id,
               })
             : addManufacturer.mutateAsync(data);
