@@ -2,7 +2,7 @@ import { AppProvider } from "@toolpad/core/react-router-dom";
 import { Navigation } from "@toolpad/core";
 import { Outlet } from "react-router-dom";
 import { FaMicrochip } from "react-icons/fa";
-import { MdFactory } from "react-icons/md";
+import { MdCategory, MdFactory } from "react-icons/md";
 import MemoryIcon from "@mui/icons-material/Memory";
 
 const NAVIGATION: Navigation = [
@@ -14,6 +14,11 @@ const NAVIGATION: Navigation = [
         segment: "parts",
         title: "Parts",
         icon: <FaMicrochip size={20} />,
+    },
+    {
+        segment: "categories",
+        title: "Categories",
+        icon: <MdCategory size={20} />,
     },
     {
         segment: "manufacturers",

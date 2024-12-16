@@ -1,8 +1,8 @@
 import { InputAdornment } from "@mui/material";
 
-import useCategories from "../../hooks/useCategories";
 import useManufacturers from "../../hooks/manufacturers/useManufacturers";
 import usePackages from "../../hooks/usePackages";
+import useCategories from "../../hooks/categories/useCategories";
 
 import {
     Part,

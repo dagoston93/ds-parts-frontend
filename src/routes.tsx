@@ -3,6 +3,7 @@ import PartTable from "./components/PartTable";
 import ManufacturerTable from "./components/ManufacturerTable";
 import App from "./components/App";
 import Layout from "./components/Layout";
+import CategoryTable from "./components/CategoryTable";
 
 const router = createBrowserRouter([
     {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
                     {
                         path: "/parts",
                         element: <PartTable />,
+                    },
+                    {
+                        path: "/categories",
+                        element: <CategoryTable />,
                     },
                     {
                         path: "/manufacturers",
