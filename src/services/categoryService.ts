@@ -7,7 +7,7 @@ export interface Category extends NamedEntity {
 
 export interface CategoryFormData {
     name: string;
-    parent: string;
+    parent?: string;
 }
 
 export function categoryToCategoryFormData(

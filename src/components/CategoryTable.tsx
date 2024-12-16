@@ -18,7 +18,7 @@ import CreateButton from "./EntityTable/CreateButton";
 import { Category } from "../services/categoryService";
 import useCategories from "../hooks/categories/useCategories";
 import useDeleteCategory from "../hooks/categories/useDeleteCategory";
-import { ManufacturerEditorDialog } from "./ManufacturerEditorDialog";
+import { CategoryEditorDialog } from "./CategoryEditorDialog";
 import { ENTITY_TYPE_CATEGORY } from "../common/entity";
 
 const CategoryTable = () => {
@@ -50,26 +50,26 @@ const CategoryTable = () => {
         setDeleteDialogOpen(false);
     };
 
-    // const handleCreateButtonClick = () => {
-    //     editorDialogState.openDialog();
-    // };
+    const handleCreateButtonClick = () => {
+        editorDialogState.openDialog();
+    };
 
-    // const handleEditButtonClick = (manufacturer: Manufacturer) => {
-    //     editorDialogState.openDialog(manufacturer);
-    // };
+    const handleEditButtonClick = (category: Category) => {
+        editorDialogState.openDialog(category);
+    };
 
-    // const handleEditorDialogClose = () => {
-    //     editorDialogState.closeDialog();
-    // };
+    const handleEditorDialogClose = () => {
+        editorDialogState.closeDialog();
+    };
 
     return (
         <>
             <CreateButton
                 entityType={ENTITY_TYPE_CATEGORY}
-                onClick={/*handleCreateButtonClick*/ () => {}}
+                onClick={handleCreateButtonClick}
             />
-            <ManufacturerEditorDialog
-                onClose={/*handleEditorDialogClose*/ () => {}}
+            <CategoryEditorDialog
+                onClose={handleEditorDialogClose}
                 isOpen={editorDialogState.isDialogOpen}
                 initialEntity={editorDialogState.selectedEntity}
             />
@@ -106,7 +106,9 @@ const CategoryTable = () => {
                                 </TableCell>
                                 <TableCell align="right">
                                     <EntityActionButtons
-                                        onEditButtonClick={() => /*handleEditButtonClick(category)*/ {}}
+                                        onEditButtonClick={() =>
+                                            handleEditButtonClick(category)
+                                        }
                                         onDeleteButtonClick={() =>
                                             handleDeleteButtonClick(category)
                                         }
