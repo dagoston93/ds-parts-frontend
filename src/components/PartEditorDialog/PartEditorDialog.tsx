@@ -1,12 +1,9 @@
 import { InputAdornment } from "@mui/material";
 
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
-
 import useCategories from "../../hooks/useCategories";
 import useManufacturers from "../../hooks/manufacturers/useManufacturers";
 import usePackages from "../../hooks/usePackages";
+
 import {
     Part,
     PartFormData,
@@ -16,81 +13,49 @@ import {
 import validationSchema from "./validationSchema";
 import useAddPart from "../../hooks/parts/useAddPart";
 import useUpdatePart from "../../hooks/parts/useUpdatePart";
-import useNotifications from "../../hooks/useNotifications";
 import DropdownInput from "../EditorDialog/DropdownInput";
 import TextInput from "../EditorDialog/TextInput";
 import NumericInput from "../EditorDialog/NumericInput";
 import { ENTITY_TYPE_PART } from "../../common/entity";
 import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
+import useEditorDialog from "../EditorDialog/useEditorDialog";
 
 const PartEditorDialog = ({
     isOpen,
     onClose,
     initialEntity,
 }: EditorDialogProps<Part>) => {
-    const { showSuccess, showError } = useNotifications();
-
-    const addPart = useAddPart(showSuccess, showError);
-    const updatePart = useUpdatePart(showSuccess, showError);
-
     const { data: manufacturers } = useManufacturers(() => {});
     const { data: categories } = useCategories(() => {});
     const { data: packages } = usePackages(() => {});
 
-    const [isLoading, setLoading] = useState(false);
-
-    const { handleSubmit, register, reset, formState } = useForm<PartFormData>({
-        resolver: joiResolver(validationSchema),
-        mode: "onChange",
-    });
-    const { errors, isValid, touchedFields } = formState;
-
-    const resetForm = () => {
-        reset({
+    const {
+        isEditing,
+        isLoading,
+        isValid,
+        initialData,
+        errors,
+        touchedFields,
+        handleSubmit,
+        register,
+        handleClose,
+        onSubmit,
+    } = useEditorDialog<Part, PartFormData>({
+        initialEntity: initialEntity,
+        defaultFormValues: {
             category: "",
             name: "",
             manufacturer: "",
             partPackage: "",
             price: null,
             count: null,
-        });
-    };
-
-    const handleClose = () => {
-        setLoading(false);
-        resetForm();
-        onClose();
-    };
-
-    const isEditing = !!initialEntity;
-    const initialData =
-        isEditing && initialEntity ? partToPartFormData(initialEntity) : null;
-
-    useEffect(() => {
-        if (isEditing && initialData) {
-            reset(initialData);
-        }
-    }, [initialEntity, reset]);
-
-    const onSubmit = async (data: PartFormData) => {
-        setLoading(true);
-
-        const mutation = isEditing
-            ? updatePart.mutateAsync({
-                  formData: data,
-                  id: initialEntity!._id,
-              })
-            : addPart.mutateAsync(data);
-
-        mutation
-            .then(() => {
-                handleClose();
-            })
-            .catch((err) => {
-                setLoading(false);
-                showError(err.message);
-            });
-    };
+        },
+        validationSchema: validationSchema,
+        entityToFormData: partToPartFormData,
+        onClose: onClose,
+        addMutationFn: useAddPart,
+        updateMutationFn: useUpdatePart,
+    });
 
     return (
         <EditorDialog

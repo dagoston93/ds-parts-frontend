@@ -1,10 +1,6 @@
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
-
 import useAddManufacturer from "../../hooks/manufacturers/useAddManufacturer";
 import useUpdateManufacturer from "../../hooks/manufacturers/useUpdateManufacturer";
-import useNotifications from "../../hooks/useNotifications";
+
 import {
     Manufacturer,
     ManufacturerFormData,
@@ -15,69 +11,35 @@ import validationSchema from "./validationSchema";
 import TextInput from "../EditorDialog/TextInput";
 import { ENTITY_TYPE_MANUFACTURER } from "../../common/entity";
 import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
+import useEditorDialog from "../EditorDialog/useEditorDialog";
 
 const ManufacturerEditorDialog = ({
     isOpen,
     onClose,
     initialEntity,
 }: EditorDialogProps<Manufacturer>) => {
-    const { showSuccess, showError } = useNotifications();
-
-    const addManufacturer = useAddManufacturer(showSuccess, showError);
-    const updateManufacturer = useUpdateManufacturer(showSuccess, showError);
-
-    const [isLoading, setLoading] = useState(false);
-
-    const { handleSubmit, register, reset, formState } =
-        useForm<ManufacturerFormData>({
-            resolver: joiResolver(validationSchema),
-            mode: "onChange",
-        });
-    const { errors, isValid, touchedFields } = formState;
-
-    const resetForm = () => {
-        reset({
+    const {
+        isEditing,
+        isLoading,
+        isValid,
+        initialData,
+        errors,
+        touchedFields,
+        handleSubmit,
+        register,
+        handleClose,
+        onSubmit,
+    } = useEditorDialog<Manufacturer, ManufacturerFormData>({
+        initialEntity: initialEntity,
+        defaultFormValues: {
             name: "",
-        });
-    };
-
-    const handleClose = () => {
-        setLoading(false);
-        resetForm();
-        onClose();
-    };
-
-    const isEditing = !!initialEntity;
-    const initialData =
-        isEditing && initialEntity
-            ? manufacturerToManufacturerFormData(initialEntity)
-            : null;
-
-    useEffect(() => {
-        if (isEditing && initialData) {
-            reset(initialData);
-        }
-    }, [initialEntity, reset]);
-
-    const onSubmit = async (data: ManufacturerFormData) => {
-        setLoading(true);
-
-        const mutation = isEditing
-            ? updateManufacturer.mutateAsync({
-                  formData: data,
-                  id: initialEntity!._id,
-              })
-            : addManufacturer.mutateAsync(data);
-
-        mutation
-            .then(() => {
-                handleClose();
-            })
-            .catch((err) => {
-                setLoading(false);
-                showError(err.message);
-            });
-    };
+        },
+        validationSchema: validationSchema,
+        entityToFormData: manufacturerToManufacturerFormData,
+        onClose: onClose,
+        addMutationFn: useAddManufacturer,
+        updateMutationFn: useUpdateManufacturer,
+    });
 
     return (
         <EditorDialog

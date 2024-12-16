@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import HttpService from "../../services/httpService";
 import { EntityType, NamedEntity } from "../../common/entity";
 
-interface UpdateEntityData<TFormData> {
+export interface UpdateEntityData<TFormData> {
     id: string;
     formData: TFormData;
 }
