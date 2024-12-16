@@ -1,3 +1,4 @@
+import { ENTITY_TYPE_MANUFACTURER } from "../../common/entity";
 import manufacturerService, {
     Manufacturer,
     ManufacturerFormData,
@@ -7,6 +8,6 @@ import useEntities from "../entities/useEntities";
 export default (onError: (message: string) => void) =>
     useEntities<Manufacturer, ManufacturerFormData>(
         manufacturerService,
-        "manufacturers",
+        ENTITY_TYPE_MANUFACTURER,
         onError
     );

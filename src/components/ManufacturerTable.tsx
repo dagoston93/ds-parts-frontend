@@ -19,6 +19,7 @@ import { Manufacturer } from "../services/manufacturerService";
 import useManufacturers from "../hooks/manufacturers/useManufacturers";
 import useDeleteManufacturer from "../hooks/manufacturers/useDeleteManufacturer";
 import { ManufacturerEditorDialog } from "./ManufacturerEditorDialog";
+import { ENTITY_TYPE_MANUFACTURER } from "../common/entity";
 
 const ManufacturerTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -63,7 +64,7 @@ const ManufacturerTable = () => {
     return (
         <>
             <CreateButton
-                entityType="manufacturer"
+                entityType={ENTITY_TYPE_MANUFACTURER}
                 onClick={handleCreateButtonClick}
             />
             <ManufacturerEditorDialog
@@ -74,7 +75,7 @@ const ManufacturerTable = () => {
             <ConfirmDeleteDialog
                 handleClose={handleConfirmDeleteDialogClose}
                 isOpen={isDeleteDialogOpen}
-                entityType="manufacturer"
+                entityType={ENTITY_TYPE_MANUFACTURER}
                 entityName={confirmDeleteEntityName}
             />
             <TableContainer component={Paper}>

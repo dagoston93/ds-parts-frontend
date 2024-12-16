@@ -1,3 +1,4 @@
+import { ENTITY_TYPE_PART } from "../../common/entity";
 import partService, { Part, PartFormData } from "../../services/partService";
 import useDeleteEntity from "../entities/useDeleteEntity";
 
@@ -7,8 +8,7 @@ export default (
 ) =>
     useDeleteEntity<Part, PartFormData>(
         partService,
-        "parts",
-        "Part",
+        ENTITY_TYPE_PART,
         onSuccess,
         onError
     );

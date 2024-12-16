@@ -18,6 +18,7 @@ import EditorDialogTitle from "../EditorDialog/EditorDialogTitle";
 import CloseButton from "../EditorDialog/CloseButton";
 import TextInput from "../EditorDialog/TextInput";
 import EditorDialogActions from "../EditorDialog/EditorDialogActions";
+import { ENTITY_TYPE_MANUFACTURER } from "../../common/entity";
 
 interface Props {
     isOpen: boolean;
@@ -98,7 +99,7 @@ const ManufacturerEditorDialog = ({
         >
             <EditorDialogTitle
                 isEditing={isEditing}
-                entityType="manufacturer"
+                entityType={ENTITY_TYPE_MANUFACTURER}
             />
             <CloseButton onClick={handleClose} />
             <DialogContent>

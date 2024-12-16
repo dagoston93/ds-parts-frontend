@@ -10,7 +10,7 @@ interface Props {
 const CreateButton = ({ entityType, onClick }: Props) => {
     return (
         <Button variant="contained" startIcon={<MdAdd />} onClick={onClick}>
-            {`Create ${entityType}`}
+            {`Create ${entityType.name}`}
         </Button>
     );
 };

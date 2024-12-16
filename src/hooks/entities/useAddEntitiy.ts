@@ -1,15 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import HttpService from "../../services/httpService";
-import {
-    EntityQueryKeys,
-    EntityTypeCapital,
-    NamedEntity,
-} from "../../common/entity";
+import { EntityType, NamedEntity } from "../../common/entity";
 
 const useAddEntity = <TEntity extends NamedEntity, TFormData>(
     service: HttpService<TEntity, TFormData>,
-    queryKey: EntityQueryKeys,
-    entityType: EntityTypeCapital,
+    entityType: EntityType,
     onSuccess: (message: string) => void,
     onError: (message: string) => void
 ) => {
@@ -19,9 +14,9 @@ const useAddEntity = <TEntity extends NamedEntity, TFormData>(
         mutationFn: service.create,
         onSuccess: (savedEntity) => {
             queryClient.invalidateQueries({
-                queryKey: [queryKey],
+                queryKey: [entityType.queryKey],
             });
-            onSuccess(`${entityType} added: ${savedEntity.name}.`);
+            onSuccess(`${entityType.nameCapital} added: ${savedEntity.name}.`);
         },
         onError: (error) => {
             onError(error.message);

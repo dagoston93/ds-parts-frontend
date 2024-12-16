@@ -10,7 +10,7 @@ const EditorDialogTitle = ({ isEditing, entityType }: Props) => {
     return (
         <DialogTitle>
             {isEditing ? "Edit " : "Create "}
-            {entityType}
+            {entityType.name}
         </DialogTitle>
     );
 };

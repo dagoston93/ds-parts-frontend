@@ -1,3 +1,4 @@
+import { ENTITY_TYPE_PART } from "../../common/entity";
 import partService, { Part, PartFormData } from "../../services/partService";
 import useUpdateEntity from "../entities/useUpdateEntity";
 
@@ -7,8 +8,7 @@ export default (
 ) =>
     useUpdateEntity<Part, PartFormData>(
         partService,
-        "parts",
-        "Part",
+        ENTITY_TYPE_PART,
         onSuccess,
         onError
     );

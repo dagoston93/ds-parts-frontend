@@ -25,6 +25,7 @@ import EditorDialogTitle from "../EditorDialog/EditorDialogTitle";
 import EditorDialogActions from "../EditorDialog/EditorDialogActions";
 import TextInput from "../EditorDialog/TextInput";
 import NumericInput from "../EditorDialog/NumericInput";
+import { ENTITY_TYPE_PART } from "../../common/entity";
 
 interface Props {
     isOpen: boolean;
@@ -105,7 +106,10 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
                 onSubmit: handleSubmit(onSubmit),
             }}
         >
-            <EditorDialogTitle isEditing={isEditing} entityType="part" />
+            <EditorDialogTitle
+                isEditing={isEditing}
+                entityType={ENTITY_TYPE_PART}
+            />
             <CloseButton onClick={handleClose} />
             <DialogContent>
                 <DropdownInput

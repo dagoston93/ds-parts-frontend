@@ -21,10 +21,11 @@ const ConfirmDeleteDialog = ({
 }: Props) => {
     return (
         <Dialog open={isOpen} onClose={() => handleClose(false)}>
-            <DialogTitle>Delete {entityType}?</DialogTitle>
+            <DialogTitle>Delete {entityType.name}?</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Are you sure you want to delete the following {entityType}?
+                    Are you sure you want to delete the following{" "}
+                    {entityType.name}?
                     <br />
                     <b>{entityName}</b>
                 </DialogContentText>

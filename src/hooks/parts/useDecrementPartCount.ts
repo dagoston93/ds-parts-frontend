@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import partService, { Part } from "../../services/partService";
+import { ENTITY_TYPE_PART } from "../../common/entity";
 
 const useDecrementPartCount = (onError: (message: string) => void) => {
     const queryClient = useQueryClient();
@@ -8,7 +9,7 @@ const useDecrementPartCount = (onError: (message: string) => void) => {
         mutationFn: partService.decrementCount,
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ["parts"],
+                queryKey: [ENTITY_TYPE_PART.queryKey],
             });
         },
         onError: (error) => {

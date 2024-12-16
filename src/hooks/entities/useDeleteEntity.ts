@@ -1,10 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import HttpService from "../../services/httpService";
-import {
-    EntityQueryKeys,
-    EntityTypeCapital,
-    NamedEntity,
-} from "../../common/entity";
+import { EntityType, NamedEntity } from "../../common/entity";
 
 interface DeleteEntityContext<TEntity> {
     originalEntities: TEntity[];
@@ -12,8 +8,7 @@ interface DeleteEntityContext<TEntity> {
 
 const useDeleteEntity = <TEntity extends NamedEntity, TFormData>(
     service: HttpService<TEntity, TFormData>,
-    queryKey: EntityQueryKeys,
-    entityType: EntityTypeCapital,
+    entityType: EntityType,
     onSuccess: (message: string) => void,
     onError: (message: string) => void
 ) => {
@@ -23,23 +18,28 @@ const useDeleteEntity = <TEntity extends NamedEntity, TFormData>(
         mutationFn: service.delete,
         onMutate: (deletedEntityId: string) => {
             const originalEntities =
-                queryClient.getQueryData<TEntity[]>([queryKey]) || [];
+                queryClient.getQueryData<TEntity[]>([entityType.queryKey]) ||
+                [];
 
-            queryClient.setQueryData<TEntity[]>([queryKey], (entities = []) =>
-                entities.filter((p) => p._id !== deletedEntityId)
+            queryClient.setQueryData<TEntity[]>(
+                [entityType.queryKey],
+                (entities = []) =>
+                    entities.filter((p) => p._id !== deletedEntityId)
             );
 
             return { originalEntities };
         },
         onSuccess: (savedEntity) => {
-            onSuccess(`${entityType} deleted: ${savedEntity.name}.`);
+            onSuccess(
+                `${entityType.nameCapital} deleted: ${savedEntity.name}.`
+            );
         },
         onError: (error, _, context) => {
             onError(error.message);
 
             if (context) {
                 queryClient.setQueryData<TEntity[]>(
-                    [queryKey],
+                    [entityType.queryKey],
                     context.originalEntities
                 );
             }

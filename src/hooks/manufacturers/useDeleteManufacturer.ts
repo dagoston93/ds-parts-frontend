@@ -1,3 +1,4 @@
+import { ENTITY_TYPE_MANUFACTURER } from "../../common/entity";
 import manufacturerService, {
     Manufacturer,
     ManufacturerFormData,
@@ -10,8 +11,7 @@ export default (
 ) =>
     useDeleteEntity<Manufacturer, ManufacturerFormData>(
         manufacturerService,
-        "manufacturers",
-        "Manufacturer",
+        ENTITY_TYPE_MANUFACTURER,
         onSuccess,
         onError
     );

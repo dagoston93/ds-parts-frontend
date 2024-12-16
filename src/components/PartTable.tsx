@@ -22,6 +22,7 @@ import useDecrementPartCount from "../hooks/parts/useDecrementPartCount";
 import CountStepper from "./EntityTable/CountStepper";
 import EntityActionButtons from "./EntityTable/EntityActionButtons";
 import CreateButton from "./EntityTable/CreateButton";
+import { ENTITY_TYPE_PART } from "../common/entity";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -75,7 +76,7 @@ const PartTable = () => {
     return (
         <>
             <CreateButton
-                entityType="part"
+                entityType={ENTITY_TYPE_PART}
                 onClick={handleCreatePartButtonClick}
             />
             <PartEditorDialog
@@ -86,7 +87,7 @@ const PartTable = () => {
             <ConfirmDeleteDialog
                 handleClose={handleDeletePartDialogClose}
                 isOpen={isDeleteDialogOpen}
-                entityType="part"
+                entityType={ENTITY_TYPE_PART}
                 entityName={confirmDeleteEntityName}
             />
             <TableContainer component={Paper}>

@@ -1,10 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import HttpService from "../../services/httpService";
-import {
-    EntityQueryKeys,
-    EntityTypeCapital,
-    NamedEntity,
-} from "../../common/entity";
+import { EntityType, NamedEntity } from "../../common/entity";
 
 interface UpdateEntityData<TFormData> {
     id: string;
@@ -13,8 +9,7 @@ interface UpdateEntityData<TFormData> {
 
 const useUpdateEntity = <TEntity extends NamedEntity, TFormData>(
     service: HttpService<TEntity, TFormData>,
-    queryKey: EntityQueryKeys,
-    entityType: EntityTypeCapital,
+    entityType: EntityType,
     onSuccess: (message: string) => void,
     onError: (message: string) => void
 ) => {
@@ -24,9 +19,9 @@ const useUpdateEntity = <TEntity extends NamedEntity, TFormData>(
         mutationFn: ({ id, formData }) => service.update(formData, id),
         onSuccess: (savedEntity) => {
             queryClient.invalidateQueries({
-                queryKey: [queryKey],
+                queryKey: [entityType.queryKey],
             });
-            onSuccess(`${entityType} updated: ${savedEntity.name}.`);
+            onSuccess(`${entityType.name} updated: ${savedEntity.name}.`);
         },
         onError: (error) => {
             onError(error.message);
