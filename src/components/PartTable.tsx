@@ -34,14 +34,12 @@ const PartTable = () => {
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [partToDelete, setPartToDelete] = useState<Part | null>(null);
     const [confirmDeleteEntityName, setConfirmDeleteEntityName] = useState("");
-    const [confirmDeleteEntityType, setConfirmDeleteEntityType] = useState("");
 
     const partEditorDialogState = useEditorDialogState<Part>(null);
 
     const handleDeletePartButtonClick = (part: Part) => {
         setPartToDelete(part);
         setConfirmDeleteEntityName(part.name);
-        setConfirmDeleteEntityType("part");
         setDeleteDialogOpen(true);
     };
 
@@ -88,7 +86,7 @@ const PartTable = () => {
             <ConfirmDeleteDialog
                 handleClose={handleDeletePartDialogClose}
                 isOpen={isDeleteDialogOpen}
-                entityType={confirmDeleteEntityType}
+                entityType="part"
                 entityName={confirmDeleteEntityName}
             />
             <TableContainer component={Paper}>

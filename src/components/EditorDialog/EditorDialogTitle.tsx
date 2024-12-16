@@ -1,8 +1,9 @@
 import { DialogTitle } from "@mui/material";
+import { EntityType } from "../../common/entity";
 
 interface Props {
     isEditing: boolean;
-    entityType: string;
+    entityType: EntityType;
 }
 
 const EditorDialogTitle = ({ isEditing, entityType }: Props) => {

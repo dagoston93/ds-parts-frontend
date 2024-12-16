@@ -1,8 +1,9 @@
 import { Button } from "@mui/material";
 import { MdAdd } from "react-icons/md";
+import { EntityType } from "../../common/entity";
 
 interface Props {
-    entityType: string;
+    entityType: EntityType;
     onClick: () => void;
 }
 
