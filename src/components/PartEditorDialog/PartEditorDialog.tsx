@@ -1,6 +1,4 @@
 import { InputAdornment } from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
 
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -20,20 +18,16 @@ import useAddPart from "../../hooks/parts/useAddPart";
 import useUpdatePart from "../../hooks/parts/useUpdatePart";
 import useNotifications from "../../hooks/useNotifications";
 import DropdownInput from "../EditorDialog/DropdownInput";
-import CloseButton from "../EditorDialog/CloseButton";
-import EditorDialogTitle from "../EditorDialog/EditorDialogTitle";
-import EditorDialogActions from "../EditorDialog/EditorDialogActions";
 import TextInput from "../EditorDialog/TextInput";
 import NumericInput from "../EditorDialog/NumericInput";
 import { ENTITY_TYPE_PART } from "../../common/entity";
+import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
 
-interface Props {
-    isOpen: boolean;
-    onClose: () => void;
-    initialPart?: Part | null;
-}
-
-const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
+const PartEditorDialog = ({
+    isOpen,
+    onClose,
+    initialEntity,
+}: EditorDialogProps<Part>) => {
     const { showSuccess, showError } = useNotifications();
 
     const addPart = useAddPart(showSuccess, showError);
@@ -68,15 +62,15 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
         onClose();
     };
 
-    const isEditing = !!initialPart;
+    const isEditing = !!initialEntity;
     const initialData =
-        isEditing && initialPart ? partToPartFormData(initialPart) : null;
+        isEditing && initialEntity ? partToPartFormData(initialEntity) : null;
 
     useEffect(() => {
         if (isEditing && initialData) {
             reset(initialData);
         }
-    }, [initialPart, reset]);
+    }, [initialEntity, reset]);
 
     const onSubmit = async (data: PartFormData) => {
         setLoading(true);
@@ -84,7 +78,7 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
         const mutation = isEditing
             ? updatePart.mutateAsync({
                   formData: data,
-                  id: initialPart!._id,
+                  id: initialEntity!._id,
               })
             : addPart.mutateAsync(data);
 
@@ -99,91 +93,80 @@ const PartEditorDialog = ({ isOpen, onClose, initialPart }: Props) => {
     };
 
     return (
-        <Dialog
-            open={isOpen}
-            PaperProps={{
-                component: "form",
-                onSubmit: handleSubmit(onSubmit),
-            }}
+        <EditorDialog
+            isOpen={isOpen}
+            isEditing={isEditing}
+            isLoading={isLoading}
+            isValid={isValid}
+            entityType={ENTITY_TYPE_PART}
+            onClose={handleClose}
+            onSubmit={handleSubmit(onSubmit)}
         >
-            <EditorDialogTitle
-                isEditing={isEditing}
-                entityType={ENTITY_TYPE_PART}
+            <DropdownInput
+                register={register}
+                id="category"
+                label="Category"
+                options={categories}
+                defaultValue={initialData?.category}
+                error={!!errors.category}
+                touched={!!touchedFields.category}
+                helperText={errors.category?.message}
             />
-            <CloseButton onClick={handleClose} />
-            <DialogContent>
-                <DropdownInput
-                    register={register}
-                    id="category"
-                    label="Category"
-                    options={categories}
-                    defaultValue={initialData?.category}
-                    error={!!errors.category}
-                    touched={!!touchedFields.category}
-                    helperText={errors.category?.message}
-                />
-                <TextInput
-                    register={register}
-                    id="name"
-                    label="Part name"
-                    defaultValue={initialData?.name}
-                    error={!!errors.name}
-                    touched={!!touchedFields.name}
-                    helperText={errors.name?.message}
-                />
-                <DropdownInput
-                    register={register}
-                    id="manufacturer"
-                    label="Manufacturer"
-                    options={manufacturers}
-                    defaultValue={initialData?.manufacturer}
-                    error={!!errors.manufacturer}
-                    touched={!!touchedFields.manufacturer}
-                    helperText={errors.manufacturer?.message}
-                />
-                <DropdownInput
-                    register={register}
-                    id="partPackage"
-                    label="Package"
-                    options={packages}
-                    defaultValue={initialData?.partPackage}
-                    error={!!errors.partPackage}
-                    touched={!!touchedFields.partPackage}
-                    helperText={errors.partPackage?.message}
-                />
-                <NumericInput
-                    register={register}
-                    id="price"
-                    label="Price"
-                    defaultValue={initialData?.price}
-                    error={!!errors.price}
-                    touched={!!touchedFields.price}
-                    helperText={errors.price?.message}
-                    min={0.01}
-                    step={0.01}
-                    startAdornment={
-                        <InputAdornment position="start">$</InputAdornment>
-                    }
-                />
-                <NumericInput
-                    register={register}
-                    id="count"
-                    label="Count"
-                    defaultValue={initialData?.count}
-                    error={!!errors.count}
-                    touched={!!touchedFields.count}
-                    helperText={errors.count?.message}
-                    min={0}
-                    step={1}
-                />
-            </DialogContent>
-            <EditorDialogActions
-                isEditing={isEditing}
-                isLoading={isLoading}
-                isValid={isValid}
-                onClose={handleClose}
+            <TextInput
+                register={register}
+                id="name"
+                label="Part name"
+                defaultValue={initialData?.name}
+                error={!!errors.name}
+                touched={!!touchedFields.name}
+                helperText={errors.name?.message}
             />
-        </Dialog>
+            <DropdownInput
+                register={register}
+                id="manufacturer"
+                label="Manufacturer"
+                options={manufacturers}
+                defaultValue={initialData?.manufacturer}
+                error={!!errors.manufacturer}
+                touched={!!touchedFields.manufacturer}
+                helperText={errors.manufacturer?.message}
+            />
+            <DropdownInput
+                register={register}
+                id="partPackage"
+                label="Package"
+                options={packages}
+                defaultValue={initialData?.partPackage}
+                error={!!errors.partPackage}
+                touched={!!touchedFields.partPackage}
+                helperText={errors.partPackage?.message}
+            />
+            <NumericInput
+                register={register}
+                id="price"
+                label="Price"
+                defaultValue={initialData?.price}
+                error={!!errors.price}
+                touched={!!touchedFields.price}
+                helperText={errors.price?.message}
+                min={0.01}
+                step={0.01}
+                startAdornment={
+                    <InputAdornment position="start">$</InputAdornment>
+                }
+            />
+            <NumericInput
+                register={register}
+                id="count"
+                label="Count"
+                defaultValue={initialData?.count}
+                error={!!errors.count}
+                touched={!!touchedFields.count}
+                helperText={errors.count?.message}
+                min={0}
+                step={1}
+            />
+        </EditorDialog>
     );
 };
 

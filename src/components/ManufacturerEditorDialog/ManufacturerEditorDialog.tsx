@@ -1,5 +1,3 @@
-import { Dialog, DialogContent } from "@mui/material";
-
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -14,23 +12,15 @@ import {
 } from "../../services/manufacturerService";
 
 import validationSchema from "./validationSchema";
-import EditorDialogTitle from "../EditorDialog/EditorDialogTitle";
-import CloseButton from "../EditorDialog/CloseButton";
 import TextInput from "../EditorDialog/TextInput";
-import EditorDialogActions from "../EditorDialog/EditorDialogActions";
 import { ENTITY_TYPE_MANUFACTURER } from "../../common/entity";
-
-interface Props {
-    isOpen: boolean;
-    onClose: () => void;
-    initialManufacturer?: Manufacturer | null;
-}
+import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
 
 const ManufacturerEditorDialog = ({
     isOpen,
     onClose,
-    initialManufacturer,
-}: Props) => {
+    initialEntity,
+}: EditorDialogProps<Manufacturer>) => {
     const { showSuccess, showError } = useNotifications();
 
     const addManufacturer = useAddManufacturer(showSuccess, showError);
@@ -57,17 +47,17 @@ const ManufacturerEditorDialog = ({
         onClose();
     };
 
-    const isEditing = !!initialManufacturer;
+    const isEditing = !!initialEntity;
     const initialData =
-        isEditing && initialManufacturer
-            ? manufacturerToManufacturerFormData(initialManufacturer)
+        isEditing && initialEntity
+            ? manufacturerToManufacturerFormData(initialEntity)
             : null;
 
     useEffect(() => {
         if (isEditing && initialData) {
             reset(initialData);
         }
-    }, [initialManufacturer, reset]);
+    }, [initialEntity, reset]);
 
     const onSubmit = async (data: ManufacturerFormData) => {
         setLoading(true);
@@ -75,7 +65,7 @@ const ManufacturerEditorDialog = ({
         const mutation = isEditing
             ? updateManufacturer.mutateAsync({
                   formData: data,
-                  id: initialManufacturer!._id,
+                  id: initialEntity!._id,
               })
             : addManufacturer.mutateAsync(data);
 
@@ -90,36 +80,25 @@ const ManufacturerEditorDialog = ({
     };
 
     return (
-        <Dialog
-            open={isOpen}
-            PaperProps={{
-                component: "form",
-                onSubmit: handleSubmit(onSubmit),
-            }}
+        <EditorDialog
+            isOpen={isOpen}
+            isEditing={isEditing}
+            isLoading={isLoading}
+            isValid={isValid}
+            entityType={ENTITY_TYPE_MANUFACTURER}
+            onClose={handleClose}
+            onSubmit={handleSubmit(onSubmit)}
         >
-            <EditorDialogTitle
-                isEditing={isEditing}
-                entityType={ENTITY_TYPE_MANUFACTURER}
+            <TextInput
+                register={register}
+                id="name"
+                label="Manufacturer name"
+                defaultValue={initialData?.name}
+                error={!!errors.name}
+                touched={!!touchedFields.name}
+                helperText={errors.name?.message}
             />
-            <CloseButton onClick={handleClose} />
-            <DialogContent>
-                <TextInput
-                    register={register}
-                    id="name"
-                    label="Manufacturer name"
-                    defaultValue={initialData?.name}
-                    error={!!errors.name}
-                    touched={!!touchedFields.name}
-                    helperText={errors.name?.message}
-                />
-            </DialogContent>
-            <EditorDialogActions
-                isEditing={isEditing}
-                isLoading={isLoading}
-                isValid={isValid}
-                onClose={handleClose}
-            />
-        </Dialog>
+        </EditorDialog>
     );
 };
 
