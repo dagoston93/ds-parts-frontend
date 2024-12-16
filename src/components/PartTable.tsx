@@ -82,7 +82,7 @@ const PartTable = () => {
             <PartEditorDialog
                 onClose={handlePartEditorDialogClose}
                 isOpen={partEditorDialogState.isDialogOpen}
-                initialPart={partEditorDialogState.selectedEntity}
+                initialEntity={partEditorDialogState.selectedEntity}
             />
             <ConfirmDeleteDialog
                 handleClose={handleDeletePartDialogClose}

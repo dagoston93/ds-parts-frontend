@@ -70,7 +70,7 @@ const ManufacturerTable = () => {
             <ManufacturerEditorDialog
                 onClose={handleEditorDialogClose}
                 isOpen={editorDialogState.isDialogOpen}
-                initialManufacturer={editorDialogState.selectedEntity}
+                initialEntity={editorDialogState.selectedEntity}
             />
             <ConfirmDeleteDialog
                 handleClose={handleConfirmDeleteDialogClose}
