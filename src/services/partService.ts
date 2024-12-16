@@ -1,24 +1,16 @@
+import { NamedEntity } from "../common/entity";
 import apiClient from "./apiClient";
+import { Category } from "./categoryService";
 import HttpService from "./httpService";
+import { Manufacturer } from "./manufacturerService";
+import { Package } from "./packageService";
 
-export interface Part {
-    _id: string;
-    name: string;
-    manufacturer?: {
-        _id: string;
-        name: string;
-    };
-    partPackage?: {
-        _id: string;
-        name: string;
-        type: "SMD" | "THT";
-    };
+export interface Part extends NamedEntity {
+    manufacturer?: Manufacturer;
+    partPackage?: Package;
     price: number;
     count: number;
-    category?: {
-        _id: string;
-        name: string;
-    };
+    category?: Category;
 }
 
 export interface PartFormData {

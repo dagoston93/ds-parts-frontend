@@ -1,14 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import HttpService from "../../services/httpService";
+import { NamedEntity } from "../../common/entity";
 
 interface DeleteEntityContext<TEntity> {
     originalEntities: TEntity[];
 }
 
-const useDeleteEntity = <
-    TEntity extends { _id: string; name: string },
-    TFormData,
->(
+const useDeleteEntity = <TEntity extends NamedEntity, TFormData>(
     service: HttpService<TEntity, TFormData>,
     queryKey: string,
     entityType: string,

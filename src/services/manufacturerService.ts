@@ -1,9 +1,7 @@
+import { NamedEntity } from "../common/entity";
 import HttpService from "./httpService";
 
-export interface Manufacturer {
-    _id: string;
-    name: string;
-}
+export interface Manufacturer extends NamedEntity {}
 
 export interface ManufacturerFormData {
     name: string;

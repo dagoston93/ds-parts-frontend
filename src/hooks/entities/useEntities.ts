@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import HttpService from "../../services/httpService";
+import { Entity } from "../../common/entity";
 
-const useEntities = <TEntity extends { _id: string }, TFormData>(
+const useEntities = <TEntity extends Entity, TFormData>(
     service: HttpService<TEntity, TFormData>,
     queryKey: string,
     onError: (message: string) => void

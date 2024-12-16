@@ -1,6 +1,7 @@
+import { Entity } from "../common/entity";
 import apiClient from "./apiClient";
 
-class HttpService<TEntity extends { _id: string }, TFormData> {
+class HttpService<TEntity extends Entity, TFormData> {
     endpoint: string;
 
     constructor(endpoint: string) {

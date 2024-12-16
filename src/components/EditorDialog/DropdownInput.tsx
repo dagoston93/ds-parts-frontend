@@ -1,15 +1,10 @@
 import { MenuItem, TextField } from "@mui/material";
 import { FieldValues } from "react-hook-form";
 import CommonInputProps from "./commonInputProps";
+import { NamedEntity } from "../../common/entity";
 
 interface Props<T extends FieldValues> extends CommonInputProps<string, T> {
-    options:
-        | {
-              _id: string;
-              name: string;
-          }[]
-        | null
-        | undefined;
+    options: NamedEntity[] | null | undefined;
 }
 
 const DropdownInput = <T extends FieldValues>({

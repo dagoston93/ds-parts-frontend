@@ -1,15 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import HttpService from "../../services/httpService";
+import { NamedEntity } from "../../common/entity";
 
 interface UpdateEntityData<TFormData> {
     id: string;
     formData: TFormData;
 }
 
-const useUpdateEntity = <
-    TEntity extends { _id: string; name: string },
-    TFormData,
->(
+const useUpdateEntity = <TEntity extends NamedEntity, TFormData>(
     service: HttpService<TEntity, TFormData>,
     queryKey: string,
     entityType: string,

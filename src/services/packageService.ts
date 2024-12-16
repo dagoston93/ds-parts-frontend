@@ -1,8 +1,7 @@
+import { NamedEntity } from "../common/entity";
 import HttpService from "./httpService";
 
-export interface Package {
-    _id: string;
-    name: string;
+export interface Package extends NamedEntity {
     type: "SMD" | "THT";
 }
 
