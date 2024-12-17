@@ -24,7 +24,7 @@ const CategoryEditorDialog = ({
     const { data: categories } = useCategories(() => {});
 
     const processFormData = (data: CategoryFormData) => {
-        if (data.parent === "") {
+        if (data.parent === "-" || data.parent === "") {
             const { parent, ...rest } = data;
             return rest;
         }
@@ -46,7 +46,7 @@ const CategoryEditorDialog = ({
         initialEntity: initialEntity,
         defaultFormValues: {
             name: "",
-            parent: "",
+            parent: "-",
         },
         validationSchema: validationSchema,
         entityToFormData: categoryToCategoryFormData,
@@ -85,6 +85,7 @@ const CategoryEditorDialog = ({
                 label="Parent"
                 options={displayedCategories}
                 defaultValue={initialData?.parent}
+                defaultOption={{ name: "None", value: "-" }}
                 error={!!errors.parent}
                 touched={!!touchedFields.parent}
                 helperText={errors.parent?.message}
