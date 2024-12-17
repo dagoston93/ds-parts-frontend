@@ -17,7 +17,7 @@ import EntityActionButtons from "./EntityTable/EntityActionButtons";
 import CreateButton from "./EntityTable/CreateButton";
 import { Package } from "../services/packageService";
 import usePackages from "../hooks/packages/usePackages";
-//import useDeletePackage from "../hooks/packages/useDeletePackage";
+import useDeletePackage from "../hooks/packages/useDeletePackage";
 //import { PackageEditorDialog } from "./PackageEditorDialog";
 import { ENTITY_TYPE_PACKAGE } from "../common/entity";
 
@@ -25,7 +25,7 @@ const PackageTable = () => {
     const { showSuccess, showError } = useNotifications();
     const { data: packages, isLoading } = usePackages(showError);
 
-    //const deletePackage = useDeletePackage(showSuccess, showError);
+    const deletePackage = useDeletePackage(showSuccess, showError);
 
     const [isDeleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [packageToDelete, setPackageToDelete] = useState<Package | null>(
@@ -43,7 +43,7 @@ const PackageTable = () => {
 
     const handleConfirmDeleteDialogClose = (confirmed: boolean) => {
         if (confirmed && packageToDelete) {
-            //deletePackage.mutate(packageToDelete._id);
+            deletePackage.mutate(packageToDelete._id);
         }
 
         setPackageToDelete(null);
