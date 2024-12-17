@@ -3,6 +3,7 @@ import { Navigation } from "@toolpad/core";
 import { Outlet } from "react-router-dom";
 import { FaMicrochip } from "react-icons/fa";
 import { MdCategory, MdFactory } from "react-icons/md";
+import { VscCircuitBoard } from "react-icons/vsc";
 import MemoryIcon from "@mui/icons-material/Memory";
 
 const NAVIGATION: Navigation = [
@@ -24,6 +25,11 @@ const NAVIGATION: Navigation = [
         segment: "manufacturers",
         title: "Manufacturers",
         icon: <MdFactory size={20} />,
+    },
+    {
+        segment: "packages",
+        title: "Packages",
+        icon: <VscCircuitBoard size={20} />,
     },
 ];
 

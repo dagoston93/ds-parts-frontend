@@ -4,6 +4,7 @@ import ManufacturerTable from "./components/ManufacturerTable";
 import App from "./components/App";
 import Layout from "./components/Layout";
 import CategoryTable from "./components/CategoryTable";
+import PackageTable from "./components/PackageTable";
 
 const router = createBrowserRouter([
     {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
                     {
                         path: "/manufacturers",
                         element: <ManufacturerTable />,
+                    },
+                    {
+                        path: "/packages",
+                        element: <PackageTable />,
                     },
                 ],
             },
