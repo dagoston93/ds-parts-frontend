@@ -10,11 +10,10 @@ import {
 
 import validationSchema from "./validationSchema";
 import TextInput from "../EditorDialog/TextInput";
-import DropdownInput from "../EditorDialog/DropdownInput";
+import StringDropdownInput from "../EditorDialog/StringDropdownInput";
 import { ENTITY_TYPE_PACKAGE } from "../../common/entity";
 import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
 import useEditorDialog from "../EditorDialog/useEditorDialog";
-import StringDropdownInput from "../EditorDialog/StringDropdownInput";
 
 const PackageEditorDialog = ({
     isOpen,
