@@ -1,7 +1,8 @@
 import { NamedEntity } from "../common/entity";
 import HttpService from "./httpService";
 
-type PackageType = "SMD" | "THT";
+export const possiblePackageTypes = ["SMD", "THT"] as const;
+type PackageType = (typeof possiblePackageTypes)[number];
 
 export interface Package extends NamedEntity {
     type: PackageType;

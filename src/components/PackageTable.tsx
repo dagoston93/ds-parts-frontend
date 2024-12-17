@@ -18,7 +18,7 @@ import CreateButton from "./EntityTable/CreateButton";
 import { Package } from "../services/packageService";
 import usePackages from "../hooks/packages/usePackages";
 import useDeletePackage from "../hooks/packages/useDeletePackage";
-//import { PackageEditorDialog } from "./PackageEditorDialog";
+import { PackageEditorDialog } from "./PackageEditorDialog";
 import { ENTITY_TYPE_PACKAGE } from "../common/entity";
 
 const PackageTable = () => {
@@ -68,11 +68,11 @@ const PackageTable = () => {
                 entityType={ENTITY_TYPE_PACKAGE}
                 onClick={handleCreateButtonClick}
             />
-            {/* <PackageEditorDialog
+            <PackageEditorDialog
                 onClose={handleEditorDialogClose}
                 isOpen={editorDialogState.isDialogOpen}
                 initialEntity={editorDialogState.selectedEntity}
-            /> */}
+            />
             <ConfirmDeleteDialog
                 handleClose={handleConfirmDeleteDialogClose}
                 isOpen={isDeleteDialogOpen}
