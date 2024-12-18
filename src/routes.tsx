@@ -5,6 +5,7 @@ import App from "./components/App";
 import Layout from "./components/Layout";
 import CategoryTable from "./components/CategoryTable";
 import PackageTable from "./components/PackageTable";
+import LogInPage from "./components/LogInPage";
 
 const router = createBrowserRouter([
     {
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
                         element: <PackageTable />,
                     },
                 ],
+            },
+            {
+                path: "/sign-in",
+                element: <LogInPage />,
             },
         ],
     },
