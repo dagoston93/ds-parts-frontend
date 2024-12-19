@@ -1,5 +1,4 @@
 import { AuthProvider, SignInPage } from "@toolpad/core/SignInPage";
-import type { Session } from "@toolpad/core/AppProvider";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../auth/useSession";
 import authService from "../services/authService";

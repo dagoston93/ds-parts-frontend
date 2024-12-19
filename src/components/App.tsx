@@ -7,6 +7,7 @@ import { VscCircuitBoard } from "react-icons/vsc";
 import MemoryIcon from "@mui/icons-material/Memory";
 import { useCallback, useMemo, useState } from "react";
 import { SessionContext } from "../auth/useSession";
+import authService from "../services/authService";
 
 const NAVIGATION: Navigation = [
     {
@@ -44,6 +45,7 @@ const App = () => {
     }, [navigate]);
 
     const logout = useCallback(() => {
+        authService.logout();
         setSession(null);
         navigate("/login");
     }, [navigate]);

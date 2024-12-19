@@ -38,6 +38,7 @@ class AuthService {
             const decoded = jwtDecode<JwtPayload>(token);
             const user = decoded.user;
 
+            localStorage.setItem("authToken", token);
             return { user, error: null };
         } catch (err) {
             if (axios.isAxiosError(err) && err.response?.status === 400) {
@@ -46,6 +47,11 @@ class AuthService {
 
             return { user: null, error: "Unexpected error." };
         }
+    };
+
+    logout = async () => {
+        await apiClient.post(logoutEndpoint);
+        localStorage.removeItem("authToken");
     };
 }
 
