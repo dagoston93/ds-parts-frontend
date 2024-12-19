@@ -53,6 +53,20 @@ class AuthService {
         await apiClient.post(logoutEndpoint);
         localStorage.removeItem("authToken");
     };
+
+    getCurrentUser() {
+        try {
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+                return null;
+            }
+
+            const decoded = jwtDecode<JwtPayload>(token);
+            return decoded.user;
+        } catch {
+            return null;
+        }
+    }
 }
 
 export default new AuthService();

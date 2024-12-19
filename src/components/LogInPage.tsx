@@ -1,11 +1,15 @@
 import { AuthProvider, SignInPage } from "@toolpad/core/SignInPage";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useSession } from "../auth/useSession";
 import authService from "../auth/authService";
 
 export default function LoginPage() {
-    const { setSession } = useSession();
     const navigate = useNavigate();
+    const { session, setSession } = useSession();
+
+    if (session) {
+        return <Navigate to={"/"} />;
+    }
 
     const handleLogin = async (
         provider: AuthProvider,

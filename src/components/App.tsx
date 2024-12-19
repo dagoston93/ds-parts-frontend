@@ -5,7 +5,7 @@ import { FaMicrochip } from "react-icons/fa";
 import { MdCategory, MdFactory } from "react-icons/md";
 import { VscCircuitBoard } from "react-icons/vsc";
 import MemoryIcon from "@mui/icons-material/Memory";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { SessionContext } from "../auth/useSession";
 import authService from "../auth/authService";
 
@@ -37,8 +37,9 @@ const NAVIGATION: Navigation = [
 ];
 
 const App = () => {
-    const [session, setSession] = useState<Session | null>(null);
     const navigate = useNavigate();
+    const [session, setSession] = useState<Session | null>(null);
+    const [isCheckingToken, setIsCheckingToken] = useState(true);
 
     const login = useCallback(() => {
         navigate("/login");
@@ -54,6 +55,19 @@ const App = () => {
         () => ({ session, setSession }),
         [session, setSession]
     );
+
+    useEffect(() => {
+        const currentUser = authService.getCurrentUser();
+        if (currentUser) {
+            setSession({ user: currentUser });
+        }
+
+        setIsCheckingToken(false);
+    }, []);
+
+    if (isCheckingToken) {
+        return null;
+    }
 
     return (
         <SessionContext.Provider value={sessionContextValue}>
