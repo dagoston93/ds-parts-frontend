@@ -1,5 +1,5 @@
 import axios from "axios";
-import apiClient from "./apiClient";
+import apiClient from "../services/apiClient";
 import { jwtDecode } from "jwt-decode";
 
 export interface User {

@@ -1,7 +1,7 @@
 import { AuthProvider, SignInPage } from "@toolpad/core/SignInPage";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../auth/useSession";
-import authService from "../services/authService";
+import authService from "../auth/authService";
 
 export default function LoginPage() {
     const { setSession } = useSession();
