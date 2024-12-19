@@ -7,7 +7,7 @@ const Layout = () => {
     const { session } = useSession();
 
     if (!session) {
-        return <Navigate to={"/sign-in"} />;
+        return <Navigate to={"/login"} />;
     }
 
     return (

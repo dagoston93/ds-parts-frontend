@@ -1,25 +1,39 @@
+import { AuthProvider, SignInPage } from "@toolpad/core/SignInPage";
+import type { Session } from "@toolpad/core/AppProvider";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "../auth/useSession";
-import { SignInPage } from "@toolpad/core/SignInPage";
+import authService from "../services/authService";
 
-const LogInPage = () => {
+export default function LoginPage() {
     const { setSession } = useSession();
     const navigate = useNavigate();
+
+    const handleLogin = async (
+        provider: AuthProvider,
+        formData?: any,
+        callbackUrl?: String
+    ) => {
+        const { user, error } = await authService.login({
+            email: formData.get("email"),
+            password: formData.get("password"),
+        });
+
+        if (error || !user) {
+            return Promise.resolve({ error });
+        }
+
+        const session = { user };
+
+        setSession(session);
+        navigate("/", { replace: true });
+
+        return {};
+    };
 
     return (
         <SignInPage
             providers={[{ id: "credentials", name: "Credentials" }]}
-            signIn={(provider, formData) => {
-                if (formData.get("password") === "password") {
-                    setSession({ user: { name: "Agoston" } });
-                    navigate("/");
-                } else {
-                    //return { error: "Invalid credentials" };
-                }
-                //return {};
-            }}
+            signIn={handleLogin}
         />
     );
-};
-
-export default LogInPage;
+}

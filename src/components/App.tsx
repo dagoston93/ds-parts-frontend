@@ -39,13 +39,13 @@ const App = () => {
     const [session, setSession] = useState<Session | null>(null);
     const navigate = useNavigate();
 
-    const signIn = useCallback(() => {
-        navigate("/sign-in");
+    const login = useCallback(() => {
+        navigate("/login");
     }, [navigate]);
 
-    const signOut = useCallback(() => {
+    const logout = useCallback(() => {
         setSession(null);
-        navigate("/sign-in");
+        navigate("/login");
     }, [navigate]);
 
     const sessionContextValue = useMemo(
@@ -61,6 +61,8 @@ const App = () => {
                     title: "Part Catalog",
                     logo: <MemoryIcon fontSize="large" color="primary" />,
                 }}
+                session={session}
+                authentication={{ signIn: login, signOut: logout }}
             >
                 <Outlet />
             </AppProvider>
