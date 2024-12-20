@@ -17,24 +17,24 @@ interface JwtPayload {
     user: User;
 }
 
-export interface LoginFormData {
+export interface SignInFormData {
     email: string;
     password: string;
     remember?: string | null;
 }
 
-interface LoginResponse {
+interface SignInResponse {
     user: User | null;
     error: string | null;
 }
 
-const loginEndpoint = "/auth";
-const logoutEndpoint = "/auth/logout";
+const signInEndpoint = "/auth";
+const signOutEndpoint = "/auth/logout";
 
 class AuthService {
-    login = async (formData: LoginFormData): Promise<LoginResponse> => {
+    signIn = async (formData: SignInFormData): Promise<SignInResponse> => {
         try {
-            const response = await apiClient.post(loginEndpoint, {
+            const response = await apiClient.post(signInEndpoint, {
                 email: formData.email,
                 password: formData.password,
             });
@@ -60,9 +60,9 @@ class AuthService {
         }
     };
 
-    logout = async () => {
+    signOut = async () => {
         tokenStorage.removeToken();
-        await apiClient.post(logoutEndpoint);
+        await apiClient.post(signOutEndpoint);
     };
 
     getCurrentUser() {

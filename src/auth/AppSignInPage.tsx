@@ -1,9 +1,9 @@
 import { AuthProvider, SignInPage } from "@toolpad/core/SignInPage";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useSession } from "../auth/useSession";
-import authService from "../auth/authService";
+import { useSession } from "./useSession";
+import authService from "./authService";
 
-export default function LoginPage() {
+const AppSignInPage = () => {
     const navigate = useNavigate();
     const { session, setSession } = useSession();
 
@@ -11,12 +11,12 @@ export default function LoginPage() {
         return <Navigate to={"/"} />;
     }
 
-    const handleLogin = async (
-        provider: AuthProvider,
+    const handleSignIn = async (
+        _: AuthProvider,
         formData?: any,
         callbackUrl?: string
     ) => {
-        const { user, error } = await authService.login({
+        const { user, error } = await authService.signIn({
             email: formData.get("email"),
             password: formData.get("password"),
             remember: formData.get("remember"),
@@ -37,7 +37,9 @@ export default function LoginPage() {
     return (
         <SignInPage
             providers={[{ id: "credentials", name: "Credentials" }]}
-            signIn={handleLogin}
+            signIn={handleSignIn}
         />
     );
-}
+};
+
+export default AppSignInPage;

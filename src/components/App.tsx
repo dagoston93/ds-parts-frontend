@@ -43,14 +43,14 @@ const App = () => {
     const [session, setSession] = useState<Session | null>(null);
     const [isCheckingToken, setIsCheckingToken] = useState(true);
 
-    const login = useCallback(() => {
-        navigate("/login");
+    const signIn = useCallback(() => {
+        navigate("/signin");
     }, [navigate]);
 
-    const logout = useCallback(() => {
-        authService.logout();
+    const signOut = useCallback(() => {
+        authService.signOut();
         setSession(null);
-        navigate("/login");
+        navigate("/signin");
     }, [navigate]);
 
     const sessionContextValue = useMemo(
@@ -77,7 +77,7 @@ const App = () => {
                 setSession({ user: updatedUser });
             } else {
                 setSession(null);
-                navigate("/login");
+                navigate("/signin");
             }
         };
 
@@ -85,7 +85,7 @@ const App = () => {
 
         registerAuthErrorHandler(() => {
             setSession(null);
-            navigate("/login");
+            navigate("/signin");
         });
 
         // Remove event listener on unmount
@@ -107,7 +107,7 @@ const App = () => {
                     logo: <MemoryIcon fontSize="large" color="primary" />,
                 }}
                 session={session}
-                authentication={{ signIn: login, signOut: logout }}
+                authentication={{ signIn: signIn, signOut: signOut }}
             >
                 <Outlet />
             </AppProvider>

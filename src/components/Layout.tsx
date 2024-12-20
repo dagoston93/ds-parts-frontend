@@ -7,9 +7,9 @@ const Layout = () => {
     const { session } = useSession();
 
     if (!session) {
-        const redirectTo = `/login?callbackUrl=${encodeURIComponent(location.pathname)}`;
+        const redirectTo = `/signin?callbackUrl=${encodeURIComponent(location.pathname)}`;
 
-        return <Navigate to={redirectTo} />;
+        return <Navigate to={redirectTo} replace={true} />;
     }
 
     return (
