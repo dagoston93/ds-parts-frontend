@@ -1,13 +1,13 @@
 import CircularProgress from "@mui/material/CircularProgress";
 import { AppProvider } from "@toolpad/core/react-router-dom";
-import { Navigation, Session } from "@toolpad/core";
+import { Navigation } from "@toolpad/core";
 import { Outlet, useNavigate } from "react-router-dom";
 import { FaMicrochip } from "react-icons/fa";
 import { MdCategory, MdFactory } from "react-icons/md";
 import { VscCircuitBoard } from "react-icons/vsc";
 import MemoryIcon from "@mui/icons-material/Memory";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { SessionContext } from "../auth/useSession";
+import { Session, SessionContext } from "../auth/useSession";
 import authService from "../auth/authService";
 import tokenStorage from "../auth/tokenStorage";
 import { registerAuthErrorHandler } from "../services/apiClient";

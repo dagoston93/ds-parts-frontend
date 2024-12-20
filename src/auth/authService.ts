@@ -2,16 +2,7 @@ import axios from "axios";
 import apiClient from "../services/apiClient";
 import { jwtDecode } from "jwt-decode";
 import tokenStorage from "./tokenStorage";
-
-export interface User {
-    name: string;
-    rights: {
-        canModifyParts: boolean;
-        canDeleteParts: boolean;
-        canModifyUsers: boolean;
-        canDeleteUsers: boolean;
-    };
-}
+import User from "./user";
 
 interface JwtPayload {
     user: User;
