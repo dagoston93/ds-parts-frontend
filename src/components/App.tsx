@@ -92,6 +92,7 @@ const App = () => {
     useEffect(() => {
         registerAuthErrorHandler(() => {
             endSession();
+            tokenStorage.removeToken();
         });
     }, [navigate]);
 
