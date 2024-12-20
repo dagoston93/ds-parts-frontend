@@ -20,6 +20,7 @@ import useManufacturers from "../hooks/manufacturers/useManufacturers";
 import useDeleteManufacturer from "../hooks/manufacturers/useDeleteManufacturer";
 import { ManufacturerEditorDialog } from "./ManufacturerEditorDialog";
 import { ENTITY_TYPE_MANUFACTURER } from "../common/entity";
+import EntityActionHeader from "./EntityTable/EntityActionHeader";
 
 const ManufacturerTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -83,7 +84,7 @@ const ManufacturerTable = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>Manufacturer</TableCell>
-                            <TableCell></TableCell>
+                            <EntityActionHeader />
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -99,18 +100,14 @@ const ManufacturerTable = () => {
                                 <TableCell align="left">
                                     {manufacturer.name}
                                 </TableCell>
-                                <TableCell align="right">
-                                    <EntityActionButtons
-                                        onEditButtonClick={() =>
-                                            handleEditButtonClick(manufacturer)
-                                        }
-                                        onDeleteButtonClick={() =>
-                                            handleDeleteButtonClick(
-                                                manufacturer
-                                            )
-                                        }
-                                    />
-                                </TableCell>
+                                <EntityActionButtons
+                                    onEditButtonClick={() =>
+                                        handleEditButtonClick(manufacturer)
+                                    }
+                                    onDeleteButtonClick={() =>
+                                        handleDeleteButtonClick(manufacturer)
+                                    }
+                                />
                             </TableRow>
                         ))}
                     </TableBody>

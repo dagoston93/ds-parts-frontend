@@ -12,12 +12,19 @@ import TextInput from "../EditorDialog/TextInput";
 import { ENTITY_TYPE_MANUFACTURER } from "../../common/entity";
 import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
 import useEditorDialog from "../EditorDialog/useEditorDialog";
+import { useSession } from "../../auth/useSession";
 
 const ManufacturerEditorDialog = ({
     isOpen,
     onClose,
     initialEntity,
 }: EditorDialogProps<Manufacturer>) => {
+    const { session } = useSession();
+
+    if (!session?.user?.rights.canModifyParts) {
+        return null;
+    }
+
     const {
         isEditing,
         isLoading,

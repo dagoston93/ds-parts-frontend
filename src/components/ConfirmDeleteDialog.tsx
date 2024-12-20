@@ -5,6 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { EntityType } from "../common/entity";
+import { useSession } from "../auth/useSession";
 
 interface Props {
     isOpen: boolean;
@@ -19,6 +20,12 @@ const ConfirmDeleteDialog = ({
     entityName,
     handleClose,
 }: Props) => {
+    const { session } = useSession();
+
+    if (!session?.user?.rights.canDeleteParts) {
+        return null;
+    }
+
     return (
         <Dialog open={isOpen} onClose={() => handleClose(false)}>
             <DialogTitle>Delete {entityType.name}?</DialogTitle>

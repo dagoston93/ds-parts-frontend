@@ -19,12 +19,19 @@ import NumericInput from "../EditorDialog/NumericInput";
 import { ENTITY_TYPE_PART } from "../../common/entity";
 import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
 import useEditorDialog from "../EditorDialog/useEditorDialog";
+import { useSession } from "../../auth/useSession";
 
 const PartEditorDialog = ({
     isOpen,
     onClose,
     initialEntity,
 }: EditorDialogProps<Part>) => {
+    const { session } = useSession();
+
+    if (!session?.user?.rights.canModifyParts) {
+        return null;
+    }
+
     const { data: manufacturers } = useManufacturers(() => {});
     const { data: categories } = useCategories(() => {});
     const { data: packages } = usePackages(() => {});

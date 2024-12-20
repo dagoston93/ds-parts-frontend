@@ -14,12 +14,19 @@ import StringDropdownInput from "../EditorDialog/StringDropdownInput";
 import { ENTITY_TYPE_PACKAGE } from "../../common/entity";
 import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
 import useEditorDialog from "../EditorDialog/useEditorDialog";
+import { useSession } from "../../auth/useSession";
 
 const PackageEditorDialog = ({
     isOpen,
     onClose,
     initialEntity,
 }: EditorDialogProps<Package>) => {
+    const { session } = useSession();
+
+    if (!session?.user?.rights.canModifyParts) {
+        return null;
+    }
+
     const {
         isEditing,
         isLoading,

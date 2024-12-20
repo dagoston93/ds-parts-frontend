@@ -23,6 +23,7 @@ import CountStepper from "./EntityTable/CountStepper";
 import EntityActionButtons from "./EntityTable/EntityActionButtons";
 import CreateButton from "./EntityTable/CreateButton";
 import { ENTITY_TYPE_PART } from "../common/entity";
+import EntityActionHeader from "./EntityTable/EntityActionHeader";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -102,7 +103,7 @@ const PartTable = () => {
                             <TableCell align="center" colSpan={2}>
                                 Count
                             </TableCell>
-                            <TableCell></TableCell>
+                            <EntityActionHeader />
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -148,16 +149,14 @@ const PartTable = () => {
                                         }}
                                     />
                                 </TableCell>
-                                <TableCell align="right">
-                                    <EntityActionButtons
-                                        onEditButtonClick={() =>
-                                            handleEditPartButtonClick(part)
-                                        }
-                                        onDeleteButtonClick={() =>
-                                            handleDeletePartButtonClick(part)
-                                        }
-                                    />
-                                </TableCell>
+                                <EntityActionButtons
+                                    onEditButtonClick={() =>
+                                        handleEditPartButtonClick(part)
+                                    }
+                                    onDeleteButtonClick={() =>
+                                        handleDeletePartButtonClick(part)
+                                    }
+                                />
                             </TableRow>
                         ))}
                     </TableBody>

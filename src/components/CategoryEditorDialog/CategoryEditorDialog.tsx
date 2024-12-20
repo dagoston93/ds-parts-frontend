@@ -15,12 +15,19 @@ import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
 import useEditorDialog from "../EditorDialog/useEditorDialog";
 import useCategories from "../../hooks/categories/useCategories";
 import DropdownInput from "../EditorDialog/DropdownInput";
+import { useSession } from "../../auth/useSession";
 
 const CategoryEditorDialog = ({
     isOpen,
     onClose,
     initialEntity,
 }: EditorDialogProps<Category>) => {
+    const { session } = useSession();
+
+    if (!session?.user?.rights.canModifyParts) {
+        return null;
+    }
+
     const { data: categories } = useCategories(() => {});
 
     const processFormData = (data: CategoryFormData) => {

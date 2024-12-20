@@ -20,6 +20,7 @@ import usePackages from "../hooks/packages/usePackages";
 import useDeletePackage from "../hooks/packages/useDeletePackage";
 import { PackageEditorDialog } from "./PackageEditorDialog";
 import { ENTITY_TYPE_PACKAGE } from "../common/entity";
+import EntityActionHeader from "./EntityTable/EntityActionHeader";
 
 const PackageTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -85,7 +86,7 @@ const PackageTable = () => {
                         <TableRow>
                             <TableCell>Package</TableCell>
                             <TableCell>Package type</TableCell>
-                            <TableCell></TableCell>
+                            <EntityActionHeader />
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -104,16 +105,14 @@ const PackageTable = () => {
                                 <TableCell align="left">
                                     {partPackage.type}
                                 </TableCell>
-                                <TableCell align="right">
-                                    <EntityActionButtons
-                                        onEditButtonClick={() =>
-                                            handleEditButtonClick(partPackage)
-                                        }
-                                        onDeleteButtonClick={() =>
-                                            handleDeleteButtonClick(partPackage)
-                                        }
-                                    />
-                                </TableCell>
+                                <EntityActionButtons
+                                    onEditButtonClick={() =>
+                                        handleEditButtonClick(partPackage)
+                                    }
+                                    onDeleteButtonClick={() =>
+                                        handleDeleteButtonClick(partPackage)
+                                    }
+                                />
                             </TableRow>
                         ))}
                     </TableBody>

@@ -20,6 +20,7 @@ import useCategories from "../hooks/categories/useCategories";
 import useDeleteCategory from "../hooks/categories/useDeleteCategory";
 import { CategoryEditorDialog } from "./CategoryEditorDialog";
 import { ENTITY_TYPE_CATEGORY } from "../common/entity";
+import EntityActionHeader from "./EntityTable/EntityActionHeader";
 
 const CategoryTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -85,7 +86,7 @@ const CategoryTable = () => {
                         <TableRow>
                             <TableCell>Category</TableCell>
                             <TableCell>Parent</TableCell>
-                            <TableCell></TableCell>
+                            <EntityActionHeader />
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -104,16 +105,14 @@ const CategoryTable = () => {
                                 <TableCell>
                                     {category.parent?.name || "-"}
                                 </TableCell>
-                                <TableCell align="right">
-                                    <EntityActionButtons
-                                        onEditButtonClick={() =>
-                                            handleEditButtonClick(category)
-                                        }
-                                        onDeleteButtonClick={() =>
-                                            handleDeleteButtonClick(category)
-                                        }
-                                    />
-                                </TableCell>
+                                <EntityActionButtons
+                                    onEditButtonClick={() =>
+                                        handleEditButtonClick(category)
+                                    }
+                                    onDeleteButtonClick={() =>
+                                        handleDeleteButtonClick(category)
+                                    }
+                                />
                             </TableRow>
                         ))}
                     </TableBody>
