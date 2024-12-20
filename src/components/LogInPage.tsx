@@ -14,7 +14,7 @@ export default function LoginPage() {
     const handleLogin = async (
         provider: AuthProvider,
         formData?: any,
-        callbackUrl?: String
+        callbackUrl?: string
     ) => {
         const { user, error } = await authService.login({
             email: formData.get("email"),
@@ -29,7 +29,7 @@ export default function LoginPage() {
         const session = { user };
 
         setSession(session);
-        navigate("/", { replace: true });
+        navigate(callbackUrl || "/", { replace: true });
 
         return {};
     };
