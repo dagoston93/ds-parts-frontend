@@ -1,3 +1,4 @@
+import CircularProgress from "@mui/material/CircularProgress";
 import { AppProvider } from "@toolpad/core/react-router-dom";
 import { Navigation, Session } from "@toolpad/core";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -10,6 +11,7 @@ import { SessionContext } from "../auth/useSession";
 import authService from "../auth/authService";
 import tokenStorage from "../auth/tokenStorage";
 import { registerAuthErrorHandler } from "../services/apiClient";
+import { Box } from "@mui/material";
 
 const NAVIGATION: Navigation = [
     {
@@ -43,14 +45,18 @@ const App = () => {
     const [session, setSession] = useState<Session | null>(null);
     const [isCheckingToken, setIsCheckingToken] = useState(true);
 
+    const endSession = () => {
+        setSession(null);
+        navigate("/signin");
+    };
+
     const signIn = useCallback(() => {
         navigate("/signin");
     }, [navigate]);
 
     const signOut = useCallback(() => {
         authService.signOut();
-        setSession(null);
-        navigate("/signin");
+        endSession();
     }, [navigate]);
 
     const sessionContextValue = useMemo(
@@ -65,37 +71,41 @@ const App = () => {
         }
 
         setIsCheckingToken(false);
+    }, []);
 
+    useEffect(() => {
         // Handle if session is changed from another tab, e.g. Sign out
-        const handleStorageChange = (event: StorageEvent) => {
-            if (!tokenStorage.hasTokenChanged(event)) {
-                return;
-            }
-
-            const updatedUser = authService.getCurrentUser();
-            if (updatedUser) {
-                setSession({ user: updatedUser });
-            } else {
-                setSession(null);
-                navigate("/signin");
-            }
-        };
-
-        window.addEventListener("storage", handleStorageChange);
-
-        registerAuthErrorHandler(() => {
-            setSession(null);
-            navigate("/signin");
-        });
+        const removeStorageChangeHandler =
+            tokenStorage.registerStorageChangeHandler(() => {
+                const updatedUser = authService.getCurrentUser();
+                if (updatedUser) {
+                    setSession({ user: updatedUser });
+                } else {
+                    endSession();
+                }
+            });
 
         // Remove event listener on unmount
-        return () => {
-            window.removeEventListener("storage", handleStorageChange);
-        };
+        return removeStorageChangeHandler;
+    }, [navigate]);
+
+    useEffect(() => {
+        registerAuthErrorHandler(() => {
+            endSession();
+        });
     }, [navigate]);
 
     if (isCheckingToken) {
-        return null;
+        return (
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100vh"
+            >
+                <CircularProgress size="3rem" />
+            </Box>
+        );
     }
 
     return (

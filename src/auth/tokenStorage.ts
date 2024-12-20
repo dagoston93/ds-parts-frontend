@@ -37,8 +37,20 @@ class TokenStorage {
         return this.storage.getItem(KEY_TOKEN);
     };
 
-    hasTokenChanged = (event: StorageEvent) => {
-        return event.key === KEY_TOKEN;
+    registerStorageChangeHandler = (handler: () => void) => {
+        const eventHandler = (event: StorageEvent) => {
+            if (event.key === KEY_TOKEN) {
+                handler();
+            }
+        };
+
+        const removeEventHandler = () => {
+            window.removeEventListener("storage", eventHandler);
+        };
+
+        window.addEventListener("storage", eventHandler);
+
+        return removeEventHandler;
     };
 }
 

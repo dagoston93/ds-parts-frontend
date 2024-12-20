@@ -61,8 +61,8 @@ class AuthService {
     };
 
     signOut = async () => {
-        tokenStorage.removeToken();
         await apiClient.post(signOutEndpoint);
+        tokenStorage.removeToken();
     };
 
     getCurrentUser() {
