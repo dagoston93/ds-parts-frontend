@@ -9,6 +9,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { SessionContext } from "../auth/useSession";
 import authService from "../auth/authService";
 import tokenStorage from "../auth/tokenStorage";
+import { registerAuthErrorHandler } from "../services/apiClient";
 
 const NAVIGATION: Navigation = [
     {
@@ -81,6 +82,11 @@ const App = () => {
         };
 
         window.addEventListener("storage", handleStorageChange);
+
+        registerAuthErrorHandler(() => {
+            setSession(null);
+            navigate("/login");
+        });
 
         // Remove event listener on unmount
         return () => {

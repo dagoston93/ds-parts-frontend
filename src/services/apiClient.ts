@@ -13,4 +13,17 @@ apiClient.interceptors.request.use((config) => {
     return config;
 });
 
+export function registerAuthErrorHandler(callback: () => void) {
+    apiClient.interceptors.response.use(
+        (response) => response,
+        async (error) => {
+            if (error.response?.status === 401) {
+                callback();
+            }
+
+            return Promise.reject(error);
+        }
+    );
+}
+
 export default apiClient;
