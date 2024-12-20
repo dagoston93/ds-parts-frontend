@@ -19,6 +19,7 @@ export default function LoginPage() {
         const { user, error } = await authService.login({
             email: formData.get("email"),
             password: formData.get("password"),
+            remember: formData.get("remember"),
         });
 
         if (error || !user) {

@@ -1,6 +1,7 @@
 import axios from "axios";
 import apiClient from "../services/apiClient";
 import { jwtDecode } from "jwt-decode";
+import tokenStorage from "./tokenStorage";
 
 export interface User {
     name: string;
@@ -19,6 +20,7 @@ interface JwtPayload {
 export interface LoginFormData {
     email: string;
     password: string;
+    remember?: string | null;
 }
 
 interface LoginResponse {
@@ -32,13 +34,22 @@ const logoutEndpoint = "/auth/logout";
 class AuthService {
     login = async (formData: LoginFormData): Promise<LoginResponse> => {
         try {
-            const response = await apiClient.post(loginEndpoint, formData);
+            const response = await apiClient.post(loginEndpoint, {
+                email: formData.email,
+                password: formData.password,
+            });
             const token = response.data;
 
             const decoded = jwtDecode<JwtPayload>(token);
             const user = decoded.user;
 
-            localStorage.setItem("authToken", token);
+            if (formData.remember) {
+                tokenStorage.setStorageType("LOCAL");
+            } else {
+                tokenStorage.setStorageType("SESSION");
+            }
+
+            tokenStorage.saveToken(token);
             return { user, error: null };
         } catch (err) {
             if (axios.isAxiosError(err) && err.response?.status === 400) {
@@ -50,13 +61,13 @@ class AuthService {
     };
 
     logout = async () => {
+        tokenStorage.removeToken();
         await apiClient.post(logoutEndpoint);
-        localStorage.removeItem("authToken");
     };
 
     getCurrentUser() {
         try {
-            const token = localStorage.getItem("authToken");
+            const token = tokenStorage.getToken();
             if (!token) {
                 return null;
             }

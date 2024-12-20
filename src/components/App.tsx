@@ -8,6 +8,7 @@ import MemoryIcon from "@mui/icons-material/Memory";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SessionContext } from "../auth/useSession";
 import authService from "../auth/authService";
+import tokenStorage from "../auth/tokenStorage";
 
 const NAVIGATION: Navigation = [
     {
@@ -63,7 +64,29 @@ const App = () => {
         }
 
         setIsCheckingToken(false);
-    }, []);
+
+        // Handle if session is changed from another tab, e.g. Sign out
+        const handleStorageChange = (event: StorageEvent) => {
+            if (!tokenStorage.hasTokenChanged(event)) {
+                return;
+            }
+
+            const updatedUser = authService.getCurrentUser();
+            if (updatedUser) {
+                setSession({ user: updatedUser });
+            } else {
+                setSession(null);
+                navigate("/login");
+            }
+        };
+
+        window.addEventListener("storage", handleStorageChange);
+
+        // Remove event listener on unmount
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
+    }, [navigate]);
 
     if (isCheckingToken) {
         return null;
