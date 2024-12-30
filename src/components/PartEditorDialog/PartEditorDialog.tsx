@@ -1,4 +1,4 @@
-import { InputAdornment } from "@mui/material";
+import { Button, InputAdornment } from "@mui/material";
 
 import useManufacturers from "../../hooks/manufacturers/useManufacturers";
 import usePackages from "../../hooks/packages/usePackages";
@@ -20,6 +20,8 @@ import { ENTITY_TYPE_PART } from "../../common/entity";
 import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
 import useEditorDialog from "../EditorDialog/useEditorDialog";
 import { useSession } from "../../auth/useSession";
+import { useState } from "react";
+import UploadDialog from "../UploadDialog/UploadDialog";
 
 const PartEditorDialog = ({
     isOpen,
@@ -35,6 +37,14 @@ const PartEditorDialog = ({
     const { data: manufacturers } = useManufacturers(() => {});
     const { data: categories } = useCategories(() => {});
     const { data: packages } = usePackages(() => {});
+
+    const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
+    const handleUploadImageButtonClick = () => {
+        setUploadImageDialogOpen(true);
+    };
+    const handleUploadImageDialogClose = () => {
+        setUploadImageDialogOpen(false);
+    };
 
     const {
         isEditing,
@@ -74,6 +84,17 @@ const PartEditorDialog = ({
             onClose={handleClose}
             onSubmit={handleSubmit(onSubmit)}
         >
+            <Button
+                onClick={() => handleUploadImageButtonClick()}
+                variant="outlined"
+                disabled={isLoading}
+            >
+                Upload
+            </Button>
+            <UploadDialog
+                isOpen={isUploadImageDialogOpen}
+                onClose={handleUploadImageDialogClose}
+            />
             <DropdownInput
                 register={register}
                 id="category"
