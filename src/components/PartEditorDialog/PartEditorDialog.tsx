@@ -94,6 +94,7 @@ const PartEditorDialog = ({
             <UploadDialog
                 isOpen={isUploadImageDialogOpen}
                 onClose={handleUploadImageDialogClose}
+                type="Image"
             />
             <DropdownInput
                 register={register}

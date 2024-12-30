@@ -22,9 +22,10 @@ import { FaFileUpload } from "react-icons/fa";
 interface Props {
     isOpen: boolean;
     onClose: () => void;
+    type: "Image" | "File";
 }
 
-const UploadDialog = ({ isOpen, onClose }: Props) => {
+const UploadDialog = ({ isOpen, onClose, type }: Props) => {
     const { session } = useSession();
 
     if (!session?.user?.rights.canModifyParts) {
@@ -57,16 +58,18 @@ const UploadDialog = ({ isOpen, onClose }: Props) => {
     const onSubmit = async (data: FileUploadFormData) => {
         setLoading(true);
 
-        uploadService
-            .uploadImage(data)
-            .then(() => {
-                showSuccess("Image uploaded.");
-                handleClose();
-            })
-            .catch((err) => {
-                setLoading(false);
-                showError(err.message);
-            });
+        const res =
+            type == "Image"
+                ? uploadService.uploadImage(data)
+                : uploadService.uploadFile(data);
+
+        res.then(() => {
+            showSuccess("Image uploaded.");
+            handleClose();
+        }).catch((err) => {
+            setLoading(false);
+            showError(err.message);
+        });
     };
 
     return (
@@ -78,7 +81,7 @@ const UploadDialog = ({ isOpen, onClose }: Props) => {
                 encType: "multipart/form-data",
             }}
         >
-            <DialogTitle>Upload image</DialogTitle>
+            <DialogTitle>{`Upload ${type}`}</DialogTitle>
             <CloseButton onClick={onClose} />
             <DialogContent>
                 <input {...register("image")} type="file" name="image" />

@@ -13,14 +13,22 @@ export interface FileUploadFormData extends NamedEntity {
 }
 
 class UploadService {
-    uploadImage = (data: FileUploadFormData) => {
+    private upload = (endpoint: string, data: FileUploadFormData) => {
         return apiClient
-            .post("/upload/image", data, {
+            .post(endpoint, data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             })
             .then((res) => res.data);
+    };
+
+    uploadImage = (data: FileUploadFormData) => {
+        return this.upload("/upload/image", data);
+    };
+
+    uploadFile = (data: FileUploadFormData) => {
+        return this.upload("/upload/file", data);
     };
 }
 
