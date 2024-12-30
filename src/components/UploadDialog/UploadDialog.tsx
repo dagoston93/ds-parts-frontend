@@ -84,7 +84,7 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
             <DialogTitle>{`Upload ${type}`}</DialogTitle>
             <CloseButton onClick={onClose} />
             <DialogContent>
-                <input {...register("image")} type="file" name="image" />
+                <input {...register("file")} type="file" name="file" />
                 <TextInput
                     register={register}
                     id="name"

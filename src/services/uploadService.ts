@@ -9,7 +9,7 @@ export interface File extends NamedEntity {
 export interface FileUploadFormData extends NamedEntity {
     description: string;
     name: string;
-    image: FileList;
+    file: FileList;
 }
 
 class UploadService {

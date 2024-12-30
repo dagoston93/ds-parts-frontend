@@ -13,7 +13,7 @@ const validationSchema = Joi.object({
         "string.min": "Description must be at least 2 characters.",
         "string.max": "Description cannot exceed 150 characters.",
     }),
-    image: Joi.any().required().messages({
+    file: Joi.any().required().messages({
         "string.empty": "File is required.",
     }),
 });
