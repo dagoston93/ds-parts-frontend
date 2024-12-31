@@ -4,6 +4,7 @@ import { Category } from "./categoryService";
 import HttpService from "./httpService";
 import { Manufacturer } from "./manufacturerService";
 import { Package } from "./packageService";
+import { File } from "./fileService";
 
 export interface Part extends NamedEntity {
     manufacturer?: Manufacturer;
@@ -11,6 +12,7 @@ export interface Part extends NamedEntity {
     price: number;
     count: number;
     category?: Category;
+    primaryImage?: File;
 }
 
 export interface PartFormData {
@@ -20,6 +22,7 @@ export interface PartFormData {
     price: number | null;
     count: number | null;
     category: string;
+    primaryImage: string;
 }
 
 export function partToPartFormData(part: Part): PartFormData {
@@ -30,6 +33,7 @@ export function partToPartFormData(part: Part): PartFormData {
         price: part.price,
         count: part.count,
         category: part.category?._id || "",
+        primaryImage: part.primaryImage?._id || "",
     };
 }
 

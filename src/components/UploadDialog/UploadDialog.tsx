@@ -9,9 +9,7 @@ import {
 import TextInput from "../EditorDialog/TextInput";
 import { useSession } from "../../auth/useSession";
 import { useForm } from "react-hook-form";
-import uploadService, {
-    FileUploadFormData,
-} from "../../services/uploadService";
+import fileService, { FileUploadFormData } from "../../services/fileService";
 import { joiResolver } from "@hookform/resolvers/joi";
 import validationSchema from "./validationSchema";
 import { useRef, useState } from "react";
@@ -70,8 +68,8 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
 
         const res =
             type == "Image"
-                ? uploadService.uploadImage(data)
-                : uploadService.uploadFile(data);
+                ? fileService.uploadImage(data)
+                : fileService.uploadFile(data);
 
         res.then(() => {
             showSuccess(`${type} uploaded.`);

@@ -1,4 +1,4 @@
-import { Button, InputAdornment } from "@mui/material";
+import { Button, Divider, InputAdornment } from "@mui/material";
 
 import useManufacturers from "../../hooks/manufacturers/useManufacturers";
 import usePackages from "../../hooks/packages/usePackages";
@@ -22,6 +22,8 @@ import useEditorDialog from "../EditorDialog/useEditorDialog";
 import { useSession } from "../../auth/useSession";
 import { useState } from "react";
 import UploadDialog from "../UploadDialog/UploadDialog";
+import ImageDropdownInput from "../EditorDialog/ImageDropdownInput";
+import useImages from "../../hooks/files/useImages";
 
 const PartEditorDialog = ({
     isOpen,
@@ -37,6 +39,7 @@ const PartEditorDialog = ({
     const { data: manufacturers } = useManufacturers(() => {});
     const { data: categories } = useCategories(() => {});
     const { data: packages } = usePackages(() => {});
+    const { data: images } = useImages(() => {});
 
     const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
     const handleUploadImageButtonClick = () => {
@@ -66,6 +69,7 @@ const PartEditorDialog = ({
             partPackage: "",
             price: null,
             count: null,
+            primaryImage: "",
         },
         validationSchema: validationSchema,
         entityToFormData: partToPartFormData,
@@ -84,6 +88,7 @@ const PartEditorDialog = ({
             onClose={handleClose}
             onSubmit={handleSubmit(onSubmit)}
         >
+            <Divider textAlign="left">Primary info</Divider>
             <Button
                 onClick={() => handleUploadImageButtonClick()}
                 variant="outlined"
@@ -159,6 +164,17 @@ const PartEditorDialog = ({
                 helperText={errors.count?.message}
                 min={0}
                 step={1}
+            />
+            <Divider textAlign="left">Images</Divider>
+            <ImageDropdownInput
+                register={register}
+                id="primaryImage"
+                label="Primary image"
+                images={images}
+                defaultValue={initialData?.primaryImage}
+                error={!!errors.primaryImage}
+                touched={!!touchedFields.primaryImage}
+                helperText={errors.primaryImage?.message}
             />
         </EditorDialog>
     );

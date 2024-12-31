@@ -12,7 +12,7 @@ export interface FileUploadFormData extends NamedEntity {
     file: FileList;
 }
 
-class UploadService {
+class FileService {
     private upload = (endpoint: string, data: FileUploadFormData) => {
         return apiClient
             .post(endpoint, data, {
@@ -30,6 +30,14 @@ class UploadService {
     uploadFile = (data: FileUploadFormData) => {
         return this.upload("/upload/file", data);
     };
+
+    getAllImages = () => {
+        return apiClient.get<File[]>("/files/images").then((res) => res.data);
+    };
+
+    getAllFiles = () => {
+        return apiClient.get<File[]>("/files/files").then((res) => res.data);
+    };
 }
 
-export default new UploadService();
+export default new FileService();
