@@ -1,4 +1,4 @@
-import { Button, Divider, InputAdornment } from "@mui/material";
+import { Divider, IconButton, InputAdornment, Stack } from "@mui/material";
 
 import useManufacturers from "../../hooks/manufacturers/useManufacturers";
 import usePackages from "../../hooks/packages/usePackages";
@@ -24,6 +24,7 @@ import { useState } from "react";
 import UploadDialog from "../UploadDialog/UploadDialog";
 import ImageDropdownInput from "../EditorDialog/ImageDropdownInput";
 import useImages from "../../hooks/files/useImages";
+import { FaFileUpload } from "react-icons/fa";
 
 const PartEditorDialog = ({
     isOpen,
@@ -89,13 +90,6 @@ const PartEditorDialog = ({
             onSubmit={handleSubmit(onSubmit)}
         >
             <Divider textAlign="left">Primary info</Divider>
-            <Button
-                onClick={() => handleUploadImageButtonClick()}
-                variant="outlined"
-                disabled={isLoading}
-            >
-                Upload
-            </Button>
             <UploadDialog
                 isOpen={isUploadImageDialogOpen}
                 onClose={handleUploadImageDialogClose}
@@ -166,16 +160,25 @@ const PartEditorDialog = ({
                 step={1}
             />
             <Divider textAlign="left">Images</Divider>
-            <ImageDropdownInput
-                register={register}
-                id="primaryImage"
-                label="Primary image"
-                images={images}
-                defaultValue={initialData?.primaryImage}
-                error={!!errors.primaryImage}
-                touched={!!touchedFields.primaryImage}
-                helperText={errors.primaryImage?.message}
-            />
+            <Stack direction="row" spacing={2}>
+                <ImageDropdownInput
+                    register={register}
+                    id="primaryImage"
+                    label="Primary image"
+                    images={images}
+                    defaultValue={initialData?.primaryImage}
+                    error={!!errors.primaryImage}
+                    touched={!!touchedFields.primaryImage}
+                    helperText={errors.primaryImage?.message}
+                />
+                <IconButton
+                    onClick={() => handleUploadImageButtonClick()}
+                    color="primary"
+                    disabled={isLoading}
+                >
+                    <FaFileUpload />
+                </IconButton>
+            </Stack>
         </EditorDialog>
     );
 };
