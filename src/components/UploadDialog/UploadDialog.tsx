@@ -4,6 +4,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    Typography,
 } from "@mui/material";
 import TextInput from "../EditorDialog/TextInput";
 import { useSession } from "../../auth/useSession";
@@ -13,11 +14,12 @@ import uploadService, {
 } from "../../services/uploadService";
 import { joiResolver } from "@hookform/resolvers/joi";
 import validationSchema from "./validationSchema";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useNotifications from "../../hooks/useNotifications";
 import CloseButton from "../EditorDialog/CloseButton";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { FaFileUpload } from "react-icons/fa";
+import HiddenInput from "./HiddenInput";
 
 interface Props {
     isOpen: boolean;
@@ -39,14 +41,22 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
         });
     const { errors, isValid, touchedFields } = formState;
 
-    const [isLoading, setLoading] = useState(false);
     const { showSuccess, showError } = useNotifications();
+
+    const [isLoading, setLoading] = useState(false);
+    const [selectedFileName, setSelectedFileName] = useState("");
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     const resetForm = () => {
         reset({
             name: "",
             description: "",
         });
+
+        setSelectedFileName("");
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
     };
 
     const handleClose = () => {
@@ -82,9 +92,34 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
             }}
         >
             <DialogTitle>{`Upload ${type}`}</DialogTitle>
-            <CloseButton onClick={onClose} />
+            <CloseButton onClick={handleClose} />
             <DialogContent>
-                <input {...register("file")} type="file" name="file" />
+                <Button
+                    component="label"
+                    role={undefined}
+                    variant="contained"
+                    tabIndex={-1}
+                    startIcon={<FaFileUpload />}
+                >
+                    {`Select ${type}`}
+                    <HiddenInput
+                        {...register("file")}
+                        ref={(e) => {
+                            register("file").ref(e);
+                            fileInputRef.current = e;
+                        }}
+                        type="file"
+                        name="file"
+                        onChange={(event) =>
+                            setSelectedFileName(
+                                event.target.files?.[0].name || ""
+                            )
+                        }
+                    />
+                </Button>
+                <Typography variant="caption" sx={{ ml: 2 }}>
+                    {selectedFileName}
+                </Typography>
                 <TextInput
                     register={register}
                     id="name"
@@ -106,7 +141,7 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={() => onClose()}
+                    onClick={handleClose}
                     variant="outlined"
                     disabled={isLoading}
                 >
@@ -117,7 +152,7 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
                     variant="contained"
                     startIcon={<FaFileUpload />}
                     loading={isLoading}
-                    disabled={!isValid}
+                    disabled={!isValid || selectedFileName == ""}
                 >
                     Upload
                 </LoadingButton>
