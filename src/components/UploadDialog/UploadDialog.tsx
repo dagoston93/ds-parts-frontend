@@ -64,7 +64,7 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
                 : uploadService.uploadFile(data);
 
         res.then(() => {
-            showSuccess("Image uploaded.");
+            showSuccess(`${type} uploaded.`);
             handleClose();
         }).catch((err) => {
             setLoading(false);
