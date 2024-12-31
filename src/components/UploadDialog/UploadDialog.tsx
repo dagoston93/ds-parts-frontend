@@ -18,6 +18,7 @@ import CloseButton from "../EditorDialog/CloseButton";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { FaFileUpload } from "react-icons/fa";
 import HiddenInput from "./HiddenInput";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
     isOpen: boolean;
@@ -44,6 +45,8 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
     const [isLoading, setLoading] = useState(false);
     const [selectedFileName, setSelectedFileName] = useState("");
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    const queryClient = useQueryClient();
 
     const resetForm = () => {
         reset({
@@ -72,6 +75,10 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
                 : fileService.uploadFile(data);
 
         res.then(() => {
+            queryClient.invalidateQueries({
+                queryKey: ["images"],
+            });
+
             showSuccess(`${type} uploaded.`);
             handleClose();
         }).catch((err) => {
