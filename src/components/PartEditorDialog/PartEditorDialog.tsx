@@ -25,6 +25,7 @@ import UploadDialog from "../UploadDialog/UploadDialog";
 import ImageDropdownInput from "../EditorDialog/ImageDropdownInput";
 import useImages from "../../hooks/files/useImages";
 import { FaFileUpload } from "react-icons/fa";
+import { File } from "../../services/fileService";
 
 const PartEditorDialog = ({
     isOpen,
@@ -43,12 +44,6 @@ const PartEditorDialog = ({
     const { data: images } = useImages(() => {});
 
     const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
-    const handleUploadImageButtonClick = () => {
-        setUploadImageDialogOpen(true);
-    };
-    const handleUploadImageDialogClose = () => {
-        setUploadImageDialogOpen(false);
-    };
 
     const {
         isEditing,
@@ -58,7 +53,9 @@ const PartEditorDialog = ({
         errors,
         touchedFields,
         handleSubmit,
+        watch,
         register,
+        reset,
         handleClose,
         onSubmit,
     } = useEditorDialog<Part, PartFormData>({
@@ -78,6 +75,22 @@ const PartEditorDialog = ({
         addMutationFn: useAddPart,
         updateMutationFn: useUpdatePart,
     });
+
+    const handleUploadImageButtonClick = () => {
+        setUploadImageDialogOpen(true);
+    };
+
+    const handleUploadImageDialogClose = (file?: File | null) => {
+        setUploadImageDialogOpen(false);
+
+        if (file) {
+            let newObj = {
+                ...watch(),
+                primaryImage: file._id,
+            };
+            reset(newObj);
+        }
+    };
 
     return (
         <EditorDialog
@@ -166,6 +179,7 @@ const PartEditorDialog = ({
                     id="primaryImage"
                     label="Primary image"
                     images={images}
+                    value={watch("primaryImage") || ""}
                     defaultValue={initialData?.primaryImage}
                     error={!!errors.primaryImage}
                     touched={!!touchedFields.primaryImage}

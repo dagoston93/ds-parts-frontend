@@ -9,7 +9,10 @@ import {
 import TextInput from "../EditorDialog/TextInput";
 import { useSession } from "../../auth/useSession";
 import { useForm } from "react-hook-form";
-import fileService, { FileUploadFormData } from "../../services/fileService";
+import fileService, {
+    File,
+    FileUploadFormData,
+} from "../../services/fileService";
 import { joiResolver } from "@hookform/resolvers/joi";
 import validationSchema from "./validationSchema";
 import { useRef, useState } from "react";
@@ -22,7 +25,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 interface Props {
     isOpen: boolean;
-    onClose: () => void;
+    onClose: (file?: File | null) => void;
     type: "Image" | "File";
 }
 
@@ -60,10 +63,10 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
         }
     };
 
-    const handleClose = () => {
+    const handleClose = (file?: File | null) => {
         setLoading(false);
         resetForm();
-        onClose();
+        onClose(file);
     };
 
     const onSubmit = async (data: FileUploadFormData) => {
@@ -74,13 +77,14 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
                 ? fileService.uploadImage(data)
                 : fileService.uploadFile(data);
 
-        res.then(() => {
-            queryClient.invalidateQueries({
-                queryKey: ["images"],
-            });
+        res.then((file) => {
+            queryClient.setQueryData<File[]>(["images"], (files) => [
+                ...(files || []),
+                file,
+            ]);
 
+            handleClose(file);
             showSuccess(`${type} uploaded.`);
-            handleClose();
         }).catch((err) => {
             setLoading(false);
             showError(err.message);
@@ -97,7 +101,7 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
             }}
         >
             <DialogTitle>{`Upload ${type}`}</DialogTitle>
-            <CloseButton onClick={handleClose} />
+            <CloseButton onClick={() => handleClose()} />
             <DialogContent>
                 <Button
                     component="label"
@@ -146,7 +150,7 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
             </DialogContent>
             <DialogActions>
                 <Button
-                    onClick={handleClose}
+                    onClick={() => handleClose()}
                     variant="outlined"
                     disabled={isLoading}
                 >

@@ -27,6 +27,7 @@ const validationSchema = Joi.object({
         "number.min": "Count must be 0 or more.",
         "any.required": "Count is required.",
     }),
+    primaryImage: Joi.string().min(0),
 });
 
 export default validationSchema;

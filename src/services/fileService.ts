@@ -15,7 +15,7 @@ export interface FileUploadFormData extends NamedEntity {
 class FileService {
     private upload = (endpoint: string, data: FileUploadFormData) => {
         return apiClient
-            .post(endpoint, data, {
+            .post<File>(endpoint, data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
