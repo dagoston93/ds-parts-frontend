@@ -26,6 +26,7 @@ import ImageDropdownInput from "../EditorDialog/ImageDropdownInput";
 import useImages from "../../hooks/files/useImages";
 import { FaFileUpload } from "react-icons/fa";
 import { File } from "../../services/fileService";
+import { MdAddToPhotos, MdClose } from "react-icons/md";
 
 const PartEditorDialog = ({
     isOpen,
@@ -197,23 +198,49 @@ const PartEditorDialog = ({
                     <FaFileUpload />
                 </IconButton>
             </Stack>
-            {watch("images")?.map((img, idx) => (
-                <ImageDropdownInput
-                    id={`image_${idx}`}
-                    label={`Image ${idx + 1}`}
-                    images={images}
-                    value={watch("images")[idx] || ""}
-                    defaultValue={initialData?.images[idx]}
-                    error={false}
-                    touched={false}
-                    helperText=""
-                    onChange={(e) => {
-                        const newImages = [...watch("images")];
-                        newImages[idx] = e.target.value;
-                        setValue("images", newImages);
-                    }}
-                />
+
+            {watch("images")?.map((_, idx) => (
+                <Stack direction="row" spacing={2}>
+                    <ImageDropdownInput
+                        id={`image_${idx}`}
+                        label={`Image ${idx + 1}`}
+                        images={images}
+                        value={watch("images")[idx] || ""}
+                        defaultValue={initialData?.images[idx]}
+                        error={false}
+                        touched={false}
+                        helperText=""
+                        onChange={(e) => {
+                            const newImages = [...watch("images")];
+                            newImages[idx] = e.target.value;
+                            setValue("images", newImages);
+                        }}
+                    />
+                    <IconButton
+                        onClick={() => {
+                            const newImages = [...watch("images")];
+                            newImages.splice(idx, 1);
+                            setValue("images", newImages);
+                        }}
+                        color="error"
+                        disabled={isLoading}
+                    >
+                        <MdClose />
+                    </IconButton>
+                </Stack>
             ))}
+
+            <IconButton
+                onClick={() => {
+                    const newImages = [...watch("images")];
+                    newImages.push("");
+                    setValue("images", newImages);
+                }}
+                color="primary"
+                disabled={isLoading}
+            >
+                <MdAddToPhotos />
+            </IconButton>
         </EditorDialog>
     );
 };
