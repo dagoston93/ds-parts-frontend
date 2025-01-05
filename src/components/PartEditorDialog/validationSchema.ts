@@ -29,6 +29,7 @@ const validationSchema = Joi.object({
     }),
     primaryImage: Joi.string().min(0),
     images: Joi.array().items(Joi.string()),
+    files: Joi.array().items(Joi.string()),
 });
 
 export default validationSchema;

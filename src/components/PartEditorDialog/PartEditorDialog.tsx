@@ -27,6 +27,7 @@ import useImages from "../../hooks/files/useImages";
 import { FaFileUpload } from "react-icons/fa";
 import { File } from "../../services/fileService";
 import { MdAddToPhotos, MdClose } from "react-icons/md";
+import useFiles from "../../hooks/files/useFiles";
 
 const PartEditorDialog = ({
     isOpen,
@@ -43,13 +44,16 @@ const PartEditorDialog = ({
     const { data: categories } = useCategories(() => {});
     const { data: packages } = usePackages(() => {});
     const { data: images } = useImages(() => {});
+    const { data: files } = useFiles(() => {});
 
-    const [isUploadPrimaryImageDialogOpen, setUploadPrimaryImageDialogOpen] =
-        useState(false);
+    const [isUploadDialogOpen, setUploadDialogOpen] = useState(false);
 
     const [uploadHandler, setUploadHandler] = useState<
         ((id: string) => void) | null
     >(null);
+    const [uploadDialogType, setUploadDialogType] = useState<"File" | "Image">(
+        "Image"
+    );
 
     const processFormData = (data: PartFormData) => {
         if (data.primaryImage === "") {
@@ -83,6 +87,7 @@ const PartEditorDialog = ({
             count: null,
             primaryImage: "",
             images: [],
+            files: [],
         },
         validationSchema: validationSchema,
         entityToFormData: partToPartFormData,
@@ -93,23 +98,35 @@ const PartEditorDialog = ({
     });
 
     const handleUploadPrimaryImageButtonClick = () => {
+        setUploadDialogType("Image");
         setUploadHandler(() => (id: string) => {
             setValue("primaryImage", id);
         });
-        setUploadPrimaryImageDialogOpen(true);
+        setUploadDialogOpen(true);
     };
 
     const handleUploadOtherImageButtonClick = (idx: number) => {
+        setUploadDialogType("Image");
         setUploadHandler(() => (id: string) => {
             const newImages = [...watch("images")];
             newImages[idx] = id;
             setValue("images", newImages);
         });
-        setUploadPrimaryImageDialogOpen(true);
+        setUploadDialogOpen(true);
+    };
+
+    const handleUploadFileButtonClick = (idx: number) => {
+        setUploadDialogType("File");
+        setUploadHandler(() => (id: string) => {
+            const newFiles = [...watch("files")];
+            newFiles[idx] = id;
+            setValue("files", newFiles);
+        });
+        setUploadDialogOpen(true);
     };
 
     const handleUploadDialogClose = (file?: File | null) => {
-        setUploadPrimaryImageDialogOpen(false);
+        setUploadDialogOpen(false);
 
         if (file) {
             uploadHandler?.(file._id);
@@ -128,9 +145,9 @@ const PartEditorDialog = ({
         >
             <Divider textAlign="left">Primary info</Divider>
             <UploadDialog
-                isOpen={isUploadPrimaryImageDialogOpen}
+                isOpen={isUploadDialogOpen}
                 onClose={handleUploadDialogClose}
-                type="Image"
+                type={uploadDialogType}
             />
             <DropdownInput
                 register={register}
@@ -270,6 +287,58 @@ const PartEditorDialog = ({
                     const newImages = [...(watch("images") || [])];
                     newImages.push("");
                     setValue("images", newImages);
+                }}
+                color="primary"
+                disabled={isLoading}
+            >
+                <MdAddToPhotos />
+            </IconButton>
+
+            <Divider textAlign="left">Files</Divider>
+
+            {watch("files")?.map((_, idx) => (
+                <Stack direction="row" spacing={2} key={idx}>
+                    <DropdownInput
+                        id={`file_${idx}`}
+                        label={`File ${idx + 1}`}
+                        options={files}
+                        value={watch("files")[idx] || ""}
+                        defaultValue={initialData?.files[idx]}
+                        error={false}
+                        touched={false}
+                        helperText=""
+                        onChange={(e) => {
+                            const newFiles = [...watch("files")];
+                            newFiles[idx] = e.target.value;
+                            setValue("files", newFiles);
+                        }}
+                    />
+                    <IconButton
+                        onClick={() => {
+                            const newFiles = [...watch("files")];
+                            newFiles.splice(idx, 1);
+                            setValue("files", newFiles);
+                        }}
+                        color="error"
+                        disabled={isLoading}
+                    >
+                        <MdClose />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => handleUploadFileButtonClick(idx)}
+                        color="primary"
+                        disabled={isLoading}
+                    >
+                        <FaFileUpload />
+                    </IconButton>
+                </Stack>
+            ))}
+
+            <IconButton
+                onClick={() => {
+                    const newFiles = [...(watch("files") || [])];
+                    newFiles.push("");
+                    setValue("files", newFiles);
                 }}
                 color="primary"
                 disabled={isLoading}

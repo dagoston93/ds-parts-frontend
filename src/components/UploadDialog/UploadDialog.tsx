@@ -78,7 +78,8 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
                 : fileService.uploadFile(data);
 
         res.then((file) => {
-            queryClient.setQueryData<File[]>(["images"], (files) => [
+            const queryKey = type == "Image" ? "images" : "files";
+            queryClient.setQueryData<File[]>([queryKey], (files) => [
                 ...(files || []),
                 file,
             ]);
