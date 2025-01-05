@@ -13,6 +13,7 @@ export interface Part extends NamedEntity {
     count: number;
     category?: Category;
     primaryImage?: File;
+    images?: File[];
 }
 
 export interface PartFormData {
@@ -23,6 +24,7 @@ export interface PartFormData {
     count: number | null;
     category: string;
     primaryImage: string;
+    images: string[];
 }
 
 export function partToPartFormData(part: Part): PartFormData {
@@ -34,6 +36,7 @@ export function partToPartFormData(part: Part): PartFormData {
         count: part.count,
         category: part.category?._id || "",
         primaryImage: part.primaryImage?._id || "",
+        images: part.images?.map((i) => i._id) || [],
     };
 }
 

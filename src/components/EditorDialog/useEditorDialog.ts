@@ -44,7 +44,7 @@ const useEditorDialog = <
 
     const [isLoading, setLoading] = useState(false);
 
-    const { handleSubmit, watch, register, reset, formState } =
+    const { handleSubmit, watch, register, reset, setValue, formState } =
         useForm<TFormData>({
             resolver: joiResolver(validationSchema),
             mode: "onChange",
@@ -104,6 +104,7 @@ const useEditorDialog = <
         watch,
         register,
         reset,
+        setValue,
         handleClose,
         onSubmit,
     };

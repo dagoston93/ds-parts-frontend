@@ -56,6 +56,7 @@ const PartEditorDialog = ({
         watch,
         register,
         reset,
+        setValue,
         handleClose,
         onSubmit,
     } = useEditorDialog<Part, PartFormData>({
@@ -68,6 +69,7 @@ const PartEditorDialog = ({
             price: null,
             count: null,
             primaryImage: "",
+            images: [],
         },
         validationSchema: validationSchema,
         entityToFormData: partToPartFormData,
@@ -91,6 +93,8 @@ const PartEditorDialog = ({
             reset(newObj);
         }
     };
+
+    console.log(watch("images"));
 
     return (
         <EditorDialog
@@ -193,6 +197,23 @@ const PartEditorDialog = ({
                     <FaFileUpload />
                 </IconButton>
             </Stack>
+            {watch("images")?.map((img, idx) => (
+                <ImageDropdownInput
+                    id={`image_${idx}`}
+                    label={`Image ${idx + 1}`}
+                    images={images}
+                    value={watch("images")[idx] || ""}
+                    defaultValue={initialData?.images[idx]}
+                    error={false}
+                    touched={false}
+                    helperText=""
+                    onChange={(e) => {
+                        const newImages = [...watch("images")];
+                        newImages[idx] = e.target.value;
+                        setValue("images", newImages);
+                    }}
+                />
+            ))}
         </EditorDialog>
     );
 };
