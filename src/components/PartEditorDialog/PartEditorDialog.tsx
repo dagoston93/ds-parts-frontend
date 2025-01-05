@@ -47,10 +47,9 @@ const PartEditorDialog = ({
     const [isUploadPrimaryImageDialogOpen, setUploadPrimaryImageDialogOpen] =
         useState(false);
 
-    const [isUploadOtherImageDialogOpen, setUploadOtherImageDialogOpen] =
-        useState(false);
-
-    const [imgToUpdateIndex, setImgToUpdateIndex] = useState(-1);
+    const [uploadHandler, setUploadHandler] = useState<
+        ((id: string) => void) | null
+    >(null);
 
     const processFormData = (data: PartFormData) => {
         if (data.primaryImage === "") {
@@ -94,29 +93,26 @@ const PartEditorDialog = ({
     });
 
     const handleUploadPrimaryImageButtonClick = () => {
+        setUploadHandler(() => (id: string) => {
+            setValue("primaryImage", id);
+        });
         setUploadPrimaryImageDialogOpen(true);
     };
 
-    const handleUploadPrimaryImageDialogClose = (file?: File | null) => {
+    const handleUploadOtherImageButtonClick = (idx: number) => {
+        setUploadHandler(() => (id: string) => {
+            const newImages = [...watch("images")];
+            newImages[idx] = id;
+            setValue("images", newImages);
+        });
+        setUploadPrimaryImageDialogOpen(true);
+    };
+
+    const handleUploadDialogClose = (file?: File | null) => {
         setUploadPrimaryImageDialogOpen(false);
 
         if (file) {
-            setValue("primaryImage", file._id);
-        }
-    };
-
-    const handleUploadOtherImageButtonClick = (idx: number) => {
-        setImgToUpdateIndex(idx);
-        setUploadOtherImageDialogOpen(true);
-    };
-
-    const handleUploadOtherImageDialogClose = (file?: File | null) => {
-        setUploadOtherImageDialogOpen(false);
-
-        if (file) {
-            const newImages = [...watch("images")];
-            newImages[imgToUpdateIndex] = file._id;
-            setValue("images", newImages);
+            uploadHandler?.(file._id);
         }
     };
 
@@ -133,12 +129,7 @@ const PartEditorDialog = ({
             <Divider textAlign="left">Primary info</Divider>
             <UploadDialog
                 isOpen={isUploadPrimaryImageDialogOpen}
-                onClose={handleUploadPrimaryImageDialogClose}
-                type="Image"
-            />
-            <UploadDialog
-                isOpen={isUploadOtherImageDialogOpen}
-                onClose={handleUploadOtherImageDialogClose}
+                onClose={handleUploadDialogClose}
                 type="Image"
             />
             <DropdownInput
