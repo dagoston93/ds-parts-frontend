@@ -22,7 +22,7 @@ const DropdownInput = <T extends FieldValues>({
 }: Props<T>) => {
     return (
         <TextField
-            {...register(id)}
+            {...register?.(id)}
             id={id}
             name={id}
             label={label}

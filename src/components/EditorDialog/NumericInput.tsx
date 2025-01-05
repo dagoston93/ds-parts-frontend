@@ -24,7 +24,7 @@ const NumericInput = <T extends FieldValues>({
 }: Props<T>) => {
     return (
         <TextField
-            {...register(id, { valueAsNumber: true })}
+            {...register?.(id, { valueAsNumber: true })}
             id={id}
             label={label}
             required

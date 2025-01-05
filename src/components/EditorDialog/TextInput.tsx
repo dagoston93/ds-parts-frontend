@@ -14,7 +14,7 @@ const TextInput = <T extends FieldValues>({
 }: CommonInputProps<string, T>) => {
     return (
         <TextField
-            {...register(id)}
+            {...register?.(id)}
             id={id}
             label={label}
             required

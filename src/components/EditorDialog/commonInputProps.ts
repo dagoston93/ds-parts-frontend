@@ -4,7 +4,7 @@ import { FieldValues, Path, UseFormRegister } from "react-hook-form";
 
 interface CommonInputProps<TValue, TData extends FieldValues>
     extends ComponentProps<typeof TextField> {
-    register: UseFormRegister<TData>;
+    register?: UseFormRegister<TData>;
     id: Path<TData>;
     label: string;
     defaultValue: TValue | null | undefined;
