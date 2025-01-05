@@ -46,6 +46,14 @@ const PartEditorDialog = ({
 
     const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
 
+    const processFormData = (data: PartFormData) => {
+        if (data.primaryImage === "") {
+            const { primaryImage, ...rest } = data;
+            return rest;
+        }
+        return data;
+    };
+
     const {
         isEditing,
         isLoading,
@@ -77,6 +85,7 @@ const PartEditorDialog = ({
         onClose: onClose,
         addMutationFn: useAddPart,
         updateMutationFn: useUpdatePart,
+        processFormData: processFormData,
     });
 
     const handleUploadImageButtonClick = () => {

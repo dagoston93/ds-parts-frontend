@@ -23,7 +23,7 @@ export interface PartFormData {
     price: number | null;
     count: number | null;
     category: string;
-    primaryImage: string;
+    primaryImage?: string;
     images: string[];
 }
 
