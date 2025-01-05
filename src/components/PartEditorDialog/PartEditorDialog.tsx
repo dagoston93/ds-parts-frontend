@@ -87,15 +87,9 @@ const PartEditorDialog = ({
         setUploadImageDialogOpen(false);
 
         if (file) {
-            let newObj = {
-                ...watch(),
-                primaryImage: file._id,
-            };
-            reset(newObj);
+            setValue("primaryImage", file._id);
         }
     };
-
-    console.log(watch("images"));
 
     return (
         <EditorDialog
