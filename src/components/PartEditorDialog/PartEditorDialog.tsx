@@ -64,7 +64,6 @@ const PartEditorDialog = ({
         handleSubmit,
         watch,
         register,
-        reset,
         setValue,
         handleClose,
         onSubmit,
@@ -88,7 +87,7 @@ const PartEditorDialog = ({
         processFormData: processFormData,
     });
 
-    const handleUploadImageButtonClick = () => {
+    const handleUploadPrimaryImageButtonClick = () => {
         setUploadImageDialogOpen(true);
     };
 
@@ -194,7 +193,16 @@ const PartEditorDialog = ({
                     helperText={errors.primaryImage?.message}
                 />
                 <IconButton
-                    onClick={() => handleUploadImageButtonClick()}
+                    onClick={() => {
+                        setValue("primaryImage", "");
+                    }}
+                    color="error"
+                    disabled={isLoading}
+                >
+                    <MdClose />
+                </IconButton>
+                <IconButton
+                    onClick={() => handleUploadPrimaryImageButtonClick()}
                     color="primary"
                     disabled={isLoading}
                 >
@@ -203,7 +211,7 @@ const PartEditorDialog = ({
             </Stack>
 
             {watch("images")?.map((_, idx) => (
-                <Stack direction="row" spacing={2}>
+                <Stack direction="row" spacing={2} key={idx}>
                     <ImageDropdownInput
                         id={`image_${idx}`}
                         label={`Image ${idx + 1}`}
@@ -235,7 +243,7 @@ const PartEditorDialog = ({
 
             <IconButton
                 onClick={() => {
-                    const newImages = [...watch("images")];
+                    const newImages = [...(watch("images") || [])];
                     newImages.push("");
                     setValue("images", newImages);
                 }}
