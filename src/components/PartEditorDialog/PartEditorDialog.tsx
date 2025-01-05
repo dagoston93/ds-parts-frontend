@@ -44,7 +44,13 @@ const PartEditorDialog = ({
     const { data: packages } = usePackages(() => {});
     const { data: images } = useImages(() => {});
 
-    const [isUploadImageDialogOpen, setUploadImageDialogOpen] = useState(false);
+    const [isUploadPrimaryImageDialogOpen, setUploadPrimaryImageDialogOpen] =
+        useState(false);
+
+    const [isUploadOtherImageDialogOpen, setUploadOtherImageDialogOpen] =
+        useState(false);
+
+    const [imgToUpdateIndex, setImgToUpdateIndex] = useState(-1);
 
     const processFormData = (data: PartFormData) => {
         if (data.primaryImage === "") {
@@ -88,14 +94,29 @@ const PartEditorDialog = ({
     });
 
     const handleUploadPrimaryImageButtonClick = () => {
-        setUploadImageDialogOpen(true);
+        setUploadPrimaryImageDialogOpen(true);
     };
 
-    const handleUploadImageDialogClose = (file?: File | null) => {
-        setUploadImageDialogOpen(false);
+    const handleUploadPrimaryImageDialogClose = (file?: File | null) => {
+        setUploadPrimaryImageDialogOpen(false);
 
         if (file) {
             setValue("primaryImage", file._id);
+        }
+    };
+
+    const handleUploadOtherImageButtonClick = (idx: number) => {
+        setImgToUpdateIndex(idx);
+        setUploadOtherImageDialogOpen(true);
+    };
+
+    const handleUploadOtherImageDialogClose = (file?: File | null) => {
+        setUploadOtherImageDialogOpen(false);
+
+        if (file) {
+            const newImages = [...watch("images")];
+            newImages[imgToUpdateIndex] = file._id;
+            setValue("images", newImages);
         }
     };
 
@@ -111,8 +132,13 @@ const PartEditorDialog = ({
         >
             <Divider textAlign="left">Primary info</Divider>
             <UploadDialog
-                isOpen={isUploadImageDialogOpen}
-                onClose={handleUploadImageDialogClose}
+                isOpen={isUploadPrimaryImageDialogOpen}
+                onClose={handleUploadPrimaryImageDialogClose}
+                type="Image"
+            />
+            <UploadDialog
+                isOpen={isUploadOtherImageDialogOpen}
+                onClose={handleUploadOtherImageDialogClose}
                 type="Image"
             />
             <DropdownInput
@@ -237,6 +263,13 @@ const PartEditorDialog = ({
                         disabled={isLoading}
                     >
                         <MdClose />
+                    </IconButton>
+                    <IconButton
+                        onClick={() => handleUploadOtherImageButtonClick(idx)}
+                        color="primary"
+                        disabled={isLoading}
+                    >
+                        <FaFileUpload />
                     </IconButton>
                 </Stack>
             ))}
