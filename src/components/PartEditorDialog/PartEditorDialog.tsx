@@ -149,12 +149,12 @@ const PartEditorDialog = ({
             onClose={handleClose}
             onSubmit={handleSubmit(onSubmit)}
         >
-            <Divider textAlign="left">Primary info</Divider>
             <UploadDialog
                 isOpen={isUploadDialogOpen}
                 onClose={handleUploadDialogClose}
                 type={uploadDialogType}
             />
+            <Divider textAlign="left">Primary info</Divider>
             <DropdownInput
                 register={register}
                 id="category"
@@ -251,7 +251,6 @@ const PartEditorDialog = ({
                     <FaFileUpload />
                 </IconButton>
             </Stack>
-
             {watch("images")?.map((_, idx) => (
                 <Stack direction="row" spacing={2} sx={{ mb: 2 }} key={idx}>
                     <ImageDropdownInput
@@ -289,7 +288,6 @@ const PartEditorDialog = ({
                     </IconButton>
                 </Stack>
             ))}
-
             <IconButton
                 onClick={() => {
                     const newImages = [...(watch("images") || [])];
@@ -301,11 +299,9 @@ const PartEditorDialog = ({
             >
                 <MdAddToPhotos />
             </IconButton>
-
             <Divider textAlign="left" sx={{ mb: 2 }}>
                 Files
             </Divider>
-
             {watch("files")?.map((_, idx) => (
                 <Stack direction="row" spacing={2} sx={{ mb: 2 }} key={idx}>
                     <DropdownInput
@@ -344,7 +340,6 @@ const PartEditorDialog = ({
                     </IconButton>
                 </Stack>
             ))}
-
             <IconButton
                 onClick={() => {
                     const newFiles = [...(watch("files") || [])];
