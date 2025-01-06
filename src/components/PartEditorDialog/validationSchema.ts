@@ -28,8 +28,8 @@ const validationSchema = Joi.object({
         "any.required": "Count is required.",
     }),
     primaryImage: Joi.string().min(0),
-    images: Joi.array().items(Joi.string()),
-    files: Joi.array().items(Joi.string()),
+    images: Joi.array().items(Joi.string().allow("")),
+    files: Joi.array().items(Joi.string().allow("")),
 });
 
 export default validationSchema;

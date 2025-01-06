@@ -56,11 +56,17 @@ const PartEditorDialog = ({
     );
 
     const processFormData = (data: PartFormData) => {
+        let processedData = data;
+
         if (data.primaryImage === "") {
             const { primaryImage, ...rest } = data;
-            return rest;
+            processedData = rest;
         }
-        return data;
+
+        processedData.images = data.images.filter((i) => i !== "");
+        processedData.files = data.files.filter((f) => f !== "");
+
+        return processedData;
     };
 
     const {
@@ -312,6 +318,7 @@ const PartEditorDialog = ({
                             newFiles[idx] = e.target.value;
                             setValue("files", newFiles);
                         }}
+                        required={false}
                     />
                     <IconButton
                         onClick={() => {
