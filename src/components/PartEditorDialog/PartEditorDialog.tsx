@@ -219,8 +219,10 @@ const PartEditorDialog = ({
                 min={0}
                 step={1}
             />
-            <Divider textAlign="left">Images</Divider>
-            <Stack direction="row" spacing={2}>
+            <Divider textAlign="left" sx={{ mb: 1 }}>
+                Images
+            </Divider>
+            <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
                 <ImageDropdownInput
                     register={register}
                     id="primaryImage"
@@ -251,7 +253,7 @@ const PartEditorDialog = ({
             </Stack>
 
             {watch("images")?.map((_, idx) => (
-                <Stack direction="row" spacing={2} key={idx}>
+                <Stack direction="row" spacing={2} sx={{ mb: 2 }} key={idx}>
                     <ImageDropdownInput
                         id={`image_${idx}`}
                         label={`Image ${idx + 1}`}
@@ -300,10 +302,12 @@ const PartEditorDialog = ({
                 <MdAddToPhotos />
             </IconButton>
 
-            <Divider textAlign="left">Files</Divider>
+            <Divider textAlign="left" sx={{ mb: 2 }}>
+                Files
+            </Divider>
 
             {watch("files")?.map((_, idx) => (
-                <Stack direction="row" spacing={2} key={idx}>
+                <Stack direction="row" spacing={2} sx={{ mb: 2 }} key={idx}>
                     <DropdownInput
                         id={`file_${idx}`}
                         label={`File ${idx + 1}`}
