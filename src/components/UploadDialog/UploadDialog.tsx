@@ -120,6 +120,7 @@ const UploadDialog = ({ isOpen, onClose, type }: Props) => {
                         }}
                         type="file"
                         name="file"
+                        accept={type === "Image" ? "image/*" : "*"}
                         onChange={(event) =>
                             setSelectedFileName(
                                 event.target.files?.[0].name || ""
