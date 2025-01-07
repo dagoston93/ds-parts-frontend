@@ -1,46 +1,51 @@
 import { NamedEntity } from "../common/entity";
 import HttpService from "./httpService";
 
-export interface CustomField {
+export type CustomFieldType = "string" | "number" | "enum";
+export type UnitGroup =
+    | "capacitance"
+    | "current"
+    | "inductance"
+    | "resistance"
+    | "voltage"
+    | "percentage";
+
+export interface CustomFieldBase {
     name: string;
-    type: "string" | "number" | "enum";
+    type: CustomFieldType;
     required: boolean;
 }
 
-export interface CustomStringField extends CustomField {
+export interface CustomStringField extends CustomFieldBase {
     type: "string";
     minLength: number;
     maxLength: number;
 }
 
-export interface CustomNumberField extends CustomField {
+export interface CustomNumberField extends CustomFieldBase {
     type: "number";
     min: number | null;
     max: number | null;
     decimal: boolean;
-    unitGroupName:
-        | "capacitance"
-        | "current"
-        | "inductance"
-        | "resistance"
-        | "voltage"
-        | "percentage";
+    unitGroupName: UnitGroup | null;
 }
 
-export interface CustomEnumField extends CustomField {
+export interface CustomEnumField extends CustomFieldBase {
     type: "enum";
     values: string[];
 }
 
+type CustomField = CustomStringField | CustomNumberField | CustomEnumField;
+
 export interface Category extends NamedEntity {
     parent?: Category;
-    customFields?: CustomEnumField[];
+    customFields?: CustomField[];
 }
 
 export interface CategoryFormData {
     name: string;
     parent?: string;
-    customFields?: CustomEnumField[];
+    customFields?: CustomField[];
 }
 
 export function categoryToCategoryFormData(
