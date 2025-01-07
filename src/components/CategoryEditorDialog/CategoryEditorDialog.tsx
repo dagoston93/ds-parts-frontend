@@ -6,7 +6,9 @@ import {
     CategoryFormData,
     categoryToCategoryFormData,
     CustomEnumField,
-    CustomFieldType,
+    CustomNumberField,
+    CustomStringField,
+    UnitGroup,
 } from "../../services/categoryService";
 
 import validationSchema from "./validationSchema";
@@ -122,6 +124,13 @@ const CategoryEditorDialog = ({
                         error={false}
                         touched={false}
                         helperText=""
+                        onChange={(e) => {
+                            let newCustomFields = [
+                                ...(watch("customFields") || []),
+                            ];
+                            newCustomFields[idx].name = e.target.value;
+                            setValue("customFields", newCustomFields);
+                        }}
                     />
                     <StringDropdownInput
                         id={`type_${idx}`}
@@ -155,6 +164,8 @@ const CategoryEditorDialog = ({
                                         false,
                                     type: "number",
                                     decimal: true,
+                                    hasMin: true,
+                                    hasMax: true,
                                     min: null,
                                     max: null,
                                     unitGroupName: null,
@@ -178,22 +189,44 @@ const CategoryEditorDialog = ({
                             <NumericInput
                                 id={`minLength_${idx}`}
                                 label="Min length"
-                                defaultValue={0}
+                                defaultValue={field.minLength}
                                 error={false}
                                 touched={false}
                                 helperText=""
                                 min={0}
                                 step={1}
+                                onChange={(e) => {
+                                    let newCustomFields = [
+                                        ...(watch("customFields") || []),
+                                    ];
+                                    (
+                                        newCustomFields[
+                                            idx
+                                        ] as CustomStringField
+                                    ).minLength = parseInt(e.target.value);
+                                    setValue("customFields", newCustomFields);
+                                }}
                             />
                             <NumericInput
                                 id={`maxLength_${idx}`}
                                 label="Max length"
-                                defaultValue={0}
+                                defaultValue={field.maxLength}
                                 error={false}
                                 touched={false}
                                 helperText=""
                                 min={0}
                                 step={1}
+                                onChange={(e) => {
+                                    let newCustomFields = [
+                                        ...(watch("customFields") || []),
+                                    ];
+                                    (
+                                        newCustomFields[
+                                            idx
+                                        ] as CustomStringField
+                                    ).maxLength = parseInt(e.target.value);
+                                    setValue("customFields", newCustomFields);
+                                }}
                             />
                         </>
                     )}
@@ -201,7 +234,26 @@ const CategoryEditorDialog = ({
                         <>
                             <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
                                 <FormControlLabel
-                                    control={<Checkbox defaultChecked />}
+                                    control={
+                                        <Checkbox
+                                            defaultChecked={field.hasMin}
+                                            onChange={(e) => {
+                                                let newCustomFields = [
+                                                    ...(watch("customFields") ||
+                                                        []),
+                                                ];
+                                                (
+                                                    newCustomFields[
+                                                        idx
+                                                    ] as CustomNumberField
+                                                ).hasMin = e.target.checked;
+                                                setValue(
+                                                    "customFields",
+                                                    newCustomFields
+                                                );
+                                            }}
+                                        />
+                                    }
                                     label="Min"
                                 />
                                 <NumericInput
@@ -213,11 +265,45 @@ const CategoryEditorDialog = ({
                                     helperText=""
                                     min={-Infinity}
                                     step={0.01}
+                                    disabled={!field.hasMin}
+                                    onChange={(e) => {
+                                        let newCustomFields = [
+                                            ...(watch("customFields") || []),
+                                        ];
+                                        (
+                                            newCustomFields[
+                                                idx
+                                            ] as CustomNumberField
+                                        ).min = parseFloat(e.target.value);
+                                        setValue(
+                                            "customFields",
+                                            newCustomFields
+                                        );
+                                    }}
                                 />
                             </Stack>
                             <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
                                 <FormControlLabel
-                                    control={<Checkbox defaultChecked />}
+                                    control={
+                                        <Checkbox
+                                            defaultChecked={field.max == null}
+                                            onChange={(e) => {
+                                                let newCustomFields = [
+                                                    ...(watch("customFields") ||
+                                                        []),
+                                                ];
+                                                (
+                                                    newCustomFields[
+                                                        idx
+                                                    ] as CustomNumberField
+                                                ).hasMax = e.target.checked;
+                                                setValue(
+                                                    "customFields",
+                                                    newCustomFields
+                                                );
+                                            }}
+                                        />
+                                    }
                                     label="Max"
                                 />
                                 <NumericInput
@@ -229,15 +315,73 @@ const CategoryEditorDialog = ({
                                     helperText=""
                                     min={-Infinity}
                                     step={0.01}
+                                    disabled={!field.hasMax}
+                                    onChange={(e) => {
+                                        let newCustomFields = [
+                                            ...(watch("customFields") || []),
+                                        ];
+                                        (
+                                            newCustomFields[
+                                                idx
+                                            ] as CustomNumberField
+                                        ).max = parseFloat(e.target.value);
+                                        setValue(
+                                            "customFields",
+                                            newCustomFields
+                                        );
+                                    }}
                                 />
                             </Stack>
                             <FormControlLabel
-                                control={<Checkbox defaultChecked />}
+                                control={
+                                    <Checkbox
+                                        defaultChecked={field.decimal}
+                                        onChange={(e) => {
+                                            let newCustomFields = [
+                                                ...(watch("customFields") ||
+                                                    []),
+                                            ];
+                                            (
+                                                newCustomFields[
+                                                    idx
+                                                ] as CustomNumberField
+                                            ).decimal = e.target.checked;
+                                            setValue(
+                                                "customFields",
+                                                newCustomFields
+                                            );
+                                        }}
+                                    />
+                                }
                                 label="Decimals enabled"
                             />
                             <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
                                 <FormControlLabel
-                                    control={<Checkbox defaultChecked />}
+                                    control={
+                                        <Checkbox
+                                            defaultChecked={
+                                                field.unitGroupName !== null
+                                            }
+                                            onChange={(e) => {
+                                                let newCustomFields = [
+                                                    ...(watch("customFields") ||
+                                                        []),
+                                                ];
+                                                (
+                                                    newCustomFields[
+                                                        idx
+                                                    ] as CustomNumberField
+                                                ).unitGroupName = e.target
+                                                    .checked
+                                                    ? "capacitance"
+                                                    : null;
+                                                setValue(
+                                                    "customFields",
+                                                    newCustomFields
+                                                );
+                                            }}
+                                        />
+                                    }
                                     label="Unit"
                                 />
                                 <StringDropdownInput
@@ -251,24 +395,62 @@ const CategoryEditorDialog = ({
                                         "voltage",
                                         "percentage",
                                     ]}
-                                    defaultValue={"capacitance"}
+                                    defaultValue={field.unitGroupName}
                                     error={false}
                                     touched={false}
                                     helperText=""
+                                    onChange={(e) => {
+                                        let newCustomFields = [
+                                            ...(watch("customFields") || []),
+                                        ];
+                                        (
+                                            newCustomFields[
+                                                idx
+                                            ] as CustomNumberField
+                                        ).unitGroupName = e.target
+                                            .value as UnitGroup;
+                                        setValue(
+                                            "customFields",
+                                            newCustomFields
+                                        );
+                                    }}
                                 />
                             </Stack>
                         </>
                     )}
                     {field.type == "enum" && (
                         <>
-                            {field.values.map((_, eidx) => (
+                            {field.values.map((ev, eidx) => (
                                 <TextInput
                                     id={`enum_val_${idx}_${eidx}`}
                                     label={`Value ${eidx + 1}`}
-                                    defaultValue=""
+                                    defaultValue={ev}
                                     error={false}
                                     touched={false}
                                     helperText=""
+                                    onChange={(e) => {
+                                        let newCustomFields = [
+                                            ...(watch("customFields") || []),
+                                        ];
+
+                                        let newValues = (
+                                            newCustomFields[
+                                                idx
+                                            ] as CustomEnumField
+                                        ).values;
+
+                                        newValues[eidx] = e.target.value;
+
+                                        (
+                                            newCustomFields[
+                                                idx
+                                            ] as CustomEnumField
+                                        ).values = newValues;
+                                        setValue(
+                                            "customFields",
+                                            newCustomFields
+                                        );
+                                    }}
                                 />
                             ))}
                             <IconButton

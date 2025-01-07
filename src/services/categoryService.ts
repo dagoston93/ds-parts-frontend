@@ -24,6 +24,8 @@ export interface CustomStringField extends CustomFieldBase {
 
 export interface CustomNumberField extends CustomFieldBase {
     type: "number";
+    hasMin: boolean;
+    hasMax: boolean;
     min: number | null;
     max: number | null;
     decimal: boolean;
