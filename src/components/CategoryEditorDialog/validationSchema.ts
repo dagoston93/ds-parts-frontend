@@ -8,6 +8,7 @@ const validationSchema = Joi.object({
         "string.max": "Name cannot exceed 255 characters.",
     }),
     parent: Joi.string().allow(""),
+    customFields: Joi.array().items(Joi.object()),
 });
 
 export default validationSchema;
