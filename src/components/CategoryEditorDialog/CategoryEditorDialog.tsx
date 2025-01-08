@@ -25,12 +25,10 @@ import {
 } from "@mui/material";
 import { MdAddToPhotos, MdClose } from "react-icons/md";
 import StringDropdownInput from "../EditorDialog/StringDropdownInput";
-import { get } from "react-hook-form";
 import {
     CustomFieldType,
     getCustomFieldTypes,
 } from "../../services/customFieldService";
-import { Fragment } from "react/jsx-runtime";
 
 import { v4 as uuid } from "uuid";
 
@@ -48,11 +46,18 @@ const CategoryEditorDialog = ({
     const { data: categories } = useCategories(() => {});
 
     const processFormData = (data: CategoryFormData) => {
+        let processedData = { ...data };
+
         if (data.parent === "-" || data.parent === "") {
             const { parent, ...rest } = data;
-            return rest;
+            processedData = rest;
         }
-        return data;
+
+        processedData.customFields = data.customFields.filter(
+            (field) => field.name !== ""
+        );
+
+        return processedData;
     };
 
     const {
