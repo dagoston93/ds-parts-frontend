@@ -13,6 +13,7 @@ export type CustomFieldType =
     | "String";
 
 export interface CustomField {
+    id: string;
     name: string;
     type: CustomFieldType;
     required: boolean;
@@ -26,7 +27,7 @@ export interface UnitGroup {
     conversionFactor: number;
 }
 
-const unitGroups: { [key in CustomFieldType]?: UnitGroup } = {
+const unitGroups: { [key in CustomFieldType]?: UnitGroup | null } = {
     Capacitance: {
         name: "Capacitance",
         baseUnit: "F",
@@ -90,6 +91,9 @@ const unitGroups: { [key in CustomFieldType]?: UnitGroup } = {
         largerUnits: [],
         conversionFactor: 1,
     },
+    Integer: null,
+    Float: null,
+    String: null,
 };
 
 export function getUnitGroupByType(type: CustomFieldType): UnitGroup | null {

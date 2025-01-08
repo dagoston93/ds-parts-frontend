@@ -16,6 +16,23 @@ import useEditorDialog from "../EditorDialog/useEditorDialog";
 import useCategories from "../../hooks/categories/useCategories";
 import DropdownInput from "../EditorDialog/DropdownInput";
 import { useSession } from "../../auth/useSession";
+import {
+    Checkbox,
+    Divider,
+    FormControlLabel,
+    IconButton,
+    Stack,
+} from "@mui/material";
+import { MdAddToPhotos, MdClose } from "react-icons/md";
+import StringDropdownInput from "../EditorDialog/StringDropdownInput";
+import { get } from "react-hook-form";
+import {
+    CustomFieldType,
+    getCustomFieldTypes,
+} from "../../services/customFieldService";
+import { Fragment } from "react/jsx-runtime";
+
+import { v4 as uuid } from "uuid";
 
 const CategoryEditorDialog = ({
     isOpen,
@@ -47,6 +64,8 @@ const CategoryEditorDialog = ({
         touchedFields,
         handleSubmit,
         register,
+        watch,
+        setValue,
         handleClose,
         onSubmit,
     } = useEditorDialog<Category, CategoryFormData>({
@@ -54,6 +73,7 @@ const CategoryEditorDialog = ({
         defaultFormValues: {
             name: "",
             parent: "-",
+            customFields: [],
         },
         validationSchema: validationSchema,
         entityToFormData: categoryToCategoryFormData,
@@ -98,6 +118,91 @@ const CategoryEditorDialog = ({
                 helperText={errors.parent?.message}
                 required={false}
             />
+            <Divider textAlign="left" sx={{ mb: 2 }}>
+                Custom Fields
+            </Divider>
+            {watch("customFields")?.map((field, index) => (
+                <Stack direction="column" key={field.id}>
+                    <TextInput
+                        id={`customFields[${index}].name`}
+                        label="Name"
+                        defaultValue={field.name}
+                        error={false}
+                        touched={false}
+                        helperText=""
+                        onChange={(e) => {
+                            const newCustomFields = [
+                                ...(watch("customFields") || []),
+                            ];
+                            newCustomFields[index].name = e.target.value;
+                            setValue("customFields", newCustomFields);
+                        }}
+                    />
+                    <StringDropdownInput
+                        id={`customFields[${index}].type`}
+                        label="Type"
+                        options={getCustomFieldTypes()}
+                        defaultValue={field.type}
+                        error={false}
+                        touched={false}
+                        helperText=""
+                        onChange={(e) => {
+                            const newCustomFields = [
+                                ...(watch("customFields") || []),
+                            ];
+                            newCustomFields[index].type = e.target
+                                .value as CustomFieldType;
+                            setValue("customFields", newCustomFields);
+                        }}
+                    />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                defaultChecked={field.required}
+                                onChange={(e) => {
+                                    const newCustomFields = [
+                                        ...(watch("customFields") || []),
+                                    ];
+                                    newCustomFields[index].required =
+                                        e.target.checked;
+                                    setValue("customFields", newCustomFields);
+                                }}
+                            />
+                        }
+                        label="Required"
+                    />
+                    <IconButton
+                        onClick={() => {
+                            const newCustomFields = [
+                                ...(watch("customFields") || []),
+                            ];
+                            newCustomFields.splice(index, 1);
+                            setValue("customFields", newCustomFields);
+                        }}
+                        color="error"
+                        disabled={isLoading}
+                    >
+                        <MdClose />
+                    </IconButton>
+                    <Divider />
+                </Stack>
+            ))}
+            <IconButton
+                onClick={() => {
+                    const newCustomFields = [...(watch("customFields") || [])];
+                    newCustomFields.push({
+                        id: uuid(),
+                        name: "",
+                        type: "String",
+                        required: false,
+                    });
+                    setValue("customFields", newCustomFields);
+                }}
+                color="primary"
+                disabled={isLoading}
+            >
+                <MdAddToPhotos />
+            </IconButton>
         </EditorDialog>
     );
 };
