@@ -6,6 +6,14 @@ import { Manufacturer } from "./manufacturerService";
 import { Package } from "./packageService";
 import { File } from "./fileService";
 
+export interface CustomFieldValue {
+    numericValue?: number | null;
+    stringValue?: string | null;
+    unit?: string | null;
+}
+
+export type CustomFieldValues = Record<string, CustomFieldValue>;
+
 export interface Part extends NamedEntity {
     manufacturer?: Manufacturer;
     partPackage?: Package;
@@ -15,6 +23,7 @@ export interface Part extends NamedEntity {
     primaryImage?: File;
     images?: File[];
     files?: File[];
+    customFieldValues?: CustomFieldValues;
 }
 
 export interface PartFormData {
@@ -27,6 +36,7 @@ export interface PartFormData {
     primaryImage?: string;
     images: string[];
     files: string[];
+    customFieldValues: CustomFieldValues;
 }
 
 export function partToPartFormData(part: Part): PartFormData {
@@ -40,6 +50,7 @@ export function partToPartFormData(part: Part): PartFormData {
         primaryImage: part.primaryImage?._id || "",
         images: part.images?.map((i) => i._id) || [],
         files: part.files?.map((f) => f._id) || [],
+        customFieldValues: part.customFieldValues || {},
     };
 }
 

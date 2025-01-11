@@ -5,6 +5,7 @@ import usePackages from "../../hooks/packages/usePackages";
 import useCategories from "../../hooks/categories/useCategories";
 
 import {
+    CustomFieldValues,
     Part,
     PartFormData,
     partToPartFormData,
@@ -20,7 +21,7 @@ import { ENTITY_TYPE_PART } from "../../common/entity";
 import EditorDialog, { EditorDialogProps } from "../EditorDialog/EditorDialog";
 import useEditorDialog from "../EditorDialog/useEditorDialog";
 import { useSession } from "../../auth/useSession";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UploadDialog from "../UploadDialog/UploadDialog";
 import ImageDropdownInput from "../EditorDialog/ImageDropdownInput";
 import useImages from "../../hooks/files/useImages";
@@ -28,6 +29,11 @@ import { FaFileUpload } from "react-icons/fa";
 import { File } from "../../services/fileService";
 import { MdAddToPhotos, MdClose } from "react-icons/md";
 import useFiles from "../../hooks/files/useFiles";
+import {
+    CustomField,
+    getUnitGroupByType,
+} from "../../services/customFieldService";
+import StringDropdownInput from "../EditorDialog/StringDropdownInput";
 
 const PartEditorDialog = ({
     isOpen,
@@ -47,6 +53,7 @@ const PartEditorDialog = ({
     const { data: files } = useFiles(() => {});
 
     const [isUploadDialogOpen, setUploadDialogOpen] = useState(false);
+    const [customFields, setCustomFields] = useState<CustomField[]>([]);
 
     const [uploadHandler, setUploadHandler] = useState<
         ((id: string) => void) | null
@@ -94,6 +101,7 @@ const PartEditorDialog = ({
             primaryImage: "",
             images: [],
             files: [],
+            customFieldValues: {},
         },
         validationSchema: validationSchema,
         entityToFormData: partToPartFormData,
@@ -139,6 +147,32 @@ const PartEditorDialog = ({
         }
     };
 
+    const collectCustomFields = (category: string) => {
+        let newCustomFields: CustomField[] = [];
+
+        const collectCustomFieldsRecursive = (category: string) => {
+            const categoryObj = categories?.find((c) => c._id === category);
+            if (!categoryObj) {
+                return;
+            }
+
+            newCustomFields = newCustomFields.concat(
+                categoryObj.customFields || []
+            );
+
+            if (categoryObj.parent) {
+                collectCustomFieldsRecursive(categoryObj.parent._id);
+            }
+        };
+
+        collectCustomFieldsRecursive(category);
+        setCustomFields(newCustomFields);
+    };
+
+    useEffect(() => {
+        collectCustomFields(initialData?.category || "");
+    }, [isOpen, initialEntity]);
+
     return (
         <EditorDialog
             isOpen={isOpen}
@@ -164,6 +198,7 @@ const PartEditorDialog = ({
                 error={!!errors.category}
                 touched={!!touchedFields.category}
                 helperText={errors.category?.message}
+                onChange={(e) => collectCustomFields(e.target.value)}
             />
             <TextInput
                 register={register}
@@ -351,6 +386,151 @@ const PartEditorDialog = ({
             >
                 <MdAddToPhotos />
             </IconButton>
+            {customFields.length > 0 && (
+                <Divider textAlign="left" sx={{ mb: 2 }}>
+                    Custom fields
+                </Divider>
+            )}
+            {customFields.map((field) => {
+                if (
+                    field.type !== "Integer" &&
+                    field.type !== "Float" &&
+                    field.type !== "String"
+                ) {
+                    let unitGroup = getUnitGroupByType(field.type);
+                    let units: string[] = [];
+
+                    if (unitGroup) {
+                        units = [
+                            ...unitGroup.smallerUnits,
+                            unitGroup.baseUnit,
+                            ...unitGroup.largerUnits,
+                        ];
+                    }
+
+                    return (
+                        <Stack direction="row" key={field.id}>
+                            <NumericInput
+                                id={field.id}
+                                label={field.name}
+                                defaultValue={
+                                    watch("customFieldValues")[field.id]
+                                        ?.numericValue || 0
+                                }
+                                error={false}
+                                touched={false}
+                                helperText=""
+                                min={0}
+                                step={0.01}
+                                sx={{ mr: 1 }}
+                                required={field.required}
+                                onChange={(e) => {
+                                    let newCustomFieldValues = {
+                                        ...watch("customFieldValues"),
+                                    };
+                                    newCustomFieldValues[field.id] = {
+                                        ...newCustomFieldValues[field.id],
+                                        numericValue: parseFloat(
+                                            e.target.value
+                                        ),
+                                    };
+                                    setValue(
+                                        "customFieldValues",
+                                        newCustomFieldValues
+                                    );
+                                }}
+                            />
+                            <StringDropdownInput
+                                id={`${field.id}_unit`}
+                                label="Unit"
+                                options={units}
+                                defaultValue={
+                                    watch("customFieldValues")[field.id]
+                                        ?.unit ||
+                                    unitGroup?.baseUnit ||
+                                    ""
+                                }
+                                error={false}
+                                touched={false}
+                                helperText=""
+                                required={field.required}
+                                onChange={(e) => {
+                                    let newCustomFieldValues = {
+                                        ...watch("customFieldValues"),
+                                    };
+                                    newCustomFieldValues[field.id] = {
+                                        ...newCustomFieldValues[field.id],
+                                        unit: e.target.value,
+                                    };
+                                    setValue(
+                                        "customFieldValues",
+                                        newCustomFieldValues
+                                    );
+                                }}
+                            />
+                        </Stack>
+                    );
+                } else if (field.type === "String") {
+                    return (
+                        <TextInput
+                            id={field.id}
+                            label={field.name}
+                            defaultValue={
+                                watch("customFieldValues")[field.id]
+                                    ?.stringValue || ""
+                            }
+                            error={false}
+                            touched={false}
+                            helperText=""
+                            required={field.required}
+                            onChange={(e) => {
+                                let newCustomFieldValues = {
+                                    ...watch("customFieldValues"),
+                                };
+                                newCustomFieldValues[field.id] = {
+                                    ...newCustomFieldValues[field.id],
+                                    stringValue: e.target.value,
+                                };
+                                setValue(
+                                    "customFieldValues",
+                                    newCustomFieldValues
+                                );
+                            }}
+                        />
+                    );
+                } else if (field.type === "Integer" || field.type === "Float") {
+                    const step = field.type === "Integer" ? 1 : 0.01;
+                    return (
+                        <NumericInput
+                            id={field.id}
+                            label={field.name}
+                            defaultValue={
+                                watch("customFieldValues")[field.id]
+                                    ?.numericValue || 0
+                            }
+                            error={false}
+                            touched={false}
+                            helperText=""
+                            min={0}
+                            step={step}
+                            required={field.required}
+                            onChange={(e) => {
+                                let newCustomFieldValues = {
+                                    ...watch("customFieldValues"),
+                                };
+                                newCustomFieldValues[field.id] = {
+                                    ...newCustomFieldValues[field.id],
+                                    numericValue: parseFloat(e.target.value),
+                                };
+                                setValue(
+                                    "customFieldValues",
+                                    newCustomFieldValues
+                                );
+                            }}
+                        />
+                    );
+                }
+            })}
         </EditorDialog>
     );
 };

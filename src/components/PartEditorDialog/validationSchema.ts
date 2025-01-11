@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi, { custom } from "joi";
 
 const validationSchema = Joi.object({
     name: Joi.string().min(2).max(255).required().messages({
@@ -30,6 +30,7 @@ const validationSchema = Joi.object({
     primaryImage: Joi.string().min(0),
     images: Joi.array().items(Joi.string().allow("")),
     files: Joi.array().items(Joi.string().allow("")),
+    customFieldValues: Joi.object(),
 });
 
 export default validationSchema;
