@@ -5,6 +5,7 @@ import HttpService from "./httpService";
 import { Manufacturer } from "./manufacturerService";
 import { Package } from "./packageService";
 import { File } from "./fileService";
+import { Container } from "./containerService";
 
 export interface CustomFieldValue {
     numericValue?: number | null;
@@ -20,6 +21,7 @@ export interface Part extends NamedEntity {
     price: number;
     count: number;
     category?: Category;
+    container?: Container;
     primaryImage?: File;
     images?: File[];
     files?: File[];
@@ -33,6 +35,7 @@ export interface PartFormData {
     price: number | null;
     count: number | null;
     category: string;
+    container: string;
     primaryImage?: string;
     images: string[];
     files: string[];
@@ -47,6 +50,7 @@ export function partToPartFormData(part: Part): PartFormData {
         price: part.price,
         count: part.count,
         category: part.category?._id || "",
+        container: part.container?._id || "",
         primaryImage: part.primaryImage?._id || "",
         images: part.images?.map((i) => i._id) || [],
         files: part.files?.map((f) => f._id) || [],

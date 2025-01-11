@@ -10,6 +10,9 @@ const validationSchema = Joi.object({
     category: Joi.string().required().messages({
         "string.empty": "Category is required.",
     }),
+    container: Joi.string().required().messages({
+        "string.empty": "Container is required.",
+    }),
     manufacturer: Joi.string().required().messages({
         "string.empty": "Manufacturer is required.",
     }),

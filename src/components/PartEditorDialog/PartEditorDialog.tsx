@@ -34,6 +34,7 @@ import {
     getUnitGroupByType,
 } from "../../services/customFieldService";
 import StringDropdownInput from "../EditorDialog/StringDropdownInput";
+import useContainers from "../../hooks/containers/useContainers";
 
 const PartEditorDialog = ({
     isOpen,
@@ -48,6 +49,7 @@ const PartEditorDialog = ({
 
     const { data: manufacturers } = useManufacturers(() => {});
     const { data: categories } = useCategories(() => {});
+    const { data: containers } = useContainers(() => {});
     const { data: packages } = usePackages(() => {});
     const { data: images } = useImages(() => {});
     const { data: files } = useFiles(() => {});
@@ -93,6 +95,7 @@ const PartEditorDialog = ({
         initialEntity: initialEntity,
         defaultFormValues: {
             category: "",
+            container: "",
             name: "",
             manufacturer: "",
             partPackage: "",
@@ -228,6 +231,16 @@ const PartEditorDialog = ({
                 error={!!errors.partPackage}
                 touched={!!touchedFields.partPackage}
                 helperText={errors.partPackage?.message}
+            />
+            <DropdownInput
+                register={register}
+                id="container"
+                label="Container"
+                options={containers}
+                defaultValue={initialData?.container}
+                error={!!errors.container}
+                touched={!!touchedFields.container}
+                helperText={errors.container?.message}
             />
             <NumericInput
                 register={register}
