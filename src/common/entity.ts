@@ -24,6 +24,12 @@ export const ENTITY_TYPE_CATEGORY: IEntityType = {
     queryKey: "categories",
 } as const;
 
+export const ENTITY_TYPE_CONTAINER: IEntityType = {
+    name: "container",
+    nameCapital: "Container",
+    queryKey: "containers",
+} as const;
+
 export const ENTITY_TYPE_MANUFACTURER: IEntityType = {
     name: "manufacturer",
     nameCapital: "Manufacturer",
