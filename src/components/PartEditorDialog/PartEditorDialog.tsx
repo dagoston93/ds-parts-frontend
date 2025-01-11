@@ -427,7 +427,7 @@ const PartEditorDialog = ({
                                 id={field.id}
                                 label={field.name}
                                 defaultValue={
-                                    watch("customFieldValues")[field.id]
+                                    watch("customFieldValues")?.[field.id]
                                         ?.numericValue || 0
                                 }
                                 error={false}
@@ -458,7 +458,7 @@ const PartEditorDialog = ({
                                 label="Unit"
                                 options={units}
                                 defaultValue={
-                                    watch("customFieldValues")[field.id]
+                                    watch("customFieldValues")?.[field.id]
                                         ?.unit ||
                                     unitGroup?.baseUnit ||
                                     ""
@@ -489,7 +489,7 @@ const PartEditorDialog = ({
                             id={field.id}
                             label={field.name}
                             defaultValue={
-                                watch("customFieldValues")[field.id]
+                                watch("customFieldValues")?.[field.id]
                                     ?.stringValue || ""
                             }
                             error={false}
@@ -518,7 +518,7 @@ const PartEditorDialog = ({
                             id={field.id}
                             label={field.name}
                             defaultValue={
-                                watch("customFieldValues")[field.id]
+                                watch("customFieldValues")?.[field.id]
                                     ?.numericValue || 0
                             }
                             error={false}
