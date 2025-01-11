@@ -2,7 +2,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { AppProvider } from "@toolpad/core/react-router-dom";
 import { Navigation } from "@toolpad/core";
 import { Outlet, useNavigate } from "react-router-dom";
-import { FaMicrochip } from "react-icons/fa";
+import { FaBox, FaMicrochip } from "react-icons/fa";
 import { MdCategory, MdFactory } from "react-icons/md";
 import { VscCircuitBoard } from "react-icons/vsc";
 import MemoryIcon from "@mui/icons-material/Memory";
@@ -27,6 +27,11 @@ const NAVIGATION: Navigation = [
         segment: "categories",
         title: "Categories",
         icon: <MdCategory size={20} />,
+    },
+    {
+        segment: "containers",
+        title: "Containers",
+        icon: <FaBox size={20} />,
     },
     {
         segment: "manufacturers",

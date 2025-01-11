@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import CategoryTable from "./components/CategoryTable";
 import PackageTable from "./components/PackageTable";
 import AppSignInPage from "./auth/AppSignInPage";
+import ContainerTable from "./components/ContainerTable";
 
 const router = createBrowserRouter([
     {
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
                     {
                         path: "/categories",
                         element: <CategoryTable />,
+                    },
+                    {
+                        path: "/containers",
+                        element: <ContainerTable />,
                     },
                     {
                         path: "/manufacturers",
