@@ -105,7 +105,7 @@ const CategoryEditorDialog = ({
             <TextInput
                 register={register}
                 id="name"
-                label="Manufacturer name"
+                label="Category name"
                 defaultValue={initialData?.name}
                 error={!!errors.name}
                 touched={!!touchedFields.name}
