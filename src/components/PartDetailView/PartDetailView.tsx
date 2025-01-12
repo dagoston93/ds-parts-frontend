@@ -15,6 +15,7 @@ import {
 import Gallery from "./Gallery";
 import useCategories from "../../hooks/categories/useCategories";
 import { getAllCustomFields } from "../../services/customFieldService";
+import { BACKEND_URL } from "../../services/apiClient";
 
 const PartDetailView = () => {
     const { showError } = useNotifications();
@@ -34,11 +35,23 @@ const PartDetailView = () => {
         categories || []
     );
 
+    const images: string[] = [];
+
+    if (part?.primaryImage) {
+        images.push(`${BACKEND_URL}/images/${part.primaryImage.fileName}`);
+    }
+
+    if (part?.images) {
+        images.push(
+            ...part.images.map((i) => `${BACKEND_URL}/images/${i.fileName}`)
+        );
+    }
+
     return (
         <PageContainer title={part?.name}>
             <Stack direction="column" spacing={2}>
                 <Stack direction="row" spacing={2}>
-                    <Gallery part={part} />
+                    <Gallery images={images} />
                     <TableContainer component={Paper}>
                         <Table>
                             <TableBody>
