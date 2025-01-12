@@ -3,12 +3,14 @@ import usePart from "../../hooks/parts/usePart";
 import useNotifications from "../../hooks/useNotifications";
 import { PageContainer } from "@toolpad/core";
 import {
+    Link,
     Paper,
     Stack,
     Table,
     TableBody,
     TableCell,
     TableContainer,
+    TableHead,
     TableRow,
     Typography,
 } from "@mui/material";
@@ -88,7 +90,7 @@ const PartDetailView = () => {
                                 <TableRow>
                                     <TableCell align="left">Price</TableCell>
                                     <TableCell align="left">
-                                        {part?.price.toFixed(2)}
+                                        {"$" + part?.price.toFixed(2)}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
@@ -101,34 +103,73 @@ const PartDetailView = () => {
                         </Table>
                     </TableContainer>
                 </Stack>
-                <Typography variant="h5" gutterBottom>
-                    Custom fields
-                </Typography>
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableBody>
-                            {Object.entries(part?.customFieldValues || {}).map(
-                                ([id, customFieldValue]) => (
-                                    <TableRow key={id}>
+                {part?.customFieldValues &&
+                    Object.keys(part.customFieldValues).length !== 0 && (
+                        <>
+                            <Typography variant="h5" gutterBottom mt={2}>
+                                Additional information
+                            </Typography>
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableBody>
+                                        {Object.entries(
+                                            part?.customFieldValues || {}
+                                        ).map(([id, customFieldValue]) => (
+                                            <TableRow key={id}>
+                                                <TableCell align="left">
+                                                    {
+                                                        customFields.find(
+                                                            (cf) => cf.id === id
+                                                        )?.name
+                                                    }
+                                                </TableCell>
+                                                <TableCell align="left">
+                                                    {customFieldValue.stringValue ||
+                                                        customFieldValue.numericValue}{" "}
+                                                    {customFieldValue.unit}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </>
+                    )}
+            </Stack>
+            {part?.files?.length !== 0 && (
+                <>
+                    <Typography variant="h5" gutterBottom mt={2}>
+                        Related files
+                    </Typography>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>File name</TableCell>
+                                    <TableCell>Description</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {part?.files?.map((file) => (
+                                    <TableRow key={file._id}>
                                         <TableCell align="left">
-                                            {
-                                                customFields.find(
-                                                    (cf) => cf.id === id
-                                                )?.name
-                                            }
+                                            <Link
+                                                href={`${BACKEND_URL}/files/${file.fileName}`}
+                                                target="_blank"
+                                            >
+                                                {file.name}
+                                            </Link>
                                         </TableCell>
                                         <TableCell align="left">
-                                            {customFieldValue.stringValue ||
-                                                customFieldValue.numericValue}{" "}
-                                            {customFieldValue.unit}
+                                            {file.description}
                                         </TableCell>
                                     </TableRow>
-                                )
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Stack>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </>
+            )}
         </PageContainer>
     );
 };
