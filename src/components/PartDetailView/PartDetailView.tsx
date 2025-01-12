@@ -65,6 +65,14 @@ const PartDetailView = () => {
                                     </TableCell>
                                 </TableRow>
                                 <TableRow>
+                                    <TableCell align="left">
+                                        Container
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        {part?.container?.name}
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
                                     <TableCell align="left">Price</TableCell>
                                     <TableCell align="left">
                                         {part?.price.toFixed(2)}
