@@ -420,7 +420,6 @@ const PartEditorDialog = ({
                                 error={false}
                                 touched={false}
                                 helperText=""
-                                min={0}
                                 step={0.01}
                                 sx={{ mr: 1 }}
                                 required={field.required}
@@ -511,7 +510,6 @@ const PartEditorDialog = ({
                             error={false}
                             touched={false}
                             helperText=""
-                            min={0}
                             step={step}
                             required={field.required}
                             onChange={(e) => {

@@ -4,7 +4,7 @@ import { FieldValues } from "react-hook-form";
 import CommonInputProps from "./commonInputProps";
 
 interface Props<T extends FieldValues> extends CommonInputProps<number, T> {
-    min: number;
+    min?: number;
     step: number;
     startAdornment?: ReactNode;
 }
@@ -38,7 +38,7 @@ const NumericInput = <T extends FieldValues>({
             slotProps={{
                 htmlInput: {
                     step: step,
-                    min: min,
+                    min: min || undefined,
                 },
                 input: {
                     startAdornment: startAdornment,
