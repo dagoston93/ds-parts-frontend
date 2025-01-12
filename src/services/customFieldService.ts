@@ -7,6 +7,7 @@ export type CustomFieldType =
     | "Resistance"
     | "Power"
     | "Frequency"
+    | "BaudRate"
     | "Temperature"
     | "Length"
     | "Percentage"
@@ -70,6 +71,13 @@ const unitGroups: { [key in CustomFieldType]?: UnitGroup | null } = {
         baseUnit: "Hz",
         smallerUnits: ["mHz"],
         largerUnits: ["kHz", "MHz", "GHz"],
+        conversionFactor: 1000,
+    },
+    BaudRate: {
+        name: "Baud Rate",
+        baseUnit: "Bps",
+        smallerUnits: [],
+        largerUnits: ["kBps", "MBps"],
         conversionFactor: 1000,
     },
     Temperature: {
