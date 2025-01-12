@@ -6,6 +6,8 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { Link as MuiLink } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
 
 import { Part } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
@@ -116,7 +118,14 @@ const PartTable = () => {
                         )}
                         {parts?.map((part) => (
                             <TableRow key={part._id}>
-                                <TableCell align="left">{part.name}</TableCell>
+                                <TableCell align="left">
+                                    <MuiLink
+                                        component={RouterLink}
+                                        to={`/parts/${part._id}`}
+                                    >
+                                        {part.name}
+                                    </MuiLink>
+                                </TableCell>
                                 <TableCell align="right">
                                     {part.manufacturer?.name || "Unknown"}
                                 </TableCell>

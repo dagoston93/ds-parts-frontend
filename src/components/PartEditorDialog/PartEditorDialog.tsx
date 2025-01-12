@@ -30,6 +30,7 @@ import { MdAddToPhotos, MdClose } from "react-icons/md";
 import useFiles from "../../hooks/files/useFiles";
 import {
     CustomField,
+    getAllCustomFields,
     getUnitGroupByType,
 } from "../../services/customFieldService";
 import StringDropdownInput from "../EditorDialog/StringDropdownInput";
@@ -149,30 +150,17 @@ const PartEditorDialog = ({
         }
     };
 
-    const collectCustomFields = (category: string) => {
-        let newCustomFields: CustomField[] = [];
+    const getCustomFields = (category: string) => {
+        let newCustomFields: CustomField[] = getAllCustomFields(
+            category,
+            categories || []
+        );
 
-        const collectCustomFieldsRecursive = (category: string) => {
-            const categoryObj = categories?.find((c) => c._id === category);
-            if (!categoryObj) {
-                return;
-            }
-
-            newCustomFields = newCustomFields.concat(
-                categoryObj.customFields || []
-            );
-
-            if (categoryObj.parent) {
-                collectCustomFieldsRecursive(categoryObj.parent._id);
-            }
-        };
-
-        collectCustomFieldsRecursive(category);
         setCustomFields(newCustomFields);
     };
 
     useEffect(() => {
-        collectCustomFields(initialData?.category || "");
+        getCustomFields(initialData?.category || "");
     }, [isOpen, initialEntity]);
 
     return (
@@ -200,7 +188,7 @@ const PartEditorDialog = ({
                 error={!!errors.category}
                 touched={!!touchedFields.category}
                 helperText={errors.category?.message}
-                onChange={(e) => collectCustomFields(e.target.value)}
+                onChange={(e) => getCustomFields(e.target.value)}
             />
             <TextInput
                 register={register}

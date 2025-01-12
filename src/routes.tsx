@@ -7,6 +7,7 @@ import CategoryTable from "./components/CategoryTable";
 import PackageTable from "./components/PackageTable";
 import AppSignInPage from "./auth/AppSignInPage";
 import ContainerTable from "./components/ContainerTable";
+import PartDetailView from "./components/PartDetailView/PartDetailView";
 
 const router = createBrowserRouter([
     {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
                     {
                         path: "/parts",
                         element: <PartTable />,
+                    },
+                    {
+                        path: "/parts/:id",
+                        element: <PartDetailView />,
                     },
                     {
                         path: "/categories",

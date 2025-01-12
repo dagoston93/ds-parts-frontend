@@ -1,3 +1,5 @@
+import { Category } from "./categoryService";
+
 export type CustomFieldType =
     | "Capacitance"
     | "Voltage"
@@ -103,3 +105,23 @@ export function getUnitGroupByType(type: CustomFieldType): UnitGroup | null {
 export function getCustomFieldTypes(): string[] {
     return Object.keys(unitGroups);
 }
+
+export const getAllCustomFields = (
+    categoryId: string,
+    categories: Category[]
+) => {
+    const categoryObj = categories?.find((c) => c._id === categoryId);
+    if (!categoryObj) {
+        return [];
+    }
+
+    let newCustomFields = categoryObj.customFields || [];
+
+    if (categoryObj.parent) {
+        newCustomFields = newCustomFields.concat(
+            getAllCustomFields(categoryObj.parent._id, categories)
+        );
+    }
+
+    return newCustomFields;
+};

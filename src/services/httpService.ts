@@ -12,6 +12,12 @@ class HttpService<TEntity extends Entity, TFormData> {
         return apiClient.get<TEntity[]>(this.endpoint).then((res) => res.data);
     };
 
+    getById = (id: string) => {
+        return apiClient
+            .get<TEntity>(`${this.endpoint}/${id}`)
+            .then((res) => res.data);
+    };
+
     create = (entity: TFormData) => {
         return apiClient
             .post<TEntity>(this.endpoint, entity)
