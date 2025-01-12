@@ -75,6 +75,34 @@ const PartEditorDialog = ({
         processedData.images = data.images.filter((i) => i !== "");
         processedData.files = data.files.filter((f) => f !== "");
 
+        processedData.customFieldValues = Object.fromEntries(
+            Object.entries(processedData.customFieldValues).map(
+                ([customFieldId, customField]) => {
+                    const fieldType = customFields.find(
+                        (field) => field.id === customFieldId
+                    )?.type;
+
+                    if (
+                        fieldType &&
+                        fieldType !== "String" &&
+                        fieldType !== "Integer" &&
+                        fieldType !== "Float" &&
+                        !customField.unit
+                    ) {
+                        return [
+                            customFieldId,
+                            {
+                                numericValue: customField.numericValue,
+                                unit: getUnitGroupByType(fieldType)?.baseUnit,
+                            },
+                        ];
+                    }
+
+                    return [customFieldId, customField];
+                }
+            )
+        );
+
         return processedData;
     };
 
