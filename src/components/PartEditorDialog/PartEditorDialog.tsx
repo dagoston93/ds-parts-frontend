@@ -5,7 +5,6 @@ import usePackages from "../../hooks/packages/usePackages";
 import useCategories from "../../hooks/categories/useCategories";
 
 import {
-    CustomFieldValues,
     Part,
     PartFormData,
     partToPartFormData,
