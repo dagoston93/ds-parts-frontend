@@ -124,6 +124,7 @@ const PartEditorDialog = ({
         defaultFormValues: {
             category: "",
             container: "",
+            description: "",
             name: "",
             manufacturer: "",
             partPackage: "",
@@ -281,6 +282,17 @@ const PartEditorDialog = ({
                 helperText={errors.count?.message}
                 min={0}
                 step={1}
+            />
+            <TextInput
+                register={register}
+                id="description"
+                label="Description"
+                defaultValue={initialData?.description}
+                error={!!errors.description}
+                touched={!!touchedFields.description}
+                helperText={errors.description?.message}
+                required={false}
+                multiline
             />
             <Divider textAlign="left" sx={{ mb: 1 }}>
                 Images

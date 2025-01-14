@@ -99,6 +99,16 @@ const PartDetailView = () => {
                                         {part?.count}
                                     </TableCell>
                                 </TableRow>
+                                {part?.description && (
+                                    <TableRow>
+                                        <TableCell align="left">
+                                            Description
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {part?.description}
+                                        </TableCell>
+                                    </TableRow>
+                                )}
                             </TableBody>
                         </Table>
                     </TableContainer>

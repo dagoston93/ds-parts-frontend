@@ -13,6 +13,10 @@ const validationSchema = Joi.object({
     container: Joi.string().required().messages({
         "string.empty": "Container is required.",
     }),
+    description: Joi.string().allow("").max(500).messages({
+        "string.base": "Description must be a text.",
+        "string.max": "Description cannot exceed 500 characters.",
+    }),
     manufacturer: Joi.string().required().messages({
         "string.empty": "Manufacturer is required.",
     }),
