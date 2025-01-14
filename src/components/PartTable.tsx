@@ -1,4 +1,4 @@
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -26,6 +26,8 @@ import EntityActionButtons from "./EntityTable/EntityActionButtons";
 import CreateButton from "./EntityTable/CreateButton";
 import { ENTITY_TYPE_PART } from "../common/entity";
 import EntityActionHeader from "./EntityTable/EntityActionHeader";
+import { BACKEND_URL } from "../services/apiClient";
+import { MdImageNotSupported } from "react-icons/md";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -97,6 +99,7 @@ const PartTable = () => {
                 <Table sx={{ minWidth: 650 }}>
                     <TableHead>
                         <TableRow>
+                            <TableCell></TableCell>
                             <TableCell>Part</TableCell>
                             <TableCell align="right">Manufacturer</TableCell>
                             <TableCell align="right">Package</TableCell>
@@ -118,6 +121,22 @@ const PartTable = () => {
                         )}
                         {parts?.map((part) => (
                             <TableRow key={part._id}>
+                                <TableCell>
+                                    <Box>
+                                        {part.primaryImage ? (
+                                            <img
+                                                src={`${BACKEND_URL}/images/${part.primaryImage.fileName}`}
+                                                alt={part.name}
+                                                height={50}
+                                            />
+                                        ) : (
+                                            <MdImageNotSupported
+                                                size={50}
+                                                color="gray"
+                                            />
+                                        )}
+                                    </Box>
+                                </TableCell>
                                 <TableCell align="left">
                                     <MuiLink
                                         component={RouterLink}
