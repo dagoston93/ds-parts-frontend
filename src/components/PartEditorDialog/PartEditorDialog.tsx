@@ -35,6 +35,7 @@ import {
 } from "../../services/customFieldService";
 import StringDropdownInput from "../EditorDialog/StringDropdownInput";
 import useContainers from "../../hooks/containers/useContainers";
+import useParts from "../../hooks/parts/useParts";
 
 const PartEditorDialog = ({
     isOpen,
@@ -51,6 +52,7 @@ const PartEditorDialog = ({
     const { data: categories } = useCategories(() => {});
     const { data: containers } = useContainers(() => {});
     const { data: packages } = usePackages(() => {});
+    const { data: parts } = useParts(() => {});
     const { data: images } = useImages(() => {});
     const { data: files } = useFiles(() => {});
 
@@ -74,6 +76,7 @@ const PartEditorDialog = ({
 
         processedData.images = data.images.filter((i) => i !== "");
         processedData.files = data.files.filter((f) => f !== "");
+        processedData.relatedParts = data.relatedParts.filter((p) => p !== "");
 
         processedData.customFieldValues = Object.fromEntries(
             Object.entries(processedData.customFieldValues).map(
@@ -134,6 +137,7 @@ const PartEditorDialog = ({
             images: [],
             files: [],
             customFieldValues: {},
+            relatedParts: [],
         },
         validationSchema: validationSchema,
         entityToFormData: partToPartFormData,
@@ -569,6 +573,51 @@ const PartEditorDialog = ({
                     );
                 }
             })}
+            <Divider textAlign="left" sx={{ mb: 2 }}>
+                Related parts
+            </Divider>
+            {watch("relatedParts")?.map((_, idx) => (
+                <Stack direction="row" spacing={2} sx={{ mb: 2 }} key={idx}>
+                    <DropdownInput
+                        id={`relatedPart_${idx}`}
+                        label={`Related part ${idx + 1}`}
+                        options={parts}
+                        value={watch("relatedParts")[idx] || ""}
+                        defaultValue={initialData?.relatedParts[idx]}
+                        error={false}
+                        touched={false}
+                        helperText=""
+                        onChange={(e) => {
+                            const newRelatedParts = [...watch("relatedParts")];
+                            newRelatedParts[idx] = e.target.value;
+                            setValue("relatedParts", newRelatedParts);
+                        }}
+                        required={false}
+                    />
+                    <IconButton
+                        onClick={() => {
+                            const newRelatedParts = [...watch("relatedParts")];
+                            newRelatedParts.splice(idx, 1);
+                            setValue("relatedParts", newRelatedParts);
+                        }}
+                        color="error"
+                        disabled={isLoading}
+                    >
+                        <MdClose />
+                    </IconButton>
+                </Stack>
+            ))}
+            <IconButton
+                onClick={() => {
+                    const newRelatedParts = [...(watch("relatedParts") || [])];
+                    newRelatedParts.push("");
+                    setValue("relatedParts", newRelatedParts);
+                }}
+                color="primary"
+                disabled={isLoading}
+            >
+                <MdAddToPhotos />
+            </IconButton>
         </EditorDialog>
     );
 };
