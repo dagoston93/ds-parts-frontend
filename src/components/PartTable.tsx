@@ -6,8 +6,6 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { Link as MuiLink } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
 
 import { Part } from "../services/partService";
 import ConfirmDeleteDialog from "./ConfirmDeleteDialog";
@@ -28,6 +26,7 @@ import { ENTITY_TYPE_PART } from "../common/entity";
 import EntityActionHeader from "./EntityTable/EntityActionHeader";
 import { BACKEND_URL } from "../services/apiClient";
 import { MdImageNotSupported } from "react-icons/md";
+import InternalLink from "./InternalLink";
 
 const PartTable = () => {
     const { showSuccess, showError } = useNotifications();
@@ -138,12 +137,9 @@ const PartTable = () => {
                                     </Box>
                                 </TableCell>
                                 <TableCell align="left">
-                                    <MuiLink
-                                        component={RouterLink}
-                                        to={`/parts/${part._id}`}
-                                    >
+                                    <InternalLink to={`/parts/${part._id}`}>
                                         {part.name}
-                                    </MuiLink>
+                                    </InternalLink>
                                 </TableCell>
                                 <TableCell align="right">
                                     {part.manufacturer?.name || "Unknown"}
