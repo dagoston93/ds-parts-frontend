@@ -3,6 +3,7 @@ import usePart from "../../hooks/parts/usePart";
 import useNotifications from "../../hooks/useNotifications";
 import { PageContainer } from "@toolpad/core";
 import {
+    Button,
     Link,
     Paper,
     Stack,
@@ -21,6 +22,10 @@ import { BACKEND_URL } from "../../services/apiClient";
 import usePartsByIds from "../../hooks/parts/usePartsByIds";
 import InternalLink from "../InternalLink";
 import ExternalLink from "../ExternalLink";
+import { PartEditorDialog } from "../PartEditorDialog";
+import useEditorDialogState from "../../hooks/useEditorDialogState";
+import { Part } from "../../services/partService";
+import { MdEdit } from "react-icons/md";
 
 const PartDetailView = () => {
     const { showError } = useNotifications();
@@ -33,6 +38,16 @@ const PartDetailView = () => {
         part?.relatedParts || [],
         showError
     );
+
+    const partEditorDialogState = useEditorDialogState<Part>(null);
+
+    const handleEditPartButtonClick = (part: Part) => {
+        partEditorDialogState.openDialog(part);
+    };
+
+    const handlePartEditorDialogClose = () => {
+        partEditorDialogState.closeDialog();
+    };
 
     if (error) {
         throw new Error("Part with given id not found");
@@ -58,6 +73,23 @@ const PartDetailView = () => {
 
     return (
         <PageContainer title={part?.name}>
+            <PartEditorDialog
+                onClose={handlePartEditorDialogClose}
+                isOpen={partEditorDialogState.isDialogOpen}
+                initialEntity={partEditorDialogState.selectedEntity}
+            />
+            <Button
+                variant="contained"
+                startIcon={<MdEdit />}
+                onClick={() => {
+                    if (part) {
+                        handleEditPartButtonClick(part);
+                    }
+                }}
+                sx={{ mb: 2 }}
+            >
+                Edit
+            </Button>
             <Stack direction="column" spacing={2}>
                 <Stack direction="row" spacing={2}>
                     <Gallery images={images} />
