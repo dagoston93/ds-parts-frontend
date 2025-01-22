@@ -8,7 +8,7 @@ interface Props {
 
 const InternalLink = ({ to, children }: Props) => {
     return (
-        <MuiLink component={RouterLink} to={to}>
+        <MuiLink component={RouterLink} to={to} underline="hover">
             {children}
         </MuiLink>
     );
