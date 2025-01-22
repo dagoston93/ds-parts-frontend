@@ -28,6 +28,7 @@ export interface Part extends NamedEntity {
     files?: File[];
     customFieldValues?: CustomFieldValues;
     relatedParts?: string[];
+    relatedLinks?: string[];
 }
 
 export interface PartFormData {
@@ -44,6 +45,7 @@ export interface PartFormData {
     files: string[];
     customFieldValues: CustomFieldValues;
     relatedParts: string[];
+    relatedLinks: string[];
 }
 
 export function partToPartFormData(part: Part): PartFormData {
@@ -61,6 +63,7 @@ export function partToPartFormData(part: Part): PartFormData {
         files: part.files?.map((f) => f._id) || [],
         customFieldValues: part.customFieldValues || {},
         relatedParts: part.relatedParts || [],
+        relatedLinks: part.relatedLinks || [],
     };
 }
 

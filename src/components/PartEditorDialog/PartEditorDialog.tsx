@@ -77,6 +77,7 @@ const PartEditorDialog = ({
         processedData.images = data.images.filter((i) => i !== "");
         processedData.files = data.files.filter((f) => f !== "");
         processedData.relatedParts = data.relatedParts.filter((p) => p !== "");
+        processedData.relatedLinks = data.relatedLinks.filter((l) => l !== "");
 
         processedData.customFieldValues = Object.fromEntries(
             Object.entries(processedData.customFieldValues).map(
@@ -138,6 +139,7 @@ const PartEditorDialog = ({
             files: [],
             customFieldValues: {},
             relatedParts: [],
+            relatedLinks: [],
         },
         validationSchema: validationSchema,
         entityToFormData: partToPartFormData,
@@ -612,6 +614,56 @@ const PartEditorDialog = ({
                     const newRelatedParts = [...(watch("relatedParts") || [])];
                     newRelatedParts.push("");
                     setValue("relatedParts", newRelatedParts);
+                }}
+                color="primary"
+                disabled={isLoading}
+            >
+                <MdAddToPhotos />
+            </IconButton>
+            <Divider textAlign="left" sx={{ mb: 2 }}>
+                Related links
+            </Divider>
+            {watch("relatedLinks")?.map((link, idx) => (
+                <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{ mb: 2 }}
+                    key={`${link}_${idx}`}
+                >
+                    <TextInput
+                        id={`relatedLink_${idx}`}
+                        label={`Related link ${idx + 1}`}
+                        defaultValue={
+                            decodeURIComponent(watch("relatedLinks")[idx]) || ""
+                        }
+                        error={false}
+                        touched={false}
+                        helperText=""
+                        onChange={(e) => {
+                            const newRelatedLinks = [...watch("relatedLinks")];
+                            newRelatedLinks[idx] = e.target.value;
+                            setValue("relatedLinks", newRelatedLinks);
+                        }}
+                        required={false}
+                    />
+                    <IconButton
+                        onClick={() => {
+                            const newRelatedLinks = [...watch("relatedLinks")];
+                            newRelatedLinks.splice(idx, 1);
+                            setValue("relatedLinks", newRelatedLinks);
+                        }}
+                        color="error"
+                        disabled={isLoading}
+                    >
+                        <MdClose />
+                    </IconButton>
+                </Stack>
+            ))}
+            <IconButton
+                onClick={() => {
+                    const newRelatedLinks = [...(watch("relatedLinks") || [])];
+                    newRelatedLinks.push("");
+                    setValue("relatedLinks", newRelatedLinks);
                 }}
                 color="primary"
                 disabled={isLoading}
