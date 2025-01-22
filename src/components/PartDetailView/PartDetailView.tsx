@@ -18,6 +18,8 @@ import Gallery from "./Gallery";
 import useCategories from "../../hooks/categories/useCategories";
 import { getAllCustomFields } from "../../services/customFieldService";
 import { BACKEND_URL } from "../../services/apiClient";
+import usePartsByIds from "../../hooks/parts/usePartsByIds";
+import InternalLink from "../InternalLink";
 
 const PartDetailView = () => {
     const { showError } = useNotifications();
@@ -26,6 +28,10 @@ const PartDetailView = () => {
     const partId = params.id || "";
 
     const { data: part, error } = usePart(partId, showError);
+    const { data: relatedParts } = usePartsByIds(
+        part?.relatedParts || [],
+        showError
+    );
 
     if (error) {
         throw new Error("Part with given id not found");
@@ -172,6 +178,39 @@ const PartDetailView = () => {
                                         </TableCell>
                                         <TableCell align="left">
                                             {file.description}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </>
+            )}
+            {part?.relatedParts?.length !== 0 && (
+                <>
+                    <Typography variant="h5" gutterBottom mt={2}>
+                        Related parts
+                    </Typography>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Part</TableCell>
+                                    <TableCell>Description</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {relatedParts?.map((part) => (
+                                    <TableRow key={part._id}>
+                                        <TableCell align="left">
+                                            <InternalLink
+                                                to={`/parts/${part._id}`}
+                                            >
+                                                {part.name}
+                                            </InternalLink>
+                                        </TableCell>
+                                        <TableCell align="left">
+                                            {part.description}
                                         </TableCell>
                                     </TableRow>
                                 ))}

@@ -18,6 +18,20 @@ class HttpService<TEntity extends Entity, TFormData> {
             .then((res) => res.data);
     };
 
+    getByIds = (ids: string[]) => {
+        let entities: TEntity[] = [];
+
+        return Promise.all(
+            ids.map((id) => {
+                return apiClient
+                    .get<TEntity>(`${this.endpoint}/${id}`)
+                    .then((res) => {
+                        entities.push(res.data);
+                    });
+            })
+        ).then(() => entities);
+    };
+
     create = (entity: TFormData) => {
         return apiClient
             .post<TEntity>(this.endpoint, entity)
