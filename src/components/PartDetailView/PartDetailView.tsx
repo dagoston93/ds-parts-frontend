@@ -20,6 +20,7 @@ import { getAllCustomFields } from "../../services/customFieldService";
 import { BACKEND_URL } from "../../services/apiClient";
 import usePartsByIds from "../../hooks/parts/usePartsByIds";
 import InternalLink from "../InternalLink";
+import ExternalLink from "../ExternalLink";
 
 const PartDetailView = () => {
     const { showError } = useNotifications();
@@ -211,6 +212,30 @@ const PartDetailView = () => {
                                         </TableCell>
                                         <TableCell align="left">
                                             {part.description}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </>
+            )}
+            {part?.relatedLinks?.length !== 0 && (
+                <>
+                    <Typography variant="h5" gutterBottom mt={2}>
+                        Related links
+                    </Typography>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableBody>
+                                {part?.relatedLinks?.map((link) => (
+                                    <TableRow key={part._id}>
+                                        <TableCell align="left">
+                                            <ExternalLink
+                                                to={decodeURIComponent(link)}
+                                            >
+                                                {decodeURIComponent(link)}
+                                            </ExternalLink>
                                         </TableCell>
                                     </TableRow>
                                 ))}
