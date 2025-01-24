@@ -53,8 +53,8 @@ const CategoryEditorDialog = ({
             processedData = rest;
         }
 
-        processedData.customFields = data.customFields.filter(
-            (field) => field.name !== ""
+        processedData.customFields = data.customFields?.filter(
+            (field) => field && field.name !== ""
         );
 
         return processedData;

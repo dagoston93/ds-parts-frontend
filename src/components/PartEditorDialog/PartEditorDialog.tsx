@@ -74,38 +74,45 @@ const PartEditorDialog = ({
             processedData = rest;
         }
 
-        processedData.images = data.images.filter((i) => i !== "");
-        processedData.files = data.files.filter((f) => f !== "");
-        processedData.relatedParts = data.relatedParts.filter((p) => p !== "");
-        processedData.relatedLinks = data.relatedLinks.filter((l) => l !== "");
-
-        processedData.customFieldValues = Object.fromEntries(
-            Object.entries(processedData.customFieldValues).map(
-                ([customFieldId, customField]) => {
-                    const fieldType = customFields.find(
-                        (field) => field.id === customFieldId
-                    )?.type;
-
-                    if (
-                        fieldType &&
-                        fieldType !== "String" &&
-                        fieldType !== "Integer" &&
-                        fieldType !== "Float" &&
-                        !customField.unit
-                    ) {
-                        return [
-                            customFieldId,
-                            {
-                                numericValue: customField.numericValue,
-                                unit: getUnitGroupByType(fieldType)?.baseUnit,
-                            },
-                        ];
-                    }
-
-                    return [customFieldId, customField];
-                }
-            )
+        processedData.images = data.images?.filter((i) => i && i !== "");
+        processedData.files = data.files?.filter((f) => f && f !== "");
+        processedData.relatedParts = data.relatedParts?.filter(
+            (p) => p && p !== ""
         );
+        processedData.relatedLinks = data.relatedLinks?.filter(
+            (l) => l && l !== ""
+        );
+
+        if (processedData.customFieldValues) {
+            processedData.customFieldValues = Object.fromEntries(
+                Object.entries(processedData.customFieldValues).map(
+                    ([customFieldId, customField]) => {
+                        const fieldType = customFields.find(
+                            (field) => field.id === customFieldId
+                        )?.type;
+
+                        if (
+                            fieldType &&
+                            fieldType !== "String" &&
+                            fieldType !== "Integer" &&
+                            fieldType !== "Float" &&
+                            !customField.unit
+                        ) {
+                            return [
+                                customFieldId,
+                                {
+                                    numericValue: customField.numericValue,
+                                    unit: getUnitGroupByType(fieldType)
+                                        ?.baseUnit,
+                                },
+                            ];
+                        }
+
+                        return [customFieldId, customField];
+                    }
+                )
+            );
+        }
 
         return processedData;
     };
