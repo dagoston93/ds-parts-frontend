@@ -22,6 +22,7 @@ interface Props<TEntity extends Entity, TFormData extends FieldValues> {
         onError: (message: string) => void
     ) => UseMutationResult<TEntity, Error, UpdateEntityData<TFormData>>;
     processFormData?: (data: TFormData) => TFormData;
+    closeOnSubmit?: () => boolean;
 }
 
 const useEditorDialog = <
@@ -36,6 +37,7 @@ const useEditorDialog = <
     addMutationFn,
     updateMutationFn,
     processFormData,
+    closeOnSubmit,
 }: Props<TEntity, TFormData>) => {
     const { showSuccess, showError } = useNotifications();
 
@@ -85,7 +87,16 @@ const useEditorDialog = <
 
         mutation
             .then(() => {
-                handleClose();
+                let closeDialog = true;
+                if (!isEditing && closeOnSubmit) {
+                    closeDialog = closeOnSubmit();
+                }
+
+                if (closeDialog) {
+                    handleClose();
+                } else {
+                    setLoading(false);
+                }
             })
             .catch((err) => {
                 setLoading(false);

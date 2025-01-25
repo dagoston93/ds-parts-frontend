@@ -1,4 +1,11 @@
-import { Divider, IconButton, InputAdornment, Stack } from "@mui/material";
+import {
+    Checkbox,
+    Divider,
+    FormControlLabel,
+    IconButton,
+    InputAdornment,
+    Stack,
+} from "@mui/material";
 
 import useManufacturers from "../../hooks/manufacturers/useManufacturers";
 import usePackages from "../../hooks/packages/usePackages";
@@ -58,6 +65,7 @@ const PartEditorDialog = ({
 
     const [isUploadDialogOpen, setUploadDialogOpen] = useState(false);
     const [customFields, setCustomFields] = useState<CustomField[]>([]);
+    const [createAnother, setCreateAnother] = useState(false);
 
     const [uploadHandler, setUploadHandler] = useState<
         ((id: string) => void) | null
@@ -154,6 +162,7 @@ const PartEditorDialog = ({
         addMutationFn: useAddPart,
         updateMutationFn: useUpdatePart,
         processFormData: processFormData,
+        closeOnSubmit: () => !createAnother,
     });
 
     const handleUploadPrimaryImageButtonClick = () => {
@@ -677,6 +686,23 @@ const PartEditorDialog = ({
             >
                 <MdAddToPhotos />
             </IconButton>
+
+            {!isEditing && (
+                <>
+                    <Divider sx={{ mb: 2 }} />
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                defaultChecked={false}
+                                onChange={(e) => {
+                                    setCreateAnother(e.target.checked);
+                                }}
+                            />
+                        }
+                        label="Create another part"
+                    />
+                </>
+            )}
         </EditorDialog>
     );
 };
