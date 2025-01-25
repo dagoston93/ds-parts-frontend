@@ -11,6 +11,7 @@ export type CustomFieldType =
     | "Temperature"
     | "Length"
     | "Percentage"
+    | "FileSize"
     | "Integer"
     | "Float"
     | "String";
@@ -100,6 +101,13 @@ const unitGroups: { [key in CustomFieldType]?: UnitGroup | null } = {
         smallerUnits: [],
         largerUnits: [],
         conversionFactor: 1,
+    },
+    FileSize: {
+        name: "File Size",
+        baseUnit: "B",
+        smallerUnits: [],
+        largerUnits: ["kB", "MB", "GB", "TB"],
+        conversionFactor: 1024,
     },
     Integer: null,
     Float: null,
