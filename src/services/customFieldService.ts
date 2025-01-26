@@ -12,6 +12,7 @@ export type CustomFieldType =
     | "Length"
     | "Percentage"
     | "FileSize"
+    | "Distance"
     | "Integer"
     | "Float"
     | "String";
@@ -108,6 +109,13 @@ const unitGroups: { [key in CustomFieldType]?: UnitGroup | null } = {
         smallerUnits: [],
         largerUnits: ["kB", "MB", "GB", "TB"],
         conversionFactor: 1024,
+    },
+    Distance: {
+        name: "Distance",
+        baseUnit: "m",
+        smallerUnits: ["mm", "cm"],
+        largerUnits: ["km"],
+        conversionFactor: 1000,
     },
     Integer: null,
     Float: null,
